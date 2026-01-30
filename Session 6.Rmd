@@ -1,0 +1,40 @@
+---
+title: "Session 6"
+output:
+  html_document:
+    df_print: paged
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+runtime: shiny_prerendered
+description: |
+  Explore final data set to access your knowledge!
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+```
+
+Please go to the [City of Chicago data portal Food Inspections](https://data.cityofchicago.org/Health-Human-Services/Food-Inspections/4ijn-s7e5).
+
+Download this dataset.
+
+Use the R code found here, [https://github.com/menawhalen/R-Short-Course/blob/main/clean_inspection.R](https://github.com/menawhalen/R-Short-Course/blob/main/clean_inspection.R), to clean the dataset.
+
+Answer the following questions:
+
+1. Create a table that has license number and the count
+of how many tests resulted in ”Fail”. What are the names (i.e.
+dba name) of the businesses that are in the top ten for most failed
+inspections?
+2. What is the pass rate by inspection type?
+3. How many businesses (defined by license number) have
+ever failed an inspection?
+4. Using only businesses in with zip code equal to 60660
+or 60626 (i.e. Rogers Park and Edgewater), count the number of
+inspections that each license number has had. Then plot side by side
+5. What is the restaurant with the largest number of inspections that has passed (do NOT include “passed with conditions”)
+ALL of their inspections and how many inspections did they have?
+That is which restaurant had the most inspections without any failure?
+
