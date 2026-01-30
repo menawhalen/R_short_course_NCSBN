@@ -1,0 +1,34 @@
+Day 1
+Date: February 2, 2026 
+Topics: Introduction to R; Introduction to R Studio; Data Structures; Input/Output (including SAS objects); Loops and functions in R; Introduction to the tidyverse; Data wrangling for a single table (lter, select, mutate, arrange, group by, summarize); manuscript/report/figure/table automation
+
+
+Day 2
+Date: February 9, 2026
+Topics: Data wrangling for multiple tables (inner join, left join, etc.); Tidy Data; Reshaping Data; Iteration (Vectorizing functions, map family, etc.)
+
+Day 3
+Date: February 23, 2026
+Topics: stringr: regular expressions; Working with character strings; forcats: Working with factors; lubridate: Working with dates and times; Putting it all together. We will provide an in class prompt and the members of the course will work on the project and there will be faculty and TAs walking around to help in the spirit of office hours.
+Matt can’t go
+
+Day 4
+Date: March 9, 2026
+Topics: Data visualization theory and fundamentals of data visualization; Data visualization with ggplot2
+
+Day 5
+Date: March 30, 2026
+Topics: Interactive data visualization with plotly, ggplotly, and shiny; Creating geographic maps data visualizations (e.g. leaflet, ggmap, usmap, sf, etc)
+
+Day 6
+Date: April 13, 2026
+Topics: Statistical modeling (linear models, general linear models, penalized regression (e.g. LASSO, ridge, glmnet);
+
+Day 7
+Date: April 20, 2026
+Topics: Tidy Models and Model R
+
+Day 8
+Date: April 27, 2026
+Topics: Special Topics: weighted survey analysis; longitudinal data analysis with lme4, tree based models (e.g. CART and random forest models, GLMIX, GEE, etc.); interacting with SQL in R
+
