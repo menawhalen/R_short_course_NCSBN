@@ -16,6 +16,7 @@ d <- factor(c("A", "A", "B", "C", "A", "B"))
 mat <- matrix(c(1:9), ncol = 3, byrow = TRUE)
 l <- list(3, rep(0, 3), matrix(c(1:4), ncol = 2))
 df <- data.frame(V1 = 1:10, V2 = rep(1, 10), V3 = seq(1, 20, 2))
+f <- paste("x", 1:5, sep = "")
 ```
 
 ## Welcome
@@ -260,7 +261,7 @@ We assign the value of an object on the left hand side, to the name (expression)
 # Preferred syntax
 height <- 442
 
-# These also work
+# These also work but please no..
 442 -> height
 height = 442
 
@@ -274,7 +275,9 @@ Comments are notes (or comments) that are made in a code chunk that does not get
 # This is how you make a comment!
 ```
 
+There is a shortcut key to comment a lot of code which is Ctrl+Shift+C for Windows and	Shift+Command+C for Mac.
 
+To see more shortcut keys go to Tools - Keyboard Shortcuts Help.
 
 > R is Case Sensitive
 
@@ -314,7 +317,19 @@ abs(-5)
 
 ```
 
+#### Practice Exercise
 
+Now it’s your turn. Create a new R script file (if you haven't already) and work through the following tasks using only what you have learned so far (assignment, comments, and basic operations).
+
+1. Assign values to at least three objects that represent numbers (for example: a height, a width, a total, etc.).
+
+2. Use comments to briefly describe what each object represents.
+
+3. Perform at least five different mathematical operations using your objects (addition, subtraction, multiplication, division, absolute value, remainder, floor, or ceiling).
+
+4. Assign the result of at least two calculations to new objects.
+
+5. Print the final values of all objects to the console.
 
 ## Classes and Data Structures 
 
@@ -366,23 +381,62 @@ a <- 5
 a <- as.character(a)
 ```
 
-### Data Structures
+## Data Structures
 
-#### Vectors in R
-Vectors in R can only contain elements of a single class. Here's an example of creating and working with a numeric vector:
+### Vectors in R
 
-```{r vector,exercise = TRUE}
-x <- c(4, 1, 3, 8, 6, 7, 5, 3, 0, 9)
-x
+
+You can create vectors in R using the `c()` concatenate function. 
+
+```{r}
+# Creating a numeric vector
+vec <- c(0.25, 0.5, 0.75, 1)
+vec
 ```
 
+#### Accessing Elements
+
+In R, you can access elements in a vector using square brackets `[]`.
+
+```{r}
+# Accessing elements
+vec[1]   # Accessing the first element
+vec[2:3] # Accessing a range of elements
+
+```
+
+#### Named Vectors
+
+Vectors can also have named elements.
+
+```{r}
+# Creating a named vector
+vec_named <- c(a = 0.25, b = 0.5, c = 0.75, d = 1)
+vec_named['b'] # Accessing element by name
+
+```
+
+#### Modifying Vectors
+
+You can modify or extend vectors in R by assigning new values.
+
+```{r}
+# Modifying and extending a vector
+vec_named['e'] <- 1.25
+vec_named
+
+```
+
+
 ##### Subsetting Vectors
-Subsetting allows you to extract specific elements from a vector:
+Subsetting allows you to extract specific elements from a vector, this is done by using square brackets [], using the colon (:) can help pull multiple elements in order together.
 
 ```{r subset_vector}
 x[1] ## first element
 x[1:5] ## first 5 using the colon
 ```
+
+> Any guesses on how to pull multiple elements out of order in a vector?
 
 ##### Vector Operations
 You can perform various operations on vectors:
@@ -398,10 +452,43 @@ x + y
 
 Factors are essential in statistics. They represent categorical variables:
 
-```{r factor,exercise = TRUE}
-d <- factor(c("A", "A", "B", "C", "A", "B"))
-d
+```{r}
+# Creating a factor
+region <- factor(c("West", "South", "East", "South", "Midwest"))
+region
+
 ```
+
+### Levels of a Factor
+
+Factors have a predefined set of levels.
+
+```{r}
+# Accessing levels
+levels(region)
+
+```
+
+### Reordering Factor Levels
+
+You can reorder the levels of a factor to suit your analysis or visualization needs.
+
+```{r}
+# Reordering levels
+region <- factor(region, levels = c( "Midwest","East", "South", "West"))
+region
+
+```
+
+You can also reorder levels based on frequency or another logical condition.
+
+```{r}
+# Reordering based on frequency
+region <- factor(region, levels = levels(region)[order(table(region))])
+region
+
+```
+
 
 #### The `paste` Function
 The `paste` function is used to combine character strings:
@@ -409,6 +496,18 @@ The `paste` function is used to combine character strings:
 ```{r paste,exercise = TRUE}
 f <- paste("x", 1:5, sep = "")
 f
+#?paste()
+```
+
+#### The `rep` Function
+The `rep` function is used to help repeat or replicate numbers, characters, or vectors.
+
+```{r}
+rep(1:4, 2)
+rep(1:4, each = 2)
+rep(1:4, each = 2, times = 3) 
+
+#?rep
 ```
 
 
@@ -417,6 +516,8 @@ Matrices are two-dimensional arrays in R:
 ```{r matrix,exercise = TRUE}
 mat <- matrix(c(1:9), ncol = 3, byrow = TRUE)
 mat
+
+matrix(c(1:9), ncol = 3, byrow = FALSE)
 ```
 
 ##### Subsetting Matrices
@@ -429,43 +530,267 @@ mat[1, ]
 #### Lists in R
 Lists are versatile R objects, able to hold elements of various classes:
 
-```{r list,exercise = TRUE}
-l <- list(3, rep(0, 3), matrix(c(1:4), ncol = 2))
-l
+```{r}
+# Creating a list
+my_list <- list(name = "Alice", age = 25, scores = c(90, 85, 88))
+my_list
+
+```
+
+#### Accessing Elements in a List
+
+You can access list elements by name or position using `$` or `[[ ]]`.
+
+```{r}
+# Accessing list elements
+my_list$name          # Using $
+my_list[['scores']]   # Using double brackets for indexing
+my_list[[3]]          # Accessing by position
+
 ```
 
 
-##### Indexing Lists
-Lists can be indexed using double brackets or the `$` notation:
+### Creating Data Frames
 
-```{r index_list,exercise = TRUE}
-l[[3]]
-l$three
+Data frames in R are two-dimensional data structures, you can create them using the `data.frame()` function.
+
+```{r}
+# Creating a data frame
+area_df <- data.frame(state = c("California", "Texas", "New York", "Florida", "Illinois"),
+                      area = c(423967, 695662, 141297, 170312, 149995))
+area_df
+
+```
+
+#### Accessing Columns
+
+You can access columns in a data frame using `$` or square brackets.
+
+```{r}
+# Accessing a column
+area_df$state   # Using $
+area_df['area'] # Using square brackets
+
+```
+
+#### Adding a Column
+
+You can easily add new columns to a data frame.
+
+```{r}
+# Adding a column for population
+population <- c(38332521, 26448193, 19651127, 19552860, 12882135)
+area_df$population <- population
+area_df
+area_df["pop"] <- population
+area_df
+```
+
+#### Data Frame Operations
+
+R provides simple ways to perform operations on data frames. For example, you can calculate the population density.
+
+```{r}
+# Calculating population density
+area_df$density <- area_df$population / area_df$area
+area_df
+
+```
+
+### Indexing and Selection
+
+#### Subsetting Data Frames
+
+You can subset data frames using row and column indices.
+
+```{r}
+# Subsetting rows and columns
+area_df[3:5, c('state', 'pop')]
+
+```
+
+#### Logical Indexing
+
+Logical conditions can be used to filter data.
+
+```{r}
+# Filtering rows based on conditions
+subset(area_df, density > 100)
+
+area_df[area_df$density > 100, ]
+
+```
+
+It is easy to make a matrix into a dataframe (not the other way around..)
+```{r}
+data.frame(mat)
 ```
 
 
-#### Data Frames in R
-Data frames combine properties of matrices and lists, suitable for data analysis:
-```{r dataframe,exercise = TRUE}
-df <- data.frame(V1 = 1:10, V2 = rep(1, 10), V3 = seq(1, 20, 2))
-df
-```
+### Summary, Ordering, and Frequency Functions
+
+When working with data, one of the first steps is to explore and understand what you have. Base R provides several functions that summarize, count, and organize values without changing the original data.
+
+#### The `summary()` Function
+
+The summary() function gives a quick overview of an object.
+
+For numeric variables, it returns a five-number summary (plus the mean):
+- Minimum
+- 1st Quartile
+- Median
+- Mean
+- 3rd Quartile
+- Maximum
+
+It can also give information about NA's.
 
 
-##### Subsetting Data Frames
-Data frames can be subsetted by index or name:
-
-```{r subset_dataframe,exercise = TRUE}
-df[,1]
-df[1,]
-```
-
-
-#### Summary and Table Functions
-Use `summary` for a five-number summary and `table` for frequency tables:
-
-```{r sum_tab,exercise = TRUE}
+```{r}
 summary(df)
-table(df$V3)
+summary(df$V3)
 ```
 
+For factors or character variables, summary() returns counts of each level.
+
+```{r}
+
+summary(d)
+```
+
+
+This makes summary() a good first function to run when you encounter a new dataset.
+
+### The `table()` Function
+
+The table() function creates a frequency table, counting how often each value appears.
+
+
+```{r}
+table(df$V3)
+table(d)
+```
+
+This function is especially useful for categorical variables and factors.
+
+### The `order()` Function
+
+The order() function returns the index positions that would sort a vector.
+
+```{r}
+order(df$V3)
+```
+
+
+By itself, order() does not change the data. Instead, it tells R how to rearrange it.
+
+You can use order() to sort values:
+
+```{r}
+df$V3[order(df$V3)]
+```
+
+Or to reorder entire data frames based on a variable:
+
+```{r}
+df[order(df$V3), ]
+```
+
+This is a powerful idea in R: functions often return indexes, which you then use for subsetting.
+
+### Combining `table()` and `order()`
+
+You can also use order() with frequency tables to see values sorted by how common they are.
+
+
+```{r}
+tab <- table(d)
+tab[order(tab)]
+```
+
+
+This sorts the categories from least frequent to most frequent.
+
+## More Helpful Functions
+
+As you begin working with different types of R objects, it is often useful to quickly check their size, structure, or contents. The following base R functions are commonly used for this purpose.
+
+### The `length()` Function
+
+The length() function returns the number of elements in a vector or list.
+
+```{r}
+length(d)
+length(f)
+length(l)
+```
+
+For data frames, length() returns the number of columns.
+
+```{r}
+length(df)
+```
+
+### The `dim()` Function
+
+The dim() function returns the dimensions of an object, such as a matrix or data frame.
+
+```{r}
+dim(mat)
+dim(df)
+```
+
+
+The output is given as (number of rows, number of columns).
+
+### The `nrow()` and `ncol()` Functions
+
+These functions return the number of rows or columns in a matrix or data frame.
+
+```{r}
+
+nrow(df)
+ncol(df)
+
+```
+
+
+### The `str()` Function
+
+The str() (structure) function is one of the most useful functions in R. It provides a compact summary of an object, including its type, length, and the type of each component.
+
+
+```{r}
+str(df)
+str(l)
+```
+
+
+This function is especially helpful when working with unfamiliar data.
+
+### The `head()` and `tail()` Functions
+
+The head() and tail() functions display the first or last few rows of a data frame.
+
+```{r}
+
+head(df)
+tail(df)
+
+```
+
+By default, these show six rows, but this can be changed.
+
+
+## Reading CSV Files
+
+### Reading Data from CSV
+
+You can use the `read.csv()` function in R to load data from a CSV file.
+
+```{r}
+# Reading in a CSV file
+cubs_data <- read.csv("data/cubs_all_time.csv")
+head(cubs_data)
+
+```
