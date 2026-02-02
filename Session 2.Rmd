@@ -83,11 +83,13 @@ The `dplyr` package is a fundamental component of the tidyverse that provides a 
 
 *`count()`: It's used to count the occurrences of unique combinations of variables.
 
-4. Pipelining (`%>%` Operator):
+4. Pipelining (`%>%` or `|>` Operator):
 
-One of the defining features of dplyr is its compatibility with the pipe operator `%>%`. This allows you to chain together multiple operations, improving code readability and making it easier to follow the flow of transformations.
+One of the defining features of dplyr is its compatibility with the pipe operator `%>%` or `|>`. This allows you to chain together multiple operations, improving code readability and making it easier to follow the flow of transformations.
 
 By using the pipe operator, you can write code that reads almost like a sentence, with each step of data manipulation flowing into the next. This makes it easier to follow the progression of transformations and reduces the need for intermediate variables. The end result is more concise, readable, and expressive code.
+
+Note: If you think typing the pipe is too cumbersome, use the shortcut Ctrl-Shift-m (Windows/Linux) or Cmd-Shift-m (Mac).
 
 ```{r pipe, eval=FALSE}
 # Without piping
@@ -98,12 +100,10 @@ summarized_data <- summarize(filtered_data, avg_income = mean(income))
 library(dplyr)
 data %>%
   filter(age > 25) %>%
-  summarize(avg_income = mean(income))
-
+  summarize(avg_income = mean(income)) 
 ```
 
 As shown in the example, the pipe operator takes the output from one step and passes it as the input to the next step. This creates a natural flow that reflects the logical order of the operations being performed.
-
 
 Here is the [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) to reference for which functions to use when with examples.
 
@@ -166,14 +166,6 @@ CIACountries %>%
 
 ```
 
-Explore on your own...
-
-```{r select-ex, exercise = TRUE}
-CIACountries %>% 
-  select()
-```
-
-
 
 ### filter()
 > When filtering think about filtering ROWS
@@ -222,15 +214,9 @@ filter(CIACountries, pop > 1000000000)
 #I can also do it like this
 CIACountries %>% 
   filter(pop > 1e9)
-# using both together
-CIACountries %>% 
-  select(country, pop, gdp) %>% 
-  filter(pop > 1e9)
 ```
 
-On your own...
-
-Try using filter and select together. 
+Let's see what happens when we use filter and select together.
 
 ```{r filter_ex, exercise = TRUE}
 CIACountries %>% 
@@ -295,13 +281,6 @@ my_CIACountries <- CIACountries %>%
 my_CIACountries[1,]
 ```
 
-On your own..
-
-```{r mutate_ex, exercise = TRUE}
-CIACountries %>% 
-  mutate()
-```
-
 ## Data Summary
 
 Using `group_by()` and `summarize()` together allows you to efficiently compute summary statistics, aggregations, or any other computations of data based on different groups defined by one or more variables.
@@ -350,22 +329,27 @@ my_CIACountries <-
   summarise(mn_area = mean(area))
 
 my_CIACountries
-
 ```
 
-On your own..
+If you encounter any rows with missing data, you can simply remove these rows by using na.rm = TRUE (or na.rm = T)
 
-Create a new categorical variable (using `case_when()`) to use `group_by()` and `summarise()`
+```{r summarize_cia_roadways}
+my_CIACountries <-
+  CIACountries %>% 
+  mutate(high_educ = educ > 4.5) %>% 
+  group_by(high_educ) %>% 
+  summarise(mn_area = mean(roadways))
 
-```{r summarise_ex, exercise = TRUE}
-CIACountries %>% 
-  mutate(new_variable = case_when(
-    
-  )) %>% 
-  group_by(new_variable) %>% 
-  summarise()
+my_CIACountries
+
+my_CIACountries <-
+  CIACountries %>% 
+  mutate(high_educ = educ > 4.5) %>% 
+  group_by(high_educ) %>% 
+  summarise(mn_area = mean(roadways,na.rm=TRUE))
+
+my_CIACountries
 ```
-
 
 ## Data Aggregation 
 ### arrange() and count()
@@ -408,14 +392,81 @@ CIACountries %>%
 CIACountries %>% 
   arrange(desc(gdp)) %>% 
   head(5)
-
 ```
 
-## On your own
+## Exercise
 
-Explore CIA Countires dataset, ask questions like "What proportion of countries produce any oil stratified by net users class?"
+Explore CIA Countries dataset and answer the following questions.
+
+1. How many variable names in the dataset contain the letter "p"?
+
+2. How many countries begin with a vowel?
+
+3. How many countries in the dataset produce oil?
+
+4. Create a column for the roadways by area.
+
+5. What are the 5 countries with the least densely populated roadways?
+
+6. What is the average GDP separated by net users <15%, 15-60%, >60%?
+
+7. What is the variance of population density by net users?
 
 ```{r explore_ex, exercise = TRUE}
 CIACountries
 ```
 
+## Creating Tables
+
+If you are creating a pdf output for a report using markdown or LaTeX, the package `xtable` takes any dataset that you have created and turns it into a nice format that you can manipulate as you see fit! Please note, this section is best used in the R Window, not in the html interactive file.
+
+```{r xtable}
+library(xtable)
+data %>%
+  xtable()
+```
+
+### Captions
+
+We can also add a caption and label to the table.
+
+```{r xtable_caption}
+data %>%
+  xtable(caption="This is the description for this data table.",
+         label = "tbl1")
+```
+
+### Alignment
+
+We can also change the alignment of the columns.
+
+```{r xtable_caption}
+data %>%
+  xtable(caption="This is the description for this data table.",
+         label = "tbl1",
+         align = "l|l|r")
+```
+
+### Digits
+
+We can also change the number of significant digits.
+
+```{r xtable_caption}
+data %>%
+  xtable(caption="This is the description for this data table.",
+         label = "tbl1",
+         align = "l|l|r",
+         digits = 0)
+```
+
+### First Column
+
+By default, xtable creates a column for the row number.  To remove, simply another line for print and add `include_rownames = FALSE`.
+
+```{r xtable_caption}
+data %>%
+  xtable(caption="This is the description for this data table.",
+         label = "tbl1",
+         align = "ll|r") %>%
+  print(include.rownames = FALSE)
+```
