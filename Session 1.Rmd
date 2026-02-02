@@ -784,13 +784,79 @@ By default, these show six rows, but this can be changed.
 
 ## Reading CSV Files
 
-### Reading Data from CSV
+When working with data in R, a common first step is to read your data from a file. Most often, this is a CSV (comma-separated values) file.
 
-You can use the `read.csv()` function in R to load data from a CSV file.
+R provides the read.csv() function to read CSV files into a data frame. But before we read files, it's important to understand file paths.
+
+### File Paths
+
+A file path tells R where to find your file. There are two main types:
+
+1. Absolute path – the full path from the root of your computer, e.g., "C:/Users/Mena/Documents/R/project/data/cubs_all_time.csv".
+
+2. Relative path – relative to your current working directory, e.g., "data/cubs_all_time.csv" if you have a folder called data in your project.
+
+#### Working Directory
+
+R needs to know your current working directory. You can check it with:
 
 ```{r}
-# Reading in a CSV file
-cubs_data <- read.csv("data/cubs_all_time.csv")
-head(cubs_data)
+getwd()
 
 ```
+
+You can change it using:
+
+```{r}
+# setwd("your/pathway/here")
+```
+
+> When using an R project (.Rproj), R automatically sets the working directory to the project folder. This makes using relative paths easier.
+
+### Reading a CSV File
+
+Once your working directory is set, you can read a CSV file using read.csv(). For example, if you have a folder called data in your project:
+
+```{r}
+# Reading CSV from the data folder
+cubs_data <- read.csv("data/cubs_all_time.csv")
+
+# Preview the first few rows
+head(cubs_data)
+```
+
+
+You can also read a CSV directly from a URL:
+
+```{r}
+url <- "https://raw.githubusercontent.com/menawhalen/R_short_course_NCSBN/refs/heads/main/data/cubs_all_time.csv"
+cubs_data <- read.csv(url)
+head(cubs_data)
+```
+
+> A common practice is to keep all your raw data in a data/ folder inside your project. This helps keep your project organized and makes it easier to share with others.
+
+## Exercise
+
+1. Load the dataset from the URL
+
+2. Check the structure of the dataset
+
+3. View the first few rows
+
+4. Create a table of the leagues (Lg)
+
+5. Do a summary on BatAge
+
+6. Create a dataframe with only team (Tm), and league (Lg).
+
+7. Create a table from the dataframe in 6.
+
+8. What season played the max number of games?
+
+9. What season had to most losses?
+
+10. Create a new column for percent wins (perc_win) which is the wins (W) over the total games (G)
+
+11. What season had the highest percentage of winning?
+
