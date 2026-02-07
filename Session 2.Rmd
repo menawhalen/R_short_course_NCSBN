@@ -440,7 +440,7 @@ data %>%
 
 We can also change the alignment of the columns.
 
-```{r xtable_caption}
+```{r xtable_align}
 data %>%
   xtable(caption="This is the description for this data table.",
          label = "tbl1",
@@ -451,7 +451,7 @@ data %>%
 
 We can also change the number of significant digits.
 
-```{r xtable_caption}
+```{r xtable_digits}
 data %>%
   xtable(caption="This is the description for this data table.",
          label = "tbl1",
@@ -463,7 +463,7 @@ data %>%
 
 By default, xtable creates a column for the row number.  To remove, simply another line for print and add `include_rownames = FALSE`.
 
-```{r xtable_caption}
+```{r xtable_rownames}
 data %>%
   xtable(caption="This is the description for this data table.",
          label = "tbl1",
