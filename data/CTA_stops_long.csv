@@ -1,0 +1,2719 @@
+stop_id,station_name,line,value
+30082,Cicero,red,FALSE
+30082,Cicero,blue,FALSE
+30082,Cicero,g,FALSE
+30082,Cicero,brn,FALSE
+30082,Cicero,p,FALSE
+30082,Cicero,pexp,FALSE
+30082,Cicero,y,FALSE
+30082,Cicero,pnk,TRUE
+30082,Cicero,o,FALSE
+30151,Central Park,red,FALSE
+30151,Central Park,blue,FALSE
+30151,Central Park,g,FALSE
+30151,Central Park,brn,FALSE
+30151,Central Park,p,FALSE
+30151,Central Park,pexp,FALSE
+30151,Central Park,y,FALSE
+30151,Central Park,pnk,TRUE
+30151,Central Park,o,FALSE
+30184,Halsted,red,FALSE
+30184,Halsted,blue,FALSE
+30184,Halsted,g,TRUE
+30184,Halsted,brn,FALSE
+30184,Halsted,p,FALSE
+30184,Halsted,pexp,FALSE
+30184,Halsted,y,FALSE
+30184,Halsted,pnk,FALSE
+30184,Halsted,o,FALSE
+30044,Cumberland,red,FALSE
+30044,Cumberland,blue,TRUE
+30044,Cumberland,g,FALSE
+30044,Cumberland,brn,FALSE
+30044,Cumberland,p,FALSE
+30044,Cumberland,pexp,FALSE
+30044,Cumberland,y,FALSE
+30044,Cumberland,pnk,FALSE
+30044,Cumberland,o,FALSE
+30092,Racine,red,FALSE
+30092,Racine,blue,TRUE
+30092,Racine,g,FALSE
+30092,Racine,brn,FALSE
+30092,Racine,p,FALSE
+30092,Racine,pexp,FALSE
+30092,Racine,y,FALSE
+30092,Racine,pnk,FALSE
+30092,Racine,o,FALSE
+30253,Paulina,red,FALSE
+30253,Paulina,blue,FALSE
+30253,Paulina,g,FALSE
+30253,Paulina,brn,TRUE
+30253,Paulina,p,FALSE
+30253,Paulina,pexp,FALSE
+30253,Paulina,y,FALSE
+30253,Paulina,pnk,FALSE
+30253,Paulina,o,FALSE
+30162,18th,red,FALSE
+30162,18th,blue,FALSE
+30162,18th,g,FALSE
+30162,18th,brn,FALSE
+30162,18th,p,FALSE
+30162,18th,pexp,FALSE
+30162,18th,y,FALSE
+30162,18th,pnk,TRUE
+30162,18th,o,FALSE
+30374,Clark/Lake,red,FALSE
+30374,Clark/Lake,blue,TRUE
+30374,Clark/Lake,g,FALSE
+30374,Clark/Lake,brn,FALSE
+30374,Clark/Lake,p,FALSE
+30374,Clark/Lake,pexp,FALSE
+30374,Clark/Lake,y,FALSE
+30374,Clark/Lake,pnk,FALSE
+30374,Clark/Lake,o,FALSE
+30248,Jefferson Park,red,FALSE
+30248,Jefferson Park,blue,TRUE
+30248,Jefferson Park,g,FALSE
+30248,Jefferson Park,brn,FALSE
+30248,Jefferson Park,p,FALSE
+30248,Jefferson Park,pexp,FALSE
+30248,Jefferson Park,y,FALSE
+30248,Jefferson Park,pnk,FALSE
+30248,Jefferson Park,o,FALSE
+30104,Diversey,red,FALSE
+30104,Diversey,blue,FALSE
+30104,Diversey,g,FALSE
+30104,Diversey,brn,TRUE
+30104,Diversey,p,FALSE
+30104,Diversey,pexp,TRUE
+30104,Diversey,y,FALSE
+30104,Diversey,pnk,FALSE
+30104,Diversey,o,FALSE
+30287,Montrose,red,FALSE
+30287,Montrose,blue,FALSE
+30287,Montrose,g,FALSE
+30287,Montrose,brn,TRUE
+30287,Montrose,p,FALSE
+30287,Montrose,pexp,FALSE
+30287,Montrose,y,FALSE
+30287,Montrose,pnk,FALSE
+30287,Montrose,o,FALSE
+30068,UIC-Halsted,red,FALSE
+30068,UIC-Halsted,blue,TRUE
+30068,UIC-Halsted,g,FALSE
+30068,UIC-Halsted,brn,FALSE
+30068,UIC-Halsted,p,FALSE
+30068,UIC-Halsted,pexp,FALSE
+30068,UIC-Halsted,y,FALSE
+30068,UIC-Halsted,pnk,FALSE
+30068,UIC-Halsted,o,FALSE
+30214,35th-Bronzeville-IIT,red,FALSE
+30214,35th-Bronzeville-IIT,blue,FALSE
+30214,35th-Bronzeville-IIT,g,TRUE
+30214,35th-Bronzeville-IIT,brn,FALSE
+30214,35th-Bronzeville-IIT,p,FALSE
+30214,35th-Bronzeville-IIT,pexp,FALSE
+30214,35th-Bronzeville-IIT,y,FALSE
+30214,35th-Bronzeville-IIT,pnk,FALSE
+30214,35th-Bronzeville-IIT,o,FALSE
+30102,Foster,red,FALSE
+30102,Foster,blue,FALSE
+30102,Foster,g,FALSE
+30102,Foster,brn,FALSE
+30102,Foster,p,TRUE
+30102,Foster,pexp,TRUE
+30102,Foster,y,FALSE
+30102,Foster,pnk,FALSE
+30102,Foster,o,FALSE
+30008,Quincy/Wells,red,FALSE
+30008,Quincy/Wells,blue,FALSE
+30008,Quincy/Wells,g,FALSE
+30008,Quincy/Wells,brn,TRUE
+30008,Quincy/Wells,p,FALSE
+30008,Quincy/Wells,pexp,FALSE
+30008,Quincy/Wells,y,FALSE
+30008,Quincy/Wells,pnk,FALSE
+30008,Quincy/Wells,o,FALSE
+30070,Southport,red,FALSE
+30070,Southport,blue,FALSE
+30070,Southport,g,FALSE
+30070,Southport,brn,TRUE
+30070,Southport,p,FALSE
+30070,Southport,pexp,FALSE
+30070,Southport,y,FALSE
+30070,Southport,pnk,FALSE
+30070,Southport,o,FALSE
+30252,Loyola,red,TRUE
+30252,Loyola,blue,FALSE
+30252,Loyola,g,FALSE
+30252,Loyola,brn,FALSE
+30252,Loyola,p,FALSE
+30252,Loyola,pexp,FALSE
+30252,Loyola,y,FALSE
+30252,Loyola,pnk,FALSE
+30252,Loyola,o,FALSE
+30237,47th,red,TRUE
+30237,47th,blue,FALSE
+30237,47th,g,FALSE
+30237,47th,brn,FALSE
+30237,47th,p,FALSE
+30237,47th,pexp,FALSE
+30237,47th,y,FALSE
+30237,47th,pnk,FALSE
+30237,47th,o,FALSE
+30267,Bryn Mawr,red,TRUE
+30267,Bryn Mawr,blue,FALSE
+30267,Bryn Mawr,g,FALSE
+30267,Bryn Mawr,brn,FALSE
+30267,Bryn Mawr,p,FALSE
+30267,Bryn Mawr,pexp,FALSE
+30267,Bryn Mawr,y,FALSE
+30267,Bryn Mawr,pnk,FALSE
+30267,Bryn Mawr,o,FALSE
+30190,Harlem,red,FALSE
+30190,Harlem,blue,TRUE
+30190,Harlem,g,FALSE
+30190,Harlem,brn,FALSE
+30190,Harlem,p,FALSE
+30190,Harlem,pexp,FALSE
+30190,Harlem,y,FALSE
+30190,Harlem,pnk,FALSE
+30190,Harlem,o,FALSE
+30173,Howard,red,TRUE
+30173,Howard,blue,FALSE
+30173,Howard,g,FALSE
+30173,Howard,brn,FALSE
+30173,Howard,p,FALSE
+30173,Howard,pexp,FALSE
+30173,Howard,y,FALSE
+30173,Howard,pnk,FALSE
+30173,Howard,o,FALSE
+30207,Kedzie,red,FALSE
+30207,Kedzie,blue,FALSE
+30207,Kedzie,g,TRUE
+30207,Kedzie,brn,FALSE
+30207,Kedzie,p,FALSE
+30207,Kedzie,pexp,FALSE
+30207,Kedzie,y,FALSE
+30207,Kedzie,pnk,FALSE
+30207,Kedzie,o,FALSE
+30218,King Drive,red,FALSE
+30218,King Drive,blue,FALSE
+30218,King Drive,g,TRUE
+30218,King Drive,brn,FALSE
+30218,King Drive,p,FALSE
+30218,King Drive,pexp,FALSE
+30218,King Drive,y,FALSE
+30218,King Drive,pnk,FALSE
+30218,King Drive,o,FALSE
+30057,Ashland/63rd,red,FALSE
+30057,Ashland/63rd,blue,FALSE
+30057,Ashland/63rd,g,TRUE
+30057,Ashland/63rd,brn,FALSE
+30057,Ashland/63rd,p,FALSE
+30057,Ashland/63rd,pexp,FALSE
+30057,Ashland/63rd,y,FALSE
+30057,Ashland/63rd,pnk,FALSE
+30057,Ashland/63rd,o,FALSE
+30088,95th/Dan Ryan,red,TRUE
+30088,95th/Dan Ryan,blue,FALSE
+30088,95th/Dan Ryan,g,FALSE
+30088,95th/Dan Ryan,brn,FALSE
+30088,95th/Dan Ryan,p,FALSE
+30088,95th/Dan Ryan,pexp,FALSE
+30088,95th/Dan Ryan,y,FALSE
+30088,95th/Dan Ryan,pnk,FALSE
+30088,95th/Dan Ryan,o,FALSE
+30129,Western,red,FALSE
+30129,Western,blue,TRUE
+30129,Western,g,FALSE
+30129,Western,brn,FALSE
+30129,Western,p,FALSE
+30129,Western,pexp,FALSE
+30129,Western,y,FALSE
+30129,Western,pnk,FALSE
+30129,Western,o,FALSE
+30128,Armitage,red,FALSE
+30128,Armitage,blue,FALSE
+30128,Armitage,g,FALSE
+30128,Armitage,brn,TRUE
+30128,Armitage,p,FALSE
+30128,Armitage,pexp,TRUE
+30128,Armitage,y,FALSE
+30128,Armitage,pnk,FALSE
+30128,Armitage,o,FALSE
+30089,95th/Dan Ryan,red,TRUE
+30089,95th/Dan Ryan,blue,FALSE
+30089,95th/Dan Ryan,g,FALSE
+30089,95th/Dan Ryan,brn,FALSE
+30089,95th/Dan Ryan,p,FALSE
+30089,95th/Dan Ryan,pexp,FALSE
+30089,95th/Dan Ryan,y,FALSE
+30089,95th/Dan Ryan,pnk,FALSE
+30089,95th/Dan Ryan,o,FALSE
+30269,Roosevelt,red,TRUE
+30269,Roosevelt,blue,FALSE
+30269,Roosevelt,g,FALSE
+30269,Roosevelt,brn,FALSE
+30269,Roosevelt,p,FALSE
+30269,Roosevelt,pexp,FALSE
+30269,Roosevelt,y,FALSE
+30269,Roosevelt,pnk,FALSE
+30269,Roosevelt,o,FALSE
+30256,Belmont,red,TRUE
+30256,Belmont,blue,FALSE
+30256,Belmont,g,FALSE
+30256,Belmont,brn,FALSE
+30256,Belmont,p,FALSE
+30256,Belmont,pexp,FALSE
+30256,Belmont,y,FALSE
+30256,Belmont,pnk,FALSE
+30256,Belmont,o,FALSE
+30114,54th/Cermak,red,FALSE
+30114,54th/Cermak,blue,FALSE
+30114,54th/Cermak,g,FALSE
+30114,54th/Cermak,brn,FALSE
+30114,54th/Cermak,p,FALSE
+30114,54th/Cermak,pexp,FALSE
+30114,54th/Cermak,y,FALSE
+30114,54th/Cermak,pnk,TRUE
+30114,54th/Cermak,o,FALSE
+30217,King Drive,red,FALSE
+30217,King Drive,blue,FALSE
+30217,King Drive,g,TRUE
+30217,King Drive,brn,FALSE
+30217,King Drive,p,FALSE
+30217,King Drive,pexp,FALSE
+30217,King Drive,y,FALSE
+30217,King Drive,pnk,FALSE
+30217,King Drive,o,FALSE
+30134,Dempster,red,FALSE
+30134,Dempster,blue,FALSE
+30134,Dempster,g,FALSE
+30134,Dempster,brn,FALSE
+30134,Dempster,p,TRUE
+30134,Dempster,pexp,TRUE
+30134,Dempster,y,FALSE
+30134,Dempster,pnk,FALSE
+30134,Dempster,o,FALSE
+30236,Fullerton,red,FALSE
+30236,Fullerton,blue,FALSE
+30236,Fullerton,g,FALSE
+30236,Fullerton,brn,TRUE
+30236,Fullerton,p,FALSE
+30236,Fullerton,pexp,TRUE
+30236,Fullerton,y,FALSE
+30236,Fullerton,pnk,FALSE
+30236,Fullerton,o,FALSE
+30149,Lawrence,red,TRUE
+30149,Lawrence,blue,FALSE
+30149,Lawrence,g,FALSE
+30149,Lawrence,brn,FALSE
+30149,Lawrence,p,FALSE
+30149,Lawrence,pexp,FALSE
+30149,Lawrence,y,FALSE
+30149,Lawrence,pnk,FALSE
+30149,Lawrence,o,FALSE
+30158,Illinois Medical District,red,FALSE
+30158,Illinois Medical District,blue,TRUE
+30158,Illinois Medical District,g,FALSE
+30158,Illinois Medical District,brn,FALSE
+30158,Illinois Medical District,p,FALSE
+30158,Illinois Medical District,pexp,FALSE
+30158,Illinois Medical District,y,FALSE
+30158,Illinois Medical District,pnk,FALSE
+30158,Illinois Medical District,o,FALSE
+30290,Lake,red,TRUE
+30290,Lake,blue,FALSE
+30290,Lake,g,FALSE
+30290,Lake,brn,FALSE
+30290,Lake,p,FALSE
+30290,Lake,pexp,FALSE
+30290,Lake,y,FALSE
+30290,Lake,pnk,FALSE
+30290,Lake,o,FALSE
+30047,79th,red,TRUE
+30047,79th,blue,FALSE
+30047,79th,g,FALSE
+30047,79th,brn,FALSE
+30047,79th,p,FALSE
+30047,79th,pexp,FALSE
+30047,79th,y,FALSE
+30047,79th,pnk,FALSE
+30047,79th,o,FALSE
+30243,Austin,red,FALSE
+30243,Austin,blue,FALSE
+30243,Austin,g,TRUE
+30243,Austin,brn,FALSE
+30243,Austin,p,FALSE
+30243,Austin,pexp,FALSE
+30243,Austin,y,FALSE
+30243,Austin,pnk,FALSE
+30243,Austin,o,FALSE
+30084,Clinton,red,FALSE
+30084,Clinton,blue,TRUE
+30084,Clinton,g,FALSE
+30084,Clinton,brn,FALSE
+30084,Clinton,p,FALSE
+30084,Clinton,pexp,FALSE
+30084,Clinton,y,FALSE
+30084,Clinton,pnk,FALSE
+30084,Clinton,o,FALSE
+30231,Wellington,red,FALSE
+30231,Wellington,blue,FALSE
+30231,Wellington,g,FALSE
+30231,Wellington,brn,TRUE
+30231,Wellington,p,FALSE
+30231,Wellington,pexp,TRUE
+30231,Wellington,y,FALSE
+30231,Wellington,pnk,FALSE
+30231,Wellington,o,FALSE
+30175,Howard,red,FALSE
+30175,Howard,blue,FALSE
+30175,Howard,g,FALSE
+30175,Howard,brn,FALSE
+30175,Howard,p,TRUE
+30175,Howard,pexp,TRUE
+30175,Howard,y,TRUE
+30175,Howard,pnk,FALSE
+30175,Howard,o,FALSE
+30263,Oak Park,red,FALSE
+30263,Oak Park,blue,FALSE
+30263,Oak Park,g,TRUE
+30263,Oak Park,brn,FALSE
+30263,Oak Park,p,FALSE
+30263,Oak Park,pexp,FALSE
+30263,Oak Park,y,FALSE
+30263,Oak Park,pnk,FALSE
+30263,Oak Park,o,FALSE
+30130,Western,red,FALSE
+30130,Western,blue,TRUE
+30130,Western,g,FALSE
+30130,Western,brn,FALSE
+30130,Western,p,FALSE
+30130,Western,pexp,FALSE
+30130,Western,y,FALSE
+30130,Western,pnk,FALSE
+30130,Western,o,FALSE
+30268,Bryn Mawr,red,TRUE
+30268,Bryn Mawr,blue,FALSE
+30268,Bryn Mawr,g,FALSE
+30268,Bryn Mawr,brn,FALSE
+30268,Bryn Mawr,p,FALSE
+30268,Bryn Mawr,pexp,FALSE
+30268,Bryn Mawr,y,FALSE
+30268,Bryn Mawr,pnk,FALSE
+30268,Bryn Mawr,o,FALSE
+30279,Chicago,red,TRUE
+30279,Chicago,blue,FALSE
+30279,Chicago,g,FALSE
+30279,Chicago,brn,FALSE
+30279,Chicago,p,FALSE
+30279,Chicago,pexp,FALSE
+30279,Chicago,y,FALSE
+30279,Chicago,pnk,FALSE
+30279,Chicago,o,FALSE
+30155,Sedgwick,red,FALSE
+30155,Sedgwick,blue,FALSE
+30155,Sedgwick,g,FALSE
+30155,Sedgwick,brn,TRUE
+30155,Sedgwick,p,FALSE
+30155,Sedgwick,pexp,TRUE
+30155,Sedgwick,y,FALSE
+30155,Sedgwick,pnk,FALSE
+30155,Sedgwick,o,FALSE
+30239,Addison,red,FALSE
+30239,Addison,blue,TRUE
+30239,Addison,g,FALSE
+30239,Addison,brn,FALSE
+30239,Addison,p,FALSE
+30239,Addison,pexp,FALSE
+30239,Addison,y,FALSE
+30239,Addison,pnk,FALSE
+30239,Addison,o,FALSE
+30288,Montrose,red,FALSE
+30288,Montrose,blue,FALSE
+30288,Montrose,g,FALSE
+30288,Montrose,brn,TRUE
+30288,Montrose,p,FALSE
+30288,Montrose,pexp,FALSE
+30288,Montrose,y,FALSE
+30288,Montrose,pnk,FALSE
+30288,Montrose,o,FALSE
+30015,Jackson,red,FALSE
+30015,Jackson,blue,TRUE
+30015,Jackson,g,FALSE
+30015,Jackson,brn,FALSE
+30015,Jackson,p,FALSE
+30015,Jackson,pexp,FALSE
+30015,Jackson,y,FALSE
+30015,Jackson,pnk,FALSE
+30015,Jackson,o,FALSE
+30202,Kedzie,red,FALSE
+30202,Kedzie,blue,FALSE
+30202,Kedzie,g,FALSE
+30202,Kedzie,brn,FALSE
+30202,Kedzie,p,FALSE
+30202,Kedzie,pexp,FALSE
+30202,Kedzie,y,FALSE
+30202,Kedzie,pnk,TRUE
+30202,Kedzie,o,FALSE
+30154,Monroe,red,FALSE
+30154,Monroe,blue,TRUE
+30154,Monroe,g,FALSE
+30154,Monroe,brn,FALSE
+30154,Monroe,p,FALSE
+30154,Monroe,pexp,FALSE
+30154,Monroe,y,FALSE
+30154,Monroe,pnk,FALSE
+30154,Monroe,o,FALSE
+30195,Rockwell,red,FALSE
+30195,Rockwell,blue,FALSE
+30195,Rockwell,g,FALSE
+30195,Rockwell,brn,TRUE
+30195,Rockwell,p,FALSE
+30195,Rockwell,pexp,FALSE
+30195,Rockwell,y,FALSE
+30195,Rockwell,pnk,FALSE
+30195,Rockwell,o,FALSE
+30041,Damen,red,FALSE
+30041,Damen,blue,FALSE
+30041,Damen,g,FALSE
+30041,Damen,brn,FALSE
+30041,Damen,p,FALSE
+30041,Damen,pexp,FALSE
+30041,Damen,y,FALSE
+30041,Damen,pnk,TRUE
+30041,Damen,o,FALSE
+30180,Pulaski,red,FALSE
+30180,Pulaski,blue,TRUE
+30180,Pulaski,g,FALSE
+30180,Pulaski,brn,FALSE
+30180,Pulaski,p,FALSE
+30180,Pulaski,pexp,FALSE
+30180,Pulaski,y,FALSE
+30180,Pulaski,pnk,FALSE
+30180,Pulaski,o,FALSE
+30101,Foster,red,FALSE
+30101,Foster,blue,FALSE
+30101,Foster,g,FALSE
+30101,Foster,brn,FALSE
+30101,Foster,p,TRUE
+30101,Foster,pexp,TRUE
+30101,Foster,y,FALSE
+30101,Foster,pnk,FALSE
+30101,Foster,o,FALSE
+30004,Harlem/Lake,red,FALSE
+30004,Harlem/Lake,blue,FALSE
+30004,Harlem/Lake,g,TRUE
+30004,Harlem/Lake,brn,FALSE
+30004,Harlem/Lake,p,FALSE
+30004,Harlem/Lake,pexp,FALSE
+30004,Harlem/Lake,y,FALSE
+30004,Harlem/Lake,pnk,FALSE
+30004,Harlem/Lake,o,FALSE
+30384,Washington/Wabash,red,FALSE
+30384,Washington/Wabash,blue,FALSE
+30384,Washington/Wabash,g,TRUE
+30384,Washington/Wabash,brn,FALSE
+30384,Washington/Wabash,p,FALSE
+30384,Washington/Wabash,pexp,TRUE
+30384,Washington/Wabash,y,FALSE
+30384,Washington/Wabash,pnk,TRUE
+30384,Washington/Wabash,o,TRUE
+30266,California,red,FALSE
+30266,California,blue,FALSE
+30266,California,g,TRUE
+30266,California,brn,FALSE
+30266,California,p,FALSE
+30266,California,pexp,FALSE
+30266,California,y,FALSE
+30266,California,pnk,FALSE
+30266,California,o,FALSE
+30021,Morse,red,TRUE
+30021,Morse,blue,FALSE
+30021,Morse,g,FALSE
+30021,Morse,brn,FALSE
+30021,Morse,p,FALSE
+30021,Morse,pexp,FALSE
+30021,Morse,y,FALSE
+30021,Morse,pnk,FALSE
+30021,Morse,o,FALSE
+30060,Western,red,FALSE
+30060,Western,blue,FALSE
+30060,Western,g,FALSE
+30060,Western,brn,FALSE
+30060,Western,p,FALSE
+30060,Western,pexp,FALSE
+30060,Western,y,FALSE
+30060,Western,pnk,FALSE
+30060,Western,o,TRUE
+30096,Grand,red,FALSE
+30096,Grand,blue,TRUE
+30096,Grand,g,FALSE
+30096,Grand,brn,FALSE
+30096,Grand,p,FALSE
+30096,Grand,pexp,FALSE
+30096,Grand,y,FALSE
+30096,Grand,pnk,FALSE
+30096,Grand,o,FALSE
+30375,Clark/Lake,red,FALSE
+30375,Clark/Lake,blue,TRUE
+30375,Clark/Lake,g,FALSE
+30375,Clark/Lake,brn,FALSE
+30375,Clark/Lake,p,FALSE
+30375,Clark/Lake,pexp,FALSE
+30375,Clark/Lake,y,FALSE
+30375,Clark/Lake,pnk,FALSE
+30375,Clark/Lake,o,FALSE
+30095,Grand,red,FALSE
+30095,Grand,blue,TRUE
+30095,Grand,g,FALSE
+30095,Grand,brn,FALSE
+30095,Grand,p,FALSE
+30095,Grand,pexp,FALSE
+30095,Grand,y,FALSE
+30095,Grand,pnk,FALSE
+30095,Grand,o,FALSE
+30062,Division,red,FALSE
+30062,Division,blue,TRUE
+30062,Division,g,FALSE
+30062,Division,brn,FALSE
+30062,Division,p,FALSE
+30062,Division,pexp,FALSE
+30062,Division,y,FALSE
+30062,Division,pnk,FALSE
+30062,Division,o,FALSE
+30185,Pulaski,red,FALSE
+30185,Pulaski,blue,FALSE
+30185,Pulaski,g,FALSE
+30185,Pulaski,brn,FALSE
+30185,Pulaski,p,FALSE
+30185,Pulaski,pexp,FALSE
+30185,Pulaski,y,FALSE
+30185,Pulaski,pnk,FALSE
+30185,Pulaski,o,TRUE
+30161,18th,red,FALSE
+30161,18th,blue,FALSE
+30161,18th,g,FALSE
+30161,18th,brn,FALSE
+30161,18th,p,FALSE
+30161,18th,pexp,FALSE
+30161,18th,y,FALSE
+30161,18th,pnk,TRUE
+30161,18th,o,FALSE
+30293,Sheridan,red,FALSE
+30293,Sheridan,blue,FALSE
+30293,Sheridan,g,FALSE
+30293,Sheridan,brn,FALSE
+30293,Sheridan,p,FALSE
+30293,Sheridan,pexp,FALSE
+30293,Sheridan,y,FALSE
+30293,Sheridan,pnk,FALSE
+30293,Sheridan,o,FALSE
+30272,Chicago,red,FALSE
+30272,Chicago,blue,TRUE
+30272,Chicago,g,FALSE
+30272,Chicago,brn,FALSE
+30272,Chicago,p,FALSE
+30272,Chicago,pexp,FALSE
+30272,Chicago,y,FALSE
+30272,Chicago,pnk,FALSE
+30272,Chicago,o,FALSE
+30090,Merchandise Mart,red,FALSE
+30090,Merchandise Mart,blue,FALSE
+30090,Merchandise Mart,g,FALSE
+30090,Merchandise Mart,brn,TRUE
+30090,Merchandise Mart,p,FALSE
+30090,Merchandise Mart,pexp,TRUE
+30090,Merchandise Mart,y,FALSE
+30090,Merchandise Mart,pnk,FALSE
+30090,Merchandise Mart,o,FALSE
+30061,Western,red,FALSE
+30061,Western,blue,FALSE
+30061,Western,g,FALSE
+30061,Western,brn,FALSE
+30061,Western,p,FALSE
+30061,Western,pexp,FALSE
+30061,Western,y,FALSE
+30061,Western,pnk,FALSE
+30061,Western,o,TRUE
+30171,O'Hare,red,FALSE
+30171,O'Hare,blue,TRUE
+30171,O'Hare,g,FALSE
+30171,O'Hare,brn,FALSE
+30171,O'Hare,p,FALSE
+30171,O'Hare,pexp,FALSE
+30171,O'Hare,y,FALSE
+30171,O'Hare,pnk,FALSE
+30171,O'Hare,o,FALSE
+30245,43rd,red,FALSE
+30245,43rd,blue,FALSE
+30245,43rd,g,TRUE
+30245,43rd,brn,FALSE
+30245,43rd,p,FALSE
+30245,43rd,pexp,FALSE
+30245,43rd,y,FALSE
+30245,43rd,pnk,FALSE
+30245,43rd,o,FALSE
+30093,Racine,red,FALSE
+30093,Racine,blue,TRUE
+30093,Racine,g,FALSE
+30093,Racine,brn,FALSE
+30093,Racine,p,FALSE
+30093,Racine,pexp,FALSE
+30093,Racine,y,FALSE
+30093,Racine,pnk,FALSE
+30093,Racine,o,FALSE
+30265,California,red,FALSE
+30265,California,blue,FALSE
+30265,California,g,TRUE
+30265,California,brn,FALSE
+30265,California,p,FALSE
+30265,California,pexp,FALSE
+30265,California,y,FALSE
+30265,California,pnk,FALSE
+30265,California,o,FALSE
+30063,Division,red,FALSE
+30063,Division,blue,TRUE
+30063,Division,g,FALSE
+30063,Division,brn,FALSE
+30063,Division,p,FALSE
+30063,Division,pexp,FALSE
+30063,Division,y,FALSE
+30063,Division,pnk,FALSE
+30063,Division,o,FALSE
+30036,Sox-35th,red,TRUE
+30036,Sox-35th,blue,FALSE
+30036,Sox-35th,g,FALSE
+30036,Sox-35th,brn,FALSE
+30036,Sox-35th,p,FALSE
+30036,Sox-35th,pexp,FALSE
+30036,Sox-35th,y,FALSE
+30036,Sox-35th,pnk,FALSE
+30036,Sox-35th,o,FALSE
+30083,Cicero,red,FALSE
+30083,Cicero,blue,FALSE
+30083,Cicero,g,FALSE
+30083,Cicero,brn,FALSE
+30083,Cicero,p,FALSE
+30083,Cicero,pexp,FALSE
+30083,Cicero,y,FALSE
+30083,Cicero,pnk,TRUE
+30083,Cicero,o,FALSE
+30198,Logan Square,red,FALSE
+30198,Logan Square,blue,TRUE
+30198,Logan Square,g,FALSE
+30198,Logan Square,brn,FALSE
+30198,Logan Square,p,FALSE
+30198,Logan Square,pexp,FALSE
+30198,Logan Square,y,FALSE
+30198,Logan Square,pnk,FALSE
+30198,Logan Square,o,FALSE
+30020,Morse,red,TRUE
+30020,Morse,blue,FALSE
+30020,Morse,g,FALSE
+30020,Morse,brn,FALSE
+30020,Morse,p,FALSE
+30020,Morse,pexp,FALSE
+30020,Morse,y,FALSE
+30020,Morse,pnk,FALSE
+30020,Morse,o,FALSE
+30115,Damen,red,FALSE
+30115,Damen,blue,TRUE
+30115,Damen,g,FALSE
+30115,Damen,brn,FALSE
+30115,Damen,p,FALSE
+30115,Damen,pexp,FALSE
+30115,Damen,y,FALSE
+30115,Damen,pnk,FALSE
+30115,Damen,o,FALSE
+30156,Sedgwick,red,FALSE
+30156,Sedgwick,blue,FALSE
+30156,Sedgwick,g,FALSE
+30156,Sedgwick,brn,TRUE
+30156,Sedgwick,p,FALSE
+30156,Sedgwick,pexp,TRUE
+30156,Sedgwick,y,FALSE
+30156,Sedgwick,pnk,FALSE
+30156,Sedgwick,o,FALSE
+30240,Addison,red,FALSE
+30240,Addison,blue,TRUE
+30240,Addison,g,FALSE
+30240,Addison,brn,FALSE
+30240,Addison,p,FALSE
+30240,Addison,pexp,FALSE
+30240,Addison,y,FALSE
+30240,Addison,pnk,FALSE
+30240,Addison,o,FALSE
+30032,Ashland,red,FALSE
+30032,Ashland,blue,FALSE
+30032,Ashland,g,TRUE
+30032,Ashland,brn,FALSE
+30032,Ashland,p,FALSE
+30032,Ashland,pexp,FALSE
+30032,Ashland,y,FALSE
+30032,Ashland,pnk,TRUE
+30032,Ashland,o,FALSE
+30108,Irving Park,red,FALSE
+30108,Irving Park,blue,TRUE
+30108,Irving Park,g,FALSE
+30108,Irving Park,brn,FALSE
+30108,Irving Park,p,FALSE
+30108,Irving Park,pexp,FALSE
+30108,Irving Park,y,FALSE
+30108,Irving Park,pnk,FALSE
+30108,Irving Park,o,FALSE
+30386,Wilson,red,FALSE
+30386,Wilson,blue,FALSE
+30386,Wilson,g,FALSE
+30386,Wilson,brn,FALSE
+30386,Wilson,p,FALSE
+30386,Wilson,pexp,TRUE
+30386,Wilson,y,FALSE
+30386,Wilson,pnk,FALSE
+30386,Wilson,o,FALSE
+30193,Cermak-Chinatown,red,TRUE
+30193,Cermak-Chinatown,blue,FALSE
+30193,Cermak-Chinatown,g,FALSE
+30193,Cermak-Chinatown,brn,FALSE
+30193,Cermak-Chinatown,p,FALSE
+30193,Cermak-Chinatown,pexp,FALSE
+30193,Cermak-Chinatown,y,FALSE
+30193,Cermak-Chinatown,pnk,FALSE
+30193,Cermak-Chinatown,o,FALSE
+30262,LaSalle,red,FALSE
+30262,LaSalle,blue,TRUE
+30262,LaSalle,g,FALSE
+30262,LaSalle,brn,FALSE
+30262,LaSalle,p,FALSE
+30262,LaSalle,pexp,FALSE
+30262,LaSalle,y,FALSE
+30262,LaSalle,pnk,FALSE
+30262,LaSalle,o,FALSE
+30169,Thorndale,red,TRUE
+30169,Thorndale,blue,FALSE
+30169,Thorndale,g,FALSE
+30169,Thorndale,brn,FALSE
+30169,Thorndale,p,FALSE
+30169,Thorndale,pexp,FALSE
+30169,Thorndale,y,FALSE
+30169,Thorndale,pnk,FALSE
+30169,Thorndale,o,FALSE
+30046,79th,red,TRUE
+30046,79th,blue,FALSE
+30046,79th,g,FALSE
+30046,79th,brn,FALSE
+30046,79th,p,FALSE
+30046,79th,pexp,FALSE
+30046,79th,y,FALSE
+30046,79th,pnk,FALSE
+30046,79th,o,FALSE
+30147,Granville,red,TRUE
+30147,Granville,blue,FALSE
+30147,Granville,g,FALSE
+30147,Granville,brn,FALSE
+30147,Granville,p,FALSE
+30147,Granville,pexp,FALSE
+30147,Granville,y,FALSE
+30147,Granville,pnk,FALSE
+30147,Granville,o,FALSE
+30014,Jackson,red,FALSE
+30014,Jackson,blue,TRUE
+30014,Jackson,g,FALSE
+30014,Jackson,brn,FALSE
+30014,Jackson,p,FALSE
+30014,Jackson,pexp,FALSE
+30014,Jackson,y,FALSE
+30014,Jackson,pnk,FALSE
+30014,Jackson,o,FALSE
+30274,Addison,red,TRUE
+30274,Addison,blue,FALSE
+30274,Addison,g,FALSE
+30274,Addison,brn,FALSE
+30274,Addison,p,FALSE
+30274,Addison,pexp,FALSE
+30274,Addison,y,FALSE
+30274,Addison,pnk,FALSE
+30274,Addison,o,FALSE
+30085,Clinton,red,FALSE
+30085,Clinton,blue,TRUE
+30085,Clinton,g,FALSE
+30085,Clinton,brn,FALSE
+30085,Clinton,p,FALSE
+30085,Clinton,pexp,FALSE
+30085,Clinton,y,FALSE
+30085,Clinton,pnk,FALSE
+30085,Clinton,o,FALSE
+30264,Oak Park,red,FALSE
+30264,Oak Park,blue,FALSE
+30264,Oak Park,g,TRUE
+30264,Oak Park,brn,FALSE
+30264,Oak Park,p,FALSE
+30264,Oak Park,pexp,FALSE
+30264,Oak Park,y,FALSE
+30264,Oak Park,pnk,FALSE
+30264,Oak Park,o,FALSE
+30196,Rockwell,red,FALSE
+30196,Rockwell,blue,FALSE
+30196,Rockwell,g,FALSE
+30196,Rockwell,brn,TRUE
+30196,Rockwell,p,FALSE
+30196,Rockwell,pexp,FALSE
+30196,Rockwell,y,FALSE
+30196,Rockwell,pnk,FALSE
+30196,Rockwell,o,FALSE
+30150,Lawrence,red,TRUE
+30150,Lawrence,blue,FALSE
+30150,Lawrence,g,FALSE
+30150,Lawrence,brn,FALSE
+30150,Lawrence,p,FALSE
+30150,Lawrence,pexp,FALSE
+30150,Lawrence,y,FALSE
+30150,Lawrence,pnk,FALSE
+30150,Lawrence,o,FALSE
+30054,Central,red,FALSE
+30054,Central,blue,FALSE
+30054,Central,g,TRUE
+30054,Central,brn,FALSE
+30054,Central,p,FALSE
+30054,Central,pexp,FALSE
+30054,Central,y,FALSE
+30054,Central,pnk,FALSE
+30054,Central,o,FALSE
+30292,Conservatory,red,FALSE
+30292,Conservatory,blue,FALSE
+30292,Conservatory,g,TRUE
+30292,Conservatory,brn,FALSE
+30292,Conservatory,p,FALSE
+30292,Conservatory,pexp,FALSE
+30292,Conservatory,y,FALSE
+30292,Conservatory,pnk,FALSE
+30292,Conservatory,o,FALSE
+30232,Wellington,red,FALSE
+30232,Wellington,blue,FALSE
+30232,Wellington,g,FALSE
+30232,Wellington,brn,TRUE
+30232,Wellington,p,FALSE
+30232,Wellington,pexp,TRUE
+30232,Wellington,y,FALSE
+30232,Wellington,pnk,FALSE
+30232,Wellington,o,FALSE
+30078,Noyes,red,FALSE
+30078,Noyes,blue,FALSE
+30078,Noyes,g,FALSE
+30078,Noyes,brn,FALSE
+30078,Noyes,p,TRUE
+30078,Noyes,pexp,TRUE
+30078,Noyes,y,FALSE
+30078,Noyes,pnk,FALSE
+30078,Noyes,o,FALSE
+30157,Illinois Medical District,red,FALSE
+30157,Illinois Medical District,blue,TRUE
+30157,Illinois Medical District,g,FALSE
+30157,Illinois Medical District,brn,FALSE
+30157,Illinois Medical District,p,FALSE
+30157,Illinois Medical District,pexp,FALSE
+30157,Illinois Medical District,y,FALSE
+30157,Illinois Medical District,pnk,FALSE
+30157,Illinois Medical District,o,FALSE
+30209,47th,red,FALSE
+30209,47th,blue,FALSE
+30209,47th,g,TRUE
+30209,47th,brn,FALSE
+30209,47th,p,FALSE
+30209,47th,pexp,FALSE
+30209,47th,y,FALSE
+30209,47th,pnk,FALSE
+30209,47th,o,FALSE
+30289,Lake,red,TRUE
+30289,Lake,blue,FALSE
+30289,Lake,g,FALSE
+30289,Lake,brn,FALSE
+30289,Lake,p,FALSE
+30289,Lake,pexp,FALSE
+30289,Lake,y,FALSE
+30289,Lake,pnk,FALSE
+30289,Lake,o,FALSE
+30257,Belmont,red,FALSE
+30257,Belmont,blue,FALSE
+30257,Belmont,g,FALSE
+30257,Belmont,brn,TRUE
+30257,Belmont,p,FALSE
+30257,Belmont,pexp,TRUE
+30257,Belmont,y,FALSE
+30257,Belmont,pnk,FALSE
+30257,Belmont,o,FALSE
+30228,Jarvis,red,TRUE
+30228,Jarvis,blue,FALSE
+30228,Jarvis,g,FALSE
+30228,Jarvis,brn,FALSE
+30228,Jarvis,p,FALSE
+30228,Jarvis,pexp,FALSE
+30228,Jarvis,y,FALSE
+30228,Jarvis,pnk,FALSE
+30228,Jarvis,o,FALSE
+30216,Halsted,red,FALSE
+30216,Halsted,blue,FALSE
+30216,Halsted,g,FALSE
+30216,Halsted,brn,FALSE
+30216,Halsted,p,FALSE
+30216,Halsted,pexp,FALSE
+30216,Halsted,y,FALSE
+30216,Halsted,pnk,FALSE
+30216,Halsted,o,TRUE
+30011,Davis,red,FALSE
+30011,Davis,blue,FALSE
+30011,Davis,g,FALSE
+30011,Davis,brn,FALSE
+30011,Davis,p,TRUE
+30011,Davis,pexp,TRUE
+30011,Davis,y,FALSE
+30011,Davis,pnk,FALSE
+30011,Davis,o,FALSE
+30270,Roosevelt,red,TRUE
+30270,Roosevelt,blue,FALSE
+30270,Roosevelt,g,FALSE
+30270,Roosevelt,brn,FALSE
+30270,Roosevelt,p,FALSE
+30270,Roosevelt,pexp,FALSE
+30270,Roosevelt,y,FALSE
+30270,Roosevelt,pnk,FALSE
+30270,Roosevelt,o,FALSE
+30233,Fullerton,red,TRUE
+30233,Fullerton,blue,FALSE
+30233,Fullerton,g,FALSE
+30233,Fullerton,brn,FALSE
+30233,Fullerton,p,FALSE
+30233,Fullerton,pexp,FALSE
+30233,Fullerton,y,FALSE
+30233,Fullerton,pnk,FALSE
+30233,Fullerton,o,FALSE
+30079,Noyes,red,FALSE
+30079,Noyes,blue,FALSE
+30079,Noyes,g,FALSE
+30079,Noyes,brn,FALSE
+30079,Noyes,p,TRUE
+30079,Noyes,pexp,TRUE
+30079,Noyes,y,FALSE
+30079,Noyes,pnk,FALSE
+30079,Noyes,o,FALSE
+30137,Chicago,red,FALSE
+30137,Chicago,blue,FALSE
+30137,Chicago,g,FALSE
+30137,Chicago,brn,TRUE
+30137,Chicago,p,FALSE
+30137,Chicago,pexp,TRUE
+30137,Chicago,y,FALSE
+30137,Chicago,pnk,FALSE
+30137,Chicago,o,FALSE
+30261,LaSalle,red,FALSE
+30261,LaSalle,blue,TRUE
+30261,LaSalle,g,FALSE
+30261,LaSalle,brn,FALSE
+30261,LaSalle,p,FALSE
+30261,LaSalle,pexp,FALSE
+30261,LaSalle,y,FALSE
+30261,LaSalle,pnk,FALSE
+30261,LaSalle,o,FALSE
+30211,Monroe,red,TRUE
+30211,Monroe,blue,FALSE
+30211,Monroe,g,FALSE
+30211,Monroe,brn,FALSE
+30211,Monroe,p,FALSE
+30211,Monroe,pexp,FALSE
+30211,Monroe,y,FALSE
+30211,Monroe,pnk,FALSE
+30211,Monroe,o,FALSE
+30291,Conservatory,red,FALSE
+30291,Conservatory,blue,FALSE
+30291,Conservatory,g,TRUE
+30291,Conservatory,brn,FALSE
+30291,Conservatory,p,FALSE
+30291,Conservatory,pexp,FALSE
+30291,Conservatory,y,FALSE
+30291,Conservatory,pnk,FALSE
+30291,Conservatory,o,FALSE
+30225,Kedzie,red,FALSE
+30225,Kedzie,blue,FALSE
+30225,Kedzie,g,FALSE
+30225,Kedzie,brn,TRUE
+30225,Kedzie,p,FALSE
+30225,Kedzie,pexp,FALSE
+30225,Kedzie,y,FALSE
+30225,Kedzie,pnk,FALSE
+30225,Kedzie,o,FALSE
+30024,51st,red,FALSE
+30024,51st,blue,FALSE
+30024,51st,g,TRUE
+30024,51st,brn,FALSE
+30024,51st,p,FALSE
+30024,51st,pexp,FALSE
+30024,51st,y,FALSE
+30024,51st,pnk,FALSE
+30024,51st,o,FALSE
+30099,Garfield,red,FALSE
+30099,Garfield,blue,FALSE
+30099,Garfield,g,TRUE
+30099,Garfield,brn,FALSE
+30099,Garfield,p,FALSE
+30099,Garfield,pexp,FALSE
+30099,Garfield,y,FALSE
+30099,Garfield,pnk,FALSE
+30099,Garfield,o,FALSE
+30206,Ashland,red,FALSE
+30206,Ashland,blue,FALSE
+30206,Ashland,g,FALSE
+30206,Ashland,brn,FALSE
+30206,Ashland,p,FALSE
+30206,Ashland,pexp,FALSE
+30206,Ashland,y,FALSE
+30206,Ashland,pnk,FALSE
+30206,Ashland,o,TRUE
+30064,Grand,red,TRUE
+30064,Grand,blue,FALSE
+30064,Grand,g,FALSE
+30064,Grand,brn,FALSE
+30064,Grand,p,FALSE
+30064,Grand,pexp,FALSE
+30064,Grand,y,FALSE
+30064,Grand,pnk,FALSE
+30064,Grand,o,FALSE
+30381,Cermak-McCormick Place,red,FALSE
+30381,Cermak-McCormick Place,blue,FALSE
+30381,Cermak-McCormick Place,g,TRUE
+30381,Cermak-McCormick Place,brn,FALSE
+30381,Cermak-McCormick Place,p,FALSE
+30381,Cermak-McCormick Place,pexp,FALSE
+30381,Cermak-McCormick Place,y,FALSE
+30381,Cermak-McCormick Place,pnk,FALSE
+30381,Cermak-McCormick Place,o,FALSE
+30100,Garfield,red,FALSE
+30100,Garfield,blue,FALSE
+30100,Garfield,g,TRUE
+30100,Garfield,brn,FALSE
+30100,Garfield,p,FALSE
+30100,Garfield,pexp,FALSE
+30100,Garfield,y,FALSE
+30100,Garfield,pnk,FALSE
+30100,Garfield,o,FALSE
+30200,Polk,red,FALSE
+30200,Polk,blue,FALSE
+30200,Polk,g,FALSE
+30200,Polk,brn,FALSE
+30200,Polk,p,FALSE
+30200,Polk,pexp,FALSE
+30200,Polk,y,FALSE
+30200,Polk,pnk,TRUE
+30200,Polk,o,FALSE
+30018,Damen,red,FALSE
+30018,Damen,blue,FALSE
+30018,Damen,g,FALSE
+30018,Damen,brn,TRUE
+30018,Damen,p,FALSE
+30018,Damen,pexp,FALSE
+30018,Damen,y,FALSE
+30018,Damen,pnk,FALSE
+30018,Damen,o,FALSE
+30029,Pulaski,red,FALSE
+30029,Pulaski,blue,FALSE
+30029,Pulaski,g,FALSE
+30029,Pulaski,brn,FALSE
+30029,Pulaski,p,FALSE
+30029,Pulaski,pexp,FALSE
+30029,Pulaski,y,FALSE
+30029,Pulaski,pnk,TRUE
+30029,Pulaski,o,FALSE
+30022,35th/Archer,red,FALSE
+30022,35th/Archer,blue,FALSE
+30022,35th/Archer,g,FALSE
+30022,35th/Archer,brn,FALSE
+30022,35th/Archer,p,FALSE
+30022,35th/Archer,pexp,FALSE
+30022,35th/Archer,y,FALSE
+30022,35th/Archer,pnk,FALSE
+30022,35th/Archer,o,TRUE
+30164,South Boulevard,red,FALSE
+30164,South Boulevard,blue,FALSE
+30164,South Boulevard,g,FALSE
+30164,South Boulevard,brn,FALSE
+30164,South Boulevard,p,TRUE
+30164,South Boulevard,pexp,TRUE
+30164,South Boulevard,y,FALSE
+30164,South Boulevard,pnk,FALSE
+30164,South Boulevard,o,FALSE
+30052,Main,red,FALSE
+30052,Main,blue,FALSE
+30052,Main,g,FALSE
+30052,Main,brn,FALSE
+30052,Main,p,TRUE
+30052,Main,pexp,TRUE
+30052,Main,y,FALSE
+30052,Main,pnk,FALSE
+30052,Main,o,FALSE
+30106,Wilson,red,TRUE
+30106,Wilson,blue,FALSE
+30106,Wilson,g,FALSE
+30106,Wilson,brn,FALSE
+30106,Wilson,p,FALSE
+30106,Wilson,pexp,FALSE
+30106,Wilson,y,FALSE
+30106,Wilson,pnk,FALSE
+30106,Wilson,o,FALSE
+30110,Jackson,red,TRUE
+30110,Jackson,blue,FALSE
+30110,Jackson,g,FALSE
+30110,Jackson,brn,FALSE
+30110,Jackson,p,FALSE
+30110,Jackson,pexp,FALSE
+30110,Jackson,y,FALSE
+30110,Jackson,pnk,FALSE
+30110,Jackson,o,FALSE
+30273,Addison,red,TRUE
+30273,Addison,blue,FALSE
+30273,Addison,g,FALSE
+30273,Addison,brn,FALSE
+30273,Addison,p,FALSE
+30273,Addison,pexp,FALSE
+30273,Addison,y,FALSE
+30273,Addison,pnk,FALSE
+30273,Addison,o,FALSE
+30229,Argyle,red,TRUE
+30229,Argyle,blue,FALSE
+30229,Argyle,g,FALSE
+30229,Argyle,brn,FALSE
+30229,Argyle,p,FALSE
+30229,Argyle,pexp,FALSE
+30229,Argyle,y,FALSE
+30229,Argyle,pnk,FALSE
+30229,Argyle,o,FALSE
+30165,Harold Washington Library-State/Van Buren,red,FALSE
+30165,Harold Washington Library-State/Van Buren,blue,FALSE
+30165,Harold Washington Library-State/Van Buren,g,FALSE
+30165,Harold Washington Library-State/Van Buren,brn,TRUE
+30165,Harold Washington Library-State/Van Buren,p,FALSE
+30165,Harold Washington Library-State/Van Buren,pexp,FALSE
+30165,Harold Washington Library-State/Van Buren,y,FALSE
+30165,Harold Washington Library-State/Van Buren,pnk,FALSE
+30165,Harold Washington Library-State/Van Buren,o,FALSE
+30016,Sheridan,red,TRUE
+30016,Sheridan,blue,FALSE
+30016,Sheridan,g,FALSE
+30016,Sheridan,brn,FALSE
+30016,Sheridan,p,FALSE
+30016,Sheridan,pexp,FALSE
+30016,Sheridan,y,FALSE
+30016,Sheridan,pnk,FALSE
+30016,Sheridan,o,FALSE
+30001,Austin,red,FALSE
+30001,Austin,blue,TRUE
+30001,Austin,g,FALSE
+30001,Austin,brn,FALSE
+30001,Austin,p,FALSE
+30001,Austin,pexp,FALSE
+30001,Austin,y,FALSE
+30001,Austin,pnk,FALSE
+30001,Austin,o,FALSE
+30107,Irving Park,red,FALSE
+30107,Irving Park,blue,TRUE
+30107,Irving Park,g,FALSE
+30107,Irving Park,brn,FALSE
+30107,Irving Park,p,FALSE
+30107,Irving Park,pexp,FALSE
+30107,Irving Park,y,FALSE
+30107,Irving Park,pnk,FALSE
+30107,Irving Park,o,FALSE
+30072,Washington,red,FALSE
+30072,Washington,blue,TRUE
+30072,Washington,g,FALSE
+30072,Washington,brn,FALSE
+30072,Washington,p,FALSE
+30072,Washington,pexp,FALSE
+30072,Washington,y,FALSE
+30072,Washington,pnk,FALSE
+30072,Washington,o,FALSE
+30055,Central,red,FALSE
+30055,Central,blue,FALSE
+30055,Central,g,TRUE
+30055,Central,brn,FALSE
+30055,Central,p,FALSE
+30055,Central,pexp,FALSE
+30055,Central,y,FALSE
+30055,Central,pnk,FALSE
+30055,Central,o,FALSE
+30048,Kedzie-Homan,red,FALSE
+30048,Kedzie-Homan,blue,TRUE
+30048,Kedzie-Homan,g,FALSE
+30048,Kedzie-Homan,brn,FALSE
+30048,Kedzie-Homan,p,FALSE
+30048,Kedzie-Homan,pexp,FALSE
+30048,Kedzie-Homan,y,FALSE
+30048,Kedzie-Homan,pnk,FALSE
+30048,Kedzie-Homan,o,FALSE
+30385,Wilson,red,FALSE
+30385,Wilson,blue,FALSE
+30385,Wilson,g,FALSE
+30385,Wilson,brn,FALSE
+30385,Wilson,p,FALSE
+30385,Wilson,pexp,TRUE
+30385,Wilson,y,FALSE
+30385,Wilson,pnk,FALSE
+30385,Wilson,o,FALSE
+30177,63rd,red,TRUE
+30177,63rd,blue,FALSE
+30177,63rd,g,FALSE
+30177,63rd,brn,FALSE
+30177,63rd,p,FALSE
+30177,63rd,pexp,FALSE
+30177,63rd,y,FALSE
+30177,63rd,pnk,FALSE
+30177,63rd,o,FALSE
+30166,Harold Washington Library-State/Van Buren,red,FALSE
+30166,Harold Washington Library-State/Van Buren,blue,FALSE
+30166,Harold Washington Library-State/Van Buren,g,FALSE
+30166,Harold Washington Library-State/Van Buren,brn,FALSE
+30166,Harold Washington Library-State/Van Buren,p,FALSE
+30166,Harold Washington Library-State/Van Buren,pexp,TRUE
+30166,Harold Washington Library-State/Van Buren,y,FALSE
+30166,Harold Washington Library-State/Van Buren,pnk,TRUE
+30166,Harold Washington Library-State/Van Buren,o,TRUE
+30219,Kedzie,red,FALSE
+30219,Kedzie,blue,FALSE
+30219,Kedzie,g,FALSE
+30219,Kedzie,brn,FALSE
+30219,Kedzie,p,FALSE
+30219,Kedzie,pexp,FALSE
+30219,Kedzie,y,FALSE
+30219,Kedzie,pnk,FALSE
+30219,Kedzie,o,TRUE
+30135,Laramie,red,FALSE
+30135,Laramie,blue,FALSE
+30135,Laramie,g,TRUE
+30135,Laramie,brn,FALSE
+30135,Laramie,p,FALSE
+30135,Laramie,pexp,FALSE
+30135,Laramie,y,FALSE
+30135,Laramie,pnk,FALSE
+30135,Laramie,o,FALSE
+30276,87th,red,TRUE
+30276,87th,blue,FALSE
+30276,87th,g,FALSE
+30276,87th,brn,FALSE
+30276,87th,p,FALSE
+30276,87th,pexp,FALSE
+30276,87th,y,FALSE
+30276,87th,pnk,FALSE
+30276,87th,o,FALSE
+30002,Austin,red,FALSE
+30002,Austin,blue,TRUE
+30002,Austin,g,FALSE
+30002,Austin,brn,FALSE
+30002,Austin,p,FALSE
+30002,Austin,pexp,FALSE
+30002,Austin,y,FALSE
+30002,Austin,pnk,FALSE
+30002,Austin,o,FALSE
+30043,Western,red,FALSE
+30043,Western,blue,TRUE
+30043,Western,g,FALSE
+30043,Western,brn,FALSE
+30043,Western,p,FALSE
+30043,Western,pexp,FALSE
+30043,Western,y,FALSE
+30043,Western,pnk,FALSE
+30043,Western,o,FALSE
+30283,Western,red,FALSE
+30283,Western,blue,FALSE
+30283,Western,g,FALSE
+30283,Western,brn,TRUE
+30283,Western,p,FALSE
+30283,Western,pexp,FALSE
+30283,Western,y,FALSE
+30283,Western,pnk,FALSE
+30283,Western,o,FALSE
+30111,California,red,FALSE
+30111,California,blue,TRUE
+30111,California,g,FALSE
+30111,California,brn,FALSE
+30111,California,p,FALSE
+30111,California,pexp,FALSE
+30111,California,y,FALSE
+30111,California,pnk,FALSE
+30111,California,o,FALSE
+30076,Forest Park,red,FALSE
+30076,Forest Park,blue,TRUE
+30076,Forest Park,g,FALSE
+30076,Forest Park,brn,FALSE
+30076,Forest Park,p,FALSE
+30076,Forest Park,pexp,FALSE
+30076,Forest Park,y,FALSE
+30076,Forest Park,pnk,FALSE
+30076,Forest Park,o,FALSE
+30383,Washington/Wabash,red,FALSE
+30383,Washington/Wabash,blue,FALSE
+30383,Washington/Wabash,g,TRUE
+30383,Washington/Wabash,brn,TRUE
+30383,Washington/Wabash,p,FALSE
+30383,Washington/Wabash,pexp,FALSE
+30383,Washington/Wabash,y,FALSE
+30383,Washington/Wabash,pnk,FALSE
+30383,Washington/Wabash,o,FALSE
+30053,Main,red,FALSE
+30053,Main,blue,FALSE
+30053,Main,g,FALSE
+30053,Main,brn,FALSE
+30053,Main,p,TRUE
+30053,Main,pexp,TRUE
+30053,Main,y,FALSE
+30053,Main,pnk,FALSE
+30053,Main,o,FALSE
+30159,Rosemont,red,FALSE
+30159,Rosemont,blue,TRUE
+30159,Rosemont,g,FALSE
+30159,Rosemont,brn,FALSE
+30159,Rosemont,p,FALSE
+30159,Rosemont,pexp,FALSE
+30159,Rosemont,y,FALSE
+30159,Rosemont,pnk,FALSE
+30159,Rosemont,o,FALSE
+30132,Adams/Wabash,red,FALSE
+30132,Adams/Wabash,blue,FALSE
+30132,Adams/Wabash,g,TRUE
+30132,Adams/Wabash,brn,FALSE
+30132,Adams/Wabash,p,FALSE
+30132,Adams/Wabash,pexp,TRUE
+30132,Adams/Wabash,y,FALSE
+30132,Adams/Wabash,pnk,TRUE
+30132,Adams/Wabash,o,TRUE
+30194,Cermak-Chinatown,red,TRUE
+30194,Cermak-Chinatown,blue,FALSE
+30194,Cermak-Chinatown,g,FALSE
+30194,Cermak-Chinatown,brn,FALSE
+30194,Cermak-Chinatown,p,FALSE
+30194,Cermak-Chinatown,pexp,FALSE
+30194,Cermak-Chinatown,y,FALSE
+30194,Cermak-Chinatown,pnk,FALSE
+30194,Cermak-Chinatown,o,FALSE
+30025,51st,red,FALSE
+30025,51st,blue,FALSE
+30025,51st,g,TRUE
+30025,51st,brn,FALSE
+30025,51st,p,FALSE
+30025,51st,pexp,FALSE
+30025,51st,y,FALSE
+30025,51st,pnk,FALSE
+30025,51st,o,FALSE
+30067,Berwyn,red,TRUE
+30067,Berwyn,blue,FALSE
+30067,Berwyn,g,FALSE
+30067,Berwyn,brn,FALSE
+30067,Berwyn,p,FALSE
+30067,Berwyn,pexp,FALSE
+30067,Berwyn,y,FALSE
+30067,Berwyn,pnk,FALSE
+30067,Berwyn,o,FALSE
+30145,Harlem,red,FALSE
+30145,Harlem,blue,TRUE
+30145,Harlem,g,FALSE
+30145,Harlem,brn,FALSE
+30145,Harlem,p,FALSE
+30145,Harlem,pexp,FALSE
+30145,Harlem,y,FALSE
+30145,Harlem,pnk,FALSE
+30145,Harlem,o,FALSE
+30012,Belmont,red,FALSE
+30012,Belmont,blue,TRUE
+30012,Belmont,g,FALSE
+30012,Belmont,brn,FALSE
+30012,Belmont,p,FALSE
+30012,Belmont,pexp,FALSE
+30012,Belmont,y,FALSE
+30012,Belmont,pnk,FALSE
+30012,Belmont,o,FALSE
+30199,Polk,red,FALSE
+30199,Polk,blue,FALSE
+30199,Polk,g,FALSE
+30199,Polk,brn,FALSE
+30199,Polk,p,FALSE
+30199,Polk,pexp,FALSE
+30199,Polk,y,FALSE
+30199,Polk,pnk,TRUE
+30199,Polk,o,FALSE
+30049,Kedzie-Homan,red,FALSE
+30049,Kedzie-Homan,blue,TRUE
+30049,Kedzie-Homan,g,FALSE
+30049,Kedzie-Homan,brn,FALSE
+30049,Kedzie-Homan,p,FALSE
+30049,Kedzie-Homan,pexp,FALSE
+30049,Kedzie-Homan,y,FALSE
+30049,Kedzie-Homan,pnk,FALSE
+30049,Kedzie-Homan,o,FALSE
+30121,Clark/Division,red,TRUE
+30121,Clark/Division,blue,FALSE
+30121,Clark/Division,g,FALSE
+30121,Clark/Division,brn,FALSE
+30121,Clark/Division,p,FALSE
+30121,Clark/Division,pexp,FALSE
+30121,Clark/Division,y,FALSE
+30121,Clark/Division,pnk,FALSE
+30121,Clark/Division,o,FALSE
+30059,Indiana,red,FALSE
+30059,Indiana,blue,FALSE
+30059,Indiana,g,TRUE
+30059,Indiana,brn,FALSE
+30059,Indiana,p,FALSE
+30059,Indiana,pexp,FALSE
+30059,Indiana,y,FALSE
+30059,Indiana,pnk,FALSE
+30059,Indiana,o,FALSE
+30117,Kostner,red,FALSE
+30117,Kostner,blue,FALSE
+30117,Kostner,g,FALSE
+30117,Kostner,brn,FALSE
+30117,Kostner,p,FALSE
+30117,Kostner,pexp,FALSE
+30117,Kostner,y,FALSE
+30117,Kostner,pnk,TRUE
+30117,Kostner,o,FALSE
+30226,Kedzie,red,FALSE
+30226,Kedzie,blue,FALSE
+30226,Kedzie,g,FALSE
+30226,Kedzie,brn,TRUE
+30226,Kedzie,p,FALSE
+30226,Kedzie,pexp,FALSE
+30226,Kedzie,y,FALSE
+30226,Kedzie,pnk,FALSE
+30226,Kedzie,o,FALSE
+30027,Dempster-Skokie,red,FALSE
+30027,Dempster-Skokie,blue,FALSE
+30027,Dempster-Skokie,g,FALSE
+30027,Dempster-Skokie,brn,FALSE
+30027,Dempster-Skokie,p,FALSE
+30027,Dempster-Skokie,pexp,FALSE
+30027,Dempster-Skokie,y,TRUE
+30027,Dempster-Skokie,pnk,FALSE
+30027,Dempster-Skokie,o,FALSE
+30296,Morgan,red,FALSE
+30296,Morgan,blue,FALSE
+30296,Morgan,g,TRUE
+30296,Morgan,brn,FALSE
+30296,Morgan,p,FALSE
+30296,Morgan,pexp,FALSE
+30296,Morgan,y,FALSE
+30296,Morgan,pnk,TRUE
+30296,Morgan,o,FALSE
+30170,Thorndale,red,TRUE
+30170,Thorndale,blue,FALSE
+30170,Thorndale,g,FALSE
+30170,Thorndale,brn,FALSE
+30170,Thorndale,p,FALSE
+30170,Thorndale,pexp,FALSE
+30170,Thorndale,y,FALSE
+30170,Thorndale,pnk,FALSE
+30170,Thorndale,o,FALSE
+30187,Cicero,red,FALSE
+30187,Cicero,blue,TRUE
+30187,Cicero,g,FALSE
+30187,Cicero,brn,FALSE
+30187,Cicero,p,FALSE
+30187,Cicero,pexp,FALSE
+30187,Cicero,y,FALSE
+30187,Cicero,pnk,FALSE
+30187,Cicero,o,FALSE
+30297,Oakton-Skokie,red,FALSE
+30297,Oakton-Skokie,blue,FALSE
+30297,Oakton-Skokie,g,FALSE
+30297,Oakton-Skokie,brn,FALSE
+30297,Oakton-Skokie,p,FALSE
+30297,Oakton-Skokie,pexp,FALSE
+30297,Oakton-Skokie,y,TRUE
+30297,Oakton-Skokie,pnk,FALSE
+30297,Oakton-Skokie,o,FALSE
+30138,Chicago,red,FALSE
+30138,Chicago,blue,FALSE
+30138,Chicago,g,FALSE
+30138,Chicago,brn,TRUE
+30138,Chicago,p,FALSE
+30138,Chicago,pexp,TRUE
+30138,Chicago,y,FALSE
+30138,Chicago,pnk,FALSE
+30138,Chicago,o,FALSE
+30246,43rd,red,FALSE
+30246,43rd,blue,FALSE
+30246,43rd,g,TRUE
+30246,43rd,brn,FALSE
+30246,43rd,p,FALSE
+30246,43rd,pexp,FALSE
+30246,43rd,y,FALSE
+30246,43rd,pnk,FALSE
+30246,43rd,o,FALSE
+30028,Pulaski,red,FALSE
+30028,Pulaski,blue,FALSE
+30028,Pulaski,g,FALSE
+30028,Pulaski,brn,FALSE
+30028,Pulaski,p,FALSE
+30028,Pulaski,pexp,FALSE
+30028,Pulaski,y,FALSE
+30028,Pulaski,pnk,TRUE
+30028,Pulaski,o,FALSE
+30033,Ashland,red,FALSE
+30033,Ashland,blue,FALSE
+30033,Ashland,g,TRUE
+30033,Ashland,brn,FALSE
+30033,Ashland,p,FALSE
+30033,Ashland,pexp,FALSE
+30033,Ashland,y,FALSE
+30033,Ashland,pnk,TRUE
+30033,Ashland,o,FALSE
+30140,Cottage Grove,red,FALSE
+30140,Cottage Grove,blue,FALSE
+30140,Cottage Grove,g,TRUE
+30140,Cottage Grove,brn,FALSE
+30140,Cottage Grove,p,FALSE
+30140,Cottage Grove,pexp,FALSE
+30140,Cottage Grove,y,FALSE
+30140,Cottage Grove,pnk,FALSE
+30140,Cottage Grove,o,FALSE
+30037,Sox-35th,red,TRUE
+30037,Sox-35th,blue,FALSE
+30037,Sox-35th,g,FALSE
+30037,Sox-35th,brn,FALSE
+30037,Sox-35th,p,FALSE
+30037,Sox-35th,pexp,FALSE
+30037,Sox-35th,y,FALSE
+30037,Sox-35th,pnk,FALSE
+30037,Sox-35th,o,FALSE
+30182,Midway,red,FALSE
+30182,Midway,blue,FALSE
+30182,Midway,g,FALSE
+30182,Midway,brn,FALSE
+30182,Midway,p,FALSE
+30182,Midway,pexp,FALSE
+30182,Midway,y,FALSE
+30182,Midway,pnk,FALSE
+30182,Midway,o,TRUE
+30116,Damen,red,FALSE
+30116,Damen,blue,TRUE
+30116,Damen,g,FALSE
+30116,Damen,brn,FALSE
+30116,Damen,p,FALSE
+30116,Damen,pexp,FALSE
+30116,Damen,y,FALSE
+30116,Damen,pnk,FALSE
+30116,Damen,o,FALSE
+30215,Halsted,red,FALSE
+30215,Halsted,blue,FALSE
+30215,Halsted,g,FALSE
+30215,Halsted,brn,FALSE
+30215,Halsted,p,FALSE
+30215,Halsted,pexp,FALSE
+30215,Halsted,y,FALSE
+30215,Halsted,pnk,FALSE
+30215,Halsted,o,TRUE
+30212,Monroe,red,TRUE
+30212,Monroe,blue,FALSE
+30212,Monroe,g,FALSE
+30212,Monroe,brn,FALSE
+30212,Monroe,p,FALSE
+30212,Monroe,pexp,FALSE
+30212,Monroe,y,FALSE
+30212,Monroe,pnk,FALSE
+30212,Monroe,o,FALSE
+30075,Clark/Lake,red,FALSE
+30075,Clark/Lake,blue,FALSE
+30075,Clark/Lake,g,TRUE
+30075,Clark/Lake,brn,TRUE
+30075,Clark/Lake,p,FALSE
+30075,Clark/Lake,pexp,FALSE
+30075,Clark/Lake,y,FALSE
+30075,Clark/Lake,pnk,FALSE
+30075,Clark/Lake,o,FALSE
+30241,Central,red,FALSE
+30241,Central,blue,FALSE
+30241,Central,g,FALSE
+30241,Central,brn,FALSE
+30241,Central,p,TRUE
+30241,Central,pexp,TRUE
+30241,Central,y,FALSE
+30241,Central,pnk,FALSE
+30241,Central,o,FALSE
+30005,Pulaski,red,FALSE
+30005,Pulaski,blue,FALSE
+30005,Pulaski,g,TRUE
+30005,Pulaski,brn,FALSE
+30005,Pulaski,p,FALSE
+30005,Pulaski,pexp,FALSE
+30005,Pulaski,y,FALSE
+30005,Pulaski,pnk,FALSE
+30005,Pulaski,o,FALSE
+30120,Ridgeland,red,FALSE
+30120,Ridgeland,blue,FALSE
+30120,Ridgeland,g,TRUE
+30120,Ridgeland,brn,FALSE
+30120,Ridgeland,p,FALSE
+30120,Ridgeland,pexp,FALSE
+30120,Ridgeland,y,FALSE
+30120,Ridgeland,pnk,FALSE
+30120,Ridgeland,o,FALSE
+30176,Howard,red,FALSE
+30176,Howard,blue,FALSE
+30176,Howard,g,FALSE
+30176,Howard,brn,FALSE
+30176,Howard,p,TRUE
+30176,Howard,pexp,TRUE
+30176,Howard,y,TRUE
+30176,Howard,pnk,FALSE
+30176,Howard,o,FALSE
+30204,Linden,red,FALSE
+30204,Linden,blue,FALSE
+30204,Linden,g,FALSE
+30204,Linden,brn,FALSE
+30204,Linden,p,TRUE
+30204,Linden,pexp,TRUE
+30204,Linden,y,FALSE
+30204,Linden,pnk,FALSE
+30204,Linden,o,FALSE
+30010,Davis,red,FALSE
+30010,Davis,blue,FALSE
+30010,Davis,g,FALSE
+30010,Davis,brn,FALSE
+30010,Davis,p,TRUE
+30010,Davis,pexp,TRUE
+30010,Davis,y,FALSE
+30010,Davis,pnk,FALSE
+30010,Davis,o,FALSE
+30223,Garfield,red,TRUE
+30223,Garfield,blue,FALSE
+30223,Garfield,g,FALSE
+30223,Garfield,brn,FALSE
+30223,Garfield,p,FALSE
+30223,Garfield,pexp,FALSE
+30223,Garfield,y,FALSE
+30223,Garfield,pnk,FALSE
+30223,Garfield,o,FALSE
+30073,Washington,red,FALSE
+30073,Washington,blue,TRUE
+30073,Washington,g,FALSE
+30073,Washington,brn,FALSE
+30073,Washington,p,FALSE
+30073,Washington,pexp,FALSE
+30073,Washington,y,FALSE
+30073,Washington,pnk,FALSE
+30073,Washington,o,FALSE
+30126,North/Clybourn,red,TRUE
+30126,North/Clybourn,blue,FALSE
+30126,North/Clybourn,g,FALSE
+30126,North/Clybourn,brn,FALSE
+30126,North/Clybourn,p,FALSE
+30126,North/Clybourn,pexp,FALSE
+30126,North/Clybourn,y,FALSE
+30126,North/Clybourn,pnk,FALSE
+30126,North/Clybourn,o,FALSE
+30065,Grand,red,TRUE
+30065,Grand,blue,FALSE
+30065,Grand,g,FALSE
+30065,Grand,brn,FALSE
+30065,Grand,p,FALSE
+30065,Grand,pexp,FALSE
+30065,Grand,y,FALSE
+30065,Grand,pnk,FALSE
+30065,Grand,o,FALSE
+30105,Wilson,red,TRUE
+30105,Wilson,blue,FALSE
+30105,Wilson,g,FALSE
+30105,Wilson,brn,FALSE
+30105,Wilson,p,FALSE
+30105,Wilson,pexp,FALSE
+30105,Wilson,y,FALSE
+30105,Wilson,pnk,FALSE
+30105,Wilson,o,FALSE
+30035,Oak Park,red,FALSE
+30035,Oak Park,blue,TRUE
+30035,Oak Park,g,FALSE
+30035,Oak Park,brn,FALSE
+30035,Oak Park,p,FALSE
+30035,Oak Park,pexp,FALSE
+30035,Oak Park,y,FALSE
+30035,Oak Park,pnk,FALSE
+30035,Oak Park,o,FALSE
+30023,35th/Archer,red,FALSE
+30023,35th/Archer,blue,FALSE
+30023,35th/Archer,g,FALSE
+30023,35th/Archer,brn,FALSE
+30023,35th/Archer,p,FALSE
+30023,35th/Archer,pexp,FALSE
+30023,35th/Archer,y,FALSE
+30023,35th/Archer,pnk,FALSE
+30023,35th/Archer,o,TRUE
+30163,South Boulevard,red,FALSE
+30163,South Boulevard,blue,FALSE
+30163,South Boulevard,g,FALSE
+30163,South Boulevard,brn,FALSE
+30163,South Boulevard,p,TRUE
+30163,South Boulevard,pexp,TRUE
+30163,South Boulevard,y,FALSE
+30163,South Boulevard,pnk,FALSE
+30163,South Boulevard,o,FALSE
+30006,Pulaski,red,FALSE
+30006,Pulaski,blue,FALSE
+30006,Pulaski,g,TRUE
+30006,Pulaski,brn,FALSE
+30006,Pulaski,p,FALSE
+30006,Pulaski,pexp,FALSE
+30006,Pulaski,y,FALSE
+30006,Pulaski,pnk,FALSE
+30006,Pulaski,o,FALSE
+30188,Cicero,red,FALSE
+30188,Cicero,blue,TRUE
+30188,Cicero,g,FALSE
+30188,Cicero,brn,FALSE
+30188,Cicero,p,FALSE
+30188,Cicero,pexp,FALSE
+30188,Cicero,y,FALSE
+30188,Cicero,pnk,FALSE
+30188,Cicero,o,FALSE
+30109,Jackson,red,TRUE
+30109,Jackson,blue,FALSE
+30109,Jackson,g,FALSE
+30109,Jackson,brn,FALSE
+30109,Jackson,p,FALSE
+30109,Jackson,pexp,FALSE
+30109,Jackson,y,FALSE
+30109,Jackson,pnk,FALSE
+30109,Jackson,o,FALSE
+30230,Argyle,red,TRUE
+30230,Argyle,blue,FALSE
+30230,Argyle,g,FALSE
+30230,Argyle,brn,FALSE
+30230,Argyle,p,FALSE
+30230,Argyle,pexp,FALSE
+30230,Argyle,y,FALSE
+30230,Argyle,pnk,FALSE
+30230,Argyle,o,FALSE
+30281,Irving Park,red,FALSE
+30281,Irving Park,blue,FALSE
+30281,Irving Park,g,FALSE
+30281,Irving Park,brn,TRUE
+30281,Irving Park,p,FALSE
+30281,Irving Park,pexp,FALSE
+30281,Irving Park,y,FALSE
+30281,Irving Park,pnk,FALSE
+30281,Irving Park,o,FALSE
+30080,Roosevelt,red,FALSE
+30080,Roosevelt,blue,FALSE
+30080,Roosevelt,g,TRUE
+30080,Roosevelt,brn,FALSE
+30080,Roosevelt,p,FALSE
+30080,Roosevelt,pexp,FALSE
+30080,Roosevelt,y,FALSE
+30080,Roosevelt,pnk,FALSE
+30080,Roosevelt,o,TRUE
+30181,Midway,red,FALSE
+30181,Midway,blue,FALSE
+30181,Midway,g,FALSE
+30181,Midway,brn,FALSE
+30181,Midway,p,FALSE
+30181,Midway,pexp,FALSE
+30181,Midway,y,FALSE
+30181,Midway,pnk,FALSE
+30181,Midway,o,TRUE
+30026,Dempster-Skokie,red,FALSE
+30026,Dempster-Skokie,blue,FALSE
+30026,Dempster-Skokie,g,FALSE
+30026,Dempster-Skokie,brn,FALSE
+30026,Dempster-Skokie,p,FALSE
+30026,Dempster-Skokie,pexp,FALSE
+30026,Dempster-Skokie,y,TRUE
+30026,Dempster-Skokie,pnk,FALSE
+30026,Dempster-Skokie,o,FALSE
+30167,Francisco,red,FALSE
+30167,Francisco,blue,FALSE
+30167,Francisco,g,FALSE
+30167,Francisco,brn,TRUE
+30167,Francisco,p,FALSE
+30167,Francisco,pexp,FALSE
+30167,Francisco,y,FALSE
+30167,Francisco,pnk,FALSE
+30167,Francisco,o,FALSE
+30030,LaSalle/Van Buren,red,FALSE
+30030,LaSalle/Van Buren,blue,FALSE
+30030,LaSalle/Van Buren,g,FALSE
+30030,LaSalle/Van Buren,brn,TRUE
+30030,LaSalle/Van Buren,p,FALSE
+30030,LaSalle/Van Buren,pexp,FALSE
+30030,LaSalle/Van Buren,y,FALSE
+30030,LaSalle/Van Buren,pnk,FALSE
+30030,LaSalle/Van Buren,o,FALSE
+30146,Harlem,red,FALSE
+30146,Harlem,blue,TRUE
+30146,Harlem,g,FALSE
+30146,Harlem,brn,FALSE
+30146,Harlem,p,FALSE
+30146,Harlem,pexp,FALSE
+30146,Harlem,y,FALSE
+30146,Harlem,pnk,FALSE
+30146,Harlem,o,FALSE
+30013,Belmont,red,FALSE
+30013,Belmont,blue,TRUE
+30013,Belmont,g,FALSE
+30013,Belmont,brn,FALSE
+30013,Belmont,p,FALSE
+30013,Belmont,pexp,FALSE
+30013,Belmont,y,FALSE
+30013,Belmont,pnk,FALSE
+30013,Belmont,o,FALSE
+30086,California,red,FALSE
+30086,California,blue,FALSE
+30086,California,g,FALSE
+30086,California,brn,FALSE
+30086,California,p,FALSE
+30086,California,pexp,FALSE
+30086,California,y,FALSE
+30086,California,pnk,TRUE
+30086,California,o,FALSE
+30143,Western,red,FALSE
+30143,Western,blue,FALSE
+30143,Western,g,FALSE
+30143,Western,brn,FALSE
+30143,Western,p,FALSE
+30143,Western,pexp,FALSE
+30143,Western,y,FALSE
+30143,Western,pnk,TRUE
+30143,Western,o,FALSE
+30192,69th,red,TRUE
+30192,69th,blue,FALSE
+30192,69th,g,FALSE
+30192,69th,brn,FALSE
+30192,69th,p,FALSE
+30192,69th,pexp,FALSE
+30192,69th,y,FALSE
+30192,69th,pnk,FALSE
+30192,69th,o,FALSE
+30141,Washington/Wells,red,FALSE
+30141,Washington/Wells,blue,FALSE
+30141,Washington/Wells,g,FALSE
+30141,Washington/Wells,brn,FALSE
+30141,Washington/Wells,p,FALSE
+30141,Washington/Wells,pexp,TRUE
+30141,Washington/Wells,y,FALSE
+30141,Washington/Wells,pnk,TRUE
+30141,Washington/Wells,o,TRUE
+30286,Harrison,red,TRUE
+30286,Harrison,blue,FALSE
+30286,Harrison,g,FALSE
+30286,Harrison,brn,FALSE
+30286,Harrison,p,FALSE
+30286,Harrison,pexp,FALSE
+30286,Harrison,y,FALSE
+30286,Harrison,pnk,FALSE
+30286,Harrison,o,FALSE
+30221,Clinton,red,FALSE
+30221,Clinton,blue,FALSE
+30221,Clinton,g,TRUE
+30221,Clinton,brn,FALSE
+30221,Clinton,p,FALSE
+30221,Clinton,pexp,FALSE
+30221,Clinton,y,FALSE
+30221,Clinton,pnk,TRUE
+30221,Clinton,o,FALSE
+30294,Sheridan,red,FALSE
+30294,Sheridan,blue,FALSE
+30294,Sheridan,g,FALSE
+30294,Sheridan,brn,FALSE
+30294,Sheridan,p,FALSE
+30294,Sheridan,pexp,FALSE
+30294,Sheridan,y,FALSE
+30294,Sheridan,pnk,FALSE
+30294,Sheridan,o,FALSE
+30258,Belmont,red,FALSE
+30258,Belmont,blue,FALSE
+30258,Belmont,g,FALSE
+30258,Belmont,brn,TRUE
+30258,Belmont,p,FALSE
+30258,Belmont,pexp,TRUE
+30258,Belmont,y,FALSE
+30258,Belmont,pnk,FALSE
+30258,Belmont,o,FALSE
+30242,Central,red,FALSE
+30242,Central,blue,FALSE
+30242,Central,g,FALSE
+30242,Central,brn,FALSE
+30242,Central,p,TRUE
+30242,Central,pexp,TRUE
+30242,Central,y,FALSE
+30242,Central,pnk,FALSE
+30242,Central,o,FALSE
+30203,Linden,red,FALSE
+30203,Linden,blue,FALSE
+30203,Linden,g,FALSE
+30203,Linden,brn,FALSE
+30203,Linden,p,TRUE
+30203,Linden,pexp,TRUE
+30203,Linden,y,FALSE
+30203,Linden,pnk,FALSE
+30203,Linden,o,FALSE
+30220,Kedzie,red,FALSE
+30220,Kedzie,blue,FALSE
+30220,Kedzie,g,FALSE
+30220,Kedzie,brn,FALSE
+30220,Kedzie,p,FALSE
+30220,Kedzie,pexp,FALSE
+30220,Kedzie,y,FALSE
+30220,Kedzie,pnk,FALSE
+30220,Kedzie,o,TRUE
+30250,Kimball,red,FALSE
+30250,Kimball,blue,FALSE
+30250,Kimball,g,FALSE
+30250,Kimball,brn,TRUE
+30250,Kimball,p,FALSE
+30250,Kimball,pexp,FALSE
+30250,Kimball,y,FALSE
+30250,Kimball,pnk,FALSE
+30250,Kimball,o,FALSE
+30178,63rd,red,TRUE
+30178,63rd,blue,FALSE
+30178,63rd,g,FALSE
+30178,63rd,brn,FALSE
+30178,63rd,p,FALSE
+30178,63rd,pexp,FALSE
+30178,63rd,y,FALSE
+30178,63rd,pnk,FALSE
+30178,63rd,o,FALSE
+30234,Fullerton,red,TRUE
+30234,Fullerton,blue,FALSE
+30234,Fullerton,g,FALSE
+30234,Fullerton,brn,FALSE
+30234,Fullerton,p,FALSE
+30234,Fullerton,pexp,FALSE
+30234,Fullerton,y,FALSE
+30234,Fullerton,pnk,FALSE
+30234,Fullerton,o,FALSE
+30278,Addison,red,FALSE
+30278,Addison,blue,FALSE
+30278,Addison,g,FALSE
+30278,Addison,brn,TRUE
+30278,Addison,p,FALSE
+30278,Addison,pexp,FALSE
+30278,Addison,y,FALSE
+30278,Addison,pnk,FALSE
+30278,Addison,o,FALSE
+30174,Howard,red,TRUE
+30174,Howard,blue,FALSE
+30174,Howard,g,FALSE
+30174,Howard,brn,FALSE
+30174,Howard,p,FALSE
+30174,Howard,pexp,FALSE
+30174,Howard,y,FALSE
+30174,Howard,pnk,FALSE
+30174,Howard,o,FALSE
+30238,47th,red,TRUE
+30238,47th,blue,FALSE
+30238,47th,g,FALSE
+30238,47th,brn,FALSE
+30238,47th,p,FALSE
+30238,47th,pexp,FALSE
+30238,47th,y,FALSE
+30238,47th,pnk,FALSE
+30238,47th,o,FALSE
+30382,Cermak-McCormick Place,red,FALSE
+30382,Cermak-McCormick Place,blue,FALSE
+30382,Cermak-McCormick Place,g,TRUE
+30382,Cermak-McCormick Place,brn,FALSE
+30382,Cermak-McCormick Place,p,FALSE
+30382,Cermak-McCormick Place,pexp,FALSE
+30382,Cermak-McCormick Place,y,FALSE
+30382,Cermak-McCormick Place,pnk,FALSE
+30382,Cermak-McCormick Place,o,FALSE
+30208,Kedzie,red,FALSE
+30208,Kedzie,blue,FALSE
+30208,Kedzie,g,TRUE
+30208,Kedzie,brn,FALSE
+30208,Kedzie,p,FALSE
+30208,Kedzie,pexp,FALSE
+30208,Kedzie,y,FALSE
+30208,Kedzie,pnk,FALSE
+30208,Kedzie,o,FALSE
+30189,Harlem,red,FALSE
+30189,Harlem,blue,TRUE
+30189,Harlem,g,FALSE
+30189,Harlem,brn,FALSE
+30189,Harlem,p,FALSE
+30189,Harlem,pexp,FALSE
+30189,Harlem,y,FALSE
+30189,Harlem,pnk,FALSE
+30189,Harlem,o,FALSE
+30056,Ashland/63rd,red,FALSE
+30056,Ashland/63rd,blue,FALSE
+30056,Ashland/63rd,g,TRUE
+30056,Ashland/63rd,brn,FALSE
+30056,Ashland/63rd,p,FALSE
+30056,Ashland/63rd,pexp,FALSE
+30056,Ashland/63rd,y,FALSE
+30056,Ashland/63rd,pnk,FALSE
+30056,Ashland/63rd,o,FALSE
+30119,Ridgeland,red,FALSE
+30119,Ridgeland,blue,FALSE
+30119,Ridgeland,g,TRUE
+30119,Ridgeland,brn,FALSE
+30119,Ridgeland,p,FALSE
+30119,Ridgeland,pexp,FALSE
+30119,Ridgeland,y,FALSE
+30119,Ridgeland,pnk,FALSE
+30119,Ridgeland,o,FALSE
+30298,Oakton-Skokie,red,FALSE
+30298,Oakton-Skokie,blue,FALSE
+30298,Oakton-Skokie,g,FALSE
+30298,Oakton-Skokie,brn,FALSE
+30298,Oakton-Skokie,p,FALSE
+30298,Oakton-Skokie,pexp,FALSE
+30298,Oakton-Skokie,y,TRUE
+30298,Oakton-Skokie,pnk,FALSE
+30298,Oakton-Skokie,o,FALSE
+30139,Cottage Grove,red,FALSE
+30139,Cottage Grove,blue,FALSE
+30139,Cottage Grove,g,TRUE
+30139,Cottage Grove,brn,FALSE
+30139,Cottage Grove,p,FALSE
+30139,Cottage Grove,pexp,FALSE
+30139,Cottage Grove,y,FALSE
+30139,Cottage Grove,pnk,FALSE
+30139,Cottage Grove,o,FALSE
+30122,Clark/Division,red,TRUE
+30122,Clark/Division,blue,FALSE
+30122,Clark/Division,g,FALSE
+30122,Clark/Division,brn,FALSE
+30122,Clark/Division,p,FALSE
+30122,Clark/Division,pexp,FALSE
+30122,Clark/Division,y,FALSE
+30122,Clark/Division,pnk,FALSE
+30122,Clark/Division,o,FALSE
+30251,Loyola,red,TRUE
+30251,Loyola,blue,FALSE
+30251,Loyola,g,FALSE
+30251,Loyola,brn,FALSE
+30251,Loyola,p,FALSE
+30251,Loyola,pexp,FALSE
+30251,Loyola,y,FALSE
+30251,Loyola,pnk,FALSE
+30251,Loyola,o,FALSE
+30295,Morgan,red,FALSE
+30295,Morgan,blue,FALSE
+30295,Morgan,g,TRUE
+30295,Morgan,brn,FALSE
+30295,Morgan,p,FALSE
+30295,Morgan,pexp,FALSE
+30295,Morgan,y,FALSE
+30295,Morgan,pnk,TRUE
+30295,Morgan,o,FALSE
+30019,Damen,red,FALSE
+30019,Damen,blue,FALSE
+30019,Damen,g,FALSE
+30019,Damen,brn,TRUE
+30019,Damen,p,FALSE
+30019,Damen,pexp,FALSE
+30019,Damen,y,FALSE
+30019,Damen,pnk,FALSE
+30019,Damen,o,FALSE
+30205,Ashland,red,FALSE
+30205,Ashland,blue,FALSE
+30205,Ashland,g,FALSE
+30205,Ashland,brn,FALSE
+30205,Ashland,p,FALSE
+30205,Ashland,pexp,FALSE
+30205,Ashland,y,FALSE
+30205,Ashland,pnk,FALSE
+30205,Ashland,o,TRUE
+30131,Adams/Wabash,red,FALSE
+30131,Adams/Wabash,blue,FALSE
+30131,Adams/Wabash,g,TRUE
+30131,Adams/Wabash,brn,TRUE
+30131,Adams/Wabash,p,FALSE
+30131,Adams/Wabash,pexp,FALSE
+30131,Adams/Wabash,y,FALSE
+30131,Adams/Wabash,pnk,FALSE
+30131,Adams/Wabash,o,FALSE
+30160,Rosemont,red,FALSE
+30160,Rosemont,blue,TRUE
+30160,Rosemont,g,FALSE
+30160,Rosemont,brn,FALSE
+30160,Rosemont,p,FALSE
+30160,Rosemont,pexp,FALSE
+30160,Rosemont,y,FALSE
+30160,Rosemont,pnk,FALSE
+30160,Rosemont,o,FALSE
+30058,Indiana,red,FALSE
+30058,Indiana,blue,FALSE
+30058,Indiana,g,TRUE
+30058,Indiana,brn,FALSE
+30058,Indiana,p,FALSE
+30058,Indiana,pexp,FALSE
+30058,Indiana,y,FALSE
+30058,Indiana,pnk,FALSE
+30058,Indiana,o,FALSE
+30118,Kostner,red,FALSE
+30118,Kostner,blue,FALSE
+30118,Kostner,g,FALSE
+30118,Kostner,brn,FALSE
+30118,Kostner,p,FALSE
+30118,Kostner,pexp,FALSE
+30118,Kostner,y,FALSE
+30118,Kostner,pnk,TRUE
+30118,Kostner,o,FALSE
+30066,Berwyn,red,TRUE
+30066,Berwyn,blue,FALSE
+30066,Berwyn,g,FALSE
+30066,Berwyn,brn,FALSE
+30066,Berwyn,p,FALSE
+30066,Berwyn,pexp,FALSE
+30066,Berwyn,y,FALSE
+30066,Berwyn,pnk,FALSE
+30066,Berwyn,o,FALSE
+30103,Diversey,red,FALSE
+30103,Diversey,blue,FALSE
+30103,Diversey,g,FALSE
+30103,Diversey,brn,TRUE
+30103,Diversey,p,FALSE
+30103,Diversey,pexp,TRUE
+30103,Diversey,y,FALSE
+30103,Diversey,pnk,FALSE
+30103,Diversey,o,FALSE
+30247,Jefferson Park,red,FALSE
+30247,Jefferson Park,blue,TRUE
+30247,Jefferson Park,g,FALSE
+30247,Jefferson Park,brn,FALSE
+30247,Jefferson Park,p,FALSE
+30247,Jefferson Park,pexp,FALSE
+30247,Jefferson Park,y,FALSE
+30247,Jefferson Park,pnk,FALSE
+30247,Jefferson Park,o,FALSE
+30183,Halsted,red,FALSE
+30183,Halsted,blue,FALSE
+30183,Halsted,g,TRUE
+30183,Halsted,brn,FALSE
+30183,Halsted,p,FALSE
+30183,Halsted,pexp,FALSE
+30183,Halsted,y,FALSE
+30183,Halsted,pnk,FALSE
+30183,Halsted,o,FALSE
+30275,87th,red,TRUE
+30275,87th,blue,FALSE
+30275,87th,g,FALSE
+30275,87th,brn,FALSE
+30275,87th,p,FALSE
+30275,87th,pexp,FALSE
+30275,87th,y,FALSE
+30275,87th,pnk,FALSE
+30275,87th,o,FALSE
+30210,47th,red,FALSE
+30210,47th,blue,FALSE
+30210,47th,g,TRUE
+30210,47th,brn,FALSE
+30210,47th,p,FALSE
+30210,47th,pexp,FALSE
+30210,47th,y,FALSE
+30210,47th,pnk,FALSE
+30210,47th,o,FALSE
+30271,Chicago,red,FALSE
+30271,Chicago,blue,TRUE
+30271,Chicago,g,FALSE
+30271,Chicago,brn,FALSE
+30271,Chicago,p,FALSE
+30271,Chicago,pexp,FALSE
+30271,Chicago,y,FALSE
+30271,Chicago,pnk,FALSE
+30271,Chicago,o,FALSE
+30284,Western,red,FALSE
+30284,Western,blue,FALSE
+30284,Western,g,FALSE
+30284,Western,brn,TRUE
+30284,Western,p,FALSE
+30284,Western,pexp,FALSE
+30284,Western,y,FALSE
+30284,Western,pnk,FALSE
+30284,Western,o,FALSE
+30077,Forest Park,red,FALSE
+30077,Forest Park,blue,TRUE
+30077,Forest Park,g,FALSE
+30077,Forest Park,brn,FALSE
+30077,Forest Park,p,FALSE
+30077,Forest Park,pexp,FALSE
+30077,Forest Park,y,FALSE
+30077,Forest Park,pnk,FALSE
+30077,Forest Park,o,FALSE
+30112,California,red,FALSE
+30112,California,blue,TRUE
+30112,California,g,FALSE
+30112,California,brn,FALSE
+30112,California,p,FALSE
+30112,California,pexp,FALSE
+30112,California,y,FALSE
+30112,California,pnk,FALSE
+30112,California,o,FALSE
+30254,Paulina,red,FALSE
+30254,Paulina,blue,FALSE
+30254,Paulina,g,FALSE
+30254,Paulina,brn,TRUE
+30254,Paulina,p,FALSE
+30254,Paulina,pexp,FALSE
+30254,Paulina,y,FALSE
+30254,Paulina,pnk,FALSE
+30254,Paulina,o,FALSE
+30007,Quincy/Wells,red,FALSE
+30007,Quincy/Wells,blue,FALSE
+30007,Quincy/Wells,g,FALSE
+30007,Quincy/Wells,brn,FALSE
+30007,Quincy/Wells,p,FALSE
+30007,Quincy/Wells,pexp,TRUE
+30007,Quincy/Wells,y,FALSE
+30007,Quincy/Wells,pnk,TRUE
+30007,Quincy/Wells,o,TRUE
+30091,Merchandise Mart,red,FALSE
+30091,Merchandise Mart,blue,FALSE
+30091,Merchandise Mart,g,FALSE
+30091,Merchandise Mart,brn,TRUE
+30091,Merchandise Mart,p,FALSE
+30091,Merchandise Mart,pexp,TRUE
+30091,Merchandise Mart,y,FALSE
+30091,Merchandise Mart,pnk,FALSE
+30091,Merchandise Mart,o,FALSE
+30051,State/Lake,red,FALSE
+30051,State/Lake,blue,FALSE
+30051,State/Lake,g,TRUE
+30051,State/Lake,brn,TRUE
+30051,State/Lake,p,FALSE
+30051,State/Lake,pexp,FALSE
+30051,State/Lake,y,FALSE
+30051,State/Lake,pnk,FALSE
+30051,State/Lake,o,FALSE
+30094,Cicero,red,FALSE
+30094,Cicero,blue,FALSE
+30094,Cicero,g,TRUE
+30094,Cicero,brn,FALSE
+30094,Cicero,p,FALSE
+30094,Cicero,pexp,FALSE
+30094,Cicero,y,FALSE
+30094,Cicero,pnk,FALSE
+30094,Cicero,o,FALSE
+30260,Montrose,red,FALSE
+30260,Montrose,blue,TRUE
+30260,Montrose,g,FALSE
+30260,Montrose,brn,FALSE
+30260,Montrose,p,FALSE
+30260,Montrose,pexp,FALSE
+30260,Montrose,y,FALSE
+30260,Montrose,pnk,FALSE
+30260,Montrose,o,FALSE
+30042,Western,red,FALSE
+30042,Western,blue,TRUE
+30042,Western,g,FALSE
+30042,Western,brn,FALSE
+30042,Western,p,FALSE
+30042,Western,pexp,FALSE
+30042,Western,y,FALSE
+30042,Western,pnk,FALSE
+30042,Western,o,FALSE
+30285,Harrison,red,TRUE
+30285,Harrison,blue,FALSE
+30285,Harrison,g,FALSE
+30285,Harrison,brn,FALSE
+30285,Harrison,p,FALSE
+30285,Harrison,pexp,FALSE
+30285,Harrison,y,FALSE
+30285,Harrison,pnk,FALSE
+30285,Harrison,o,FALSE
+30127,Armitage,red,FALSE
+30127,Armitage,blue,FALSE
+30127,Armitage,g,FALSE
+30127,Armitage,brn,TRUE
+30127,Armitage,p,FALSE
+30127,Armitage,pexp,TRUE
+30127,Armitage,y,FALSE
+30127,Armitage,pnk,FALSE
+30127,Armitage,o,FALSE
+30227,Jarvis,red,TRUE
+30227,Jarvis,blue,FALSE
+30227,Jarvis,g,FALSE
+30227,Jarvis,brn,FALSE
+30227,Jarvis,p,FALSE
+30227,Jarvis,pexp,FALSE
+30227,Jarvis,y,FALSE
+30227,Jarvis,pnk,FALSE
+30227,Jarvis,o,FALSE
+30017,Sheridan,red,TRUE
+30017,Sheridan,blue,FALSE
+30017,Sheridan,g,FALSE
+30017,Sheridan,brn,FALSE
+30017,Sheridan,p,FALSE
+30017,Sheridan,pexp,FALSE
+30017,Sheridan,y,FALSE
+30017,Sheridan,pnk,FALSE
+30017,Sheridan,o,FALSE
+30003,Harlem/Lake,red,FALSE
+30003,Harlem/Lake,blue,FALSE
+30003,Harlem/Lake,g,TRUE
+30003,Harlem/Lake,brn,FALSE
+30003,Harlem/Lake,p,FALSE
+30003,Harlem/Lake,pexp,FALSE
+30003,Harlem/Lake,y,FALSE
+30003,Harlem/Lake,pnk,FALSE
+30003,Harlem/Lake,o,FALSE
+30277,Addison,red,FALSE
+30277,Addison,blue,FALSE
+30277,Addison,g,FALSE
+30277,Addison,brn,TRUE
+30277,Addison,p,FALSE
+30277,Addison,pexp,FALSE
+30277,Addison,y,FALSE
+30277,Addison,pnk,FALSE
+30277,Addison,o,FALSE
+30255,Belmont,red,TRUE
+30255,Belmont,blue,FALSE
+30255,Belmont,g,FALSE
+30255,Belmont,brn,FALSE
+30255,Belmont,p,FALSE
+30255,Belmont,pexp,FALSE
+30255,Belmont,y,FALSE
+30255,Belmont,pnk,FALSE
+30255,Belmont,o,FALSE
+30136,Laramie,red,FALSE
+30136,Laramie,blue,FALSE
+30136,Laramie,g,TRUE
+30136,Laramie,brn,FALSE
+30136,Laramie,p,FALSE
+30136,Laramie,pexp,FALSE
+30136,Laramie,y,FALSE
+30136,Laramie,pnk,FALSE
+30136,Laramie,o,FALSE
+30249,Kimball,red,FALSE
+30249,Kimball,blue,FALSE
+30249,Kimball,g,FALSE
+30249,Kimball,brn,TRUE
+30249,Kimball,p,FALSE
+30249,Kimball,pexp,FALSE
+30249,Kimball,y,FALSE
+30249,Kimball,pnk,FALSE
+30249,Kimball,o,FALSE
+30191,69th,red,TRUE
+30191,69th,blue,FALSE
+30191,69th,g,FALSE
+30191,69th,brn,FALSE
+30191,69th,p,FALSE
+30191,69th,pexp,FALSE
+30191,69th,y,FALSE
+30191,69th,pnk,FALSE
+30191,69th,o,FALSE
+30050,State/Lake,red,FALSE
+30050,State/Lake,blue,FALSE
+30050,State/Lake,g,TRUE
+30050,State/Lake,brn,FALSE
+30050,State/Lake,p,FALSE
+30050,State/Lake,pexp,TRUE
+30050,State/Lake,y,FALSE
+30050,State/Lake,pnk,TRUE
+30050,State/Lake,o,TRUE
+30153,Monroe,red,FALSE
+30153,Monroe,blue,TRUE
+30153,Monroe,g,FALSE
+30153,Monroe,brn,FALSE
+30153,Monroe,p,FALSE
+30153,Monroe,pexp,FALSE
+30153,Monroe,y,FALSE
+30153,Monroe,pnk,FALSE
+30153,Monroe,o,FALSE
+30040,Damen,red,FALSE
+30040,Damen,blue,FALSE
+30040,Damen,g,FALSE
+30040,Damen,brn,FALSE
+30040,Damen,p,FALSE
+30040,Damen,pexp,FALSE
+30040,Damen,y,FALSE
+30040,Damen,pnk,TRUE
+30040,Damen,o,FALSE
+30179,Pulaski,red,FALSE
+30179,Pulaski,blue,TRUE
+30179,Pulaski,g,FALSE
+30179,Pulaski,brn,FALSE
+30179,Pulaski,p,FALSE
+30179,Pulaski,pexp,FALSE
+30179,Pulaski,y,FALSE
+30179,Pulaski,pnk,FALSE
+30179,Pulaski,o,FALSE
+30186,Pulaski,red,FALSE
+30186,Pulaski,blue,FALSE
+30186,Pulaski,g,FALSE
+30186,Pulaski,brn,FALSE
+30186,Pulaski,p,FALSE
+30186,Pulaski,pexp,FALSE
+30186,Pulaski,y,FALSE
+30186,Pulaski,pnk,FALSE
+30186,Pulaski,o,TRUE
+30213,35th-Bronzeville-IIT,red,FALSE
+30213,35th-Bronzeville-IIT,blue,FALSE
+30213,35th-Bronzeville-IIT,g,TRUE
+30213,35th-Bronzeville-IIT,brn,FALSE
+30213,35th-Bronzeville-IIT,p,FALSE
+30213,35th-Bronzeville-IIT,pexp,FALSE
+30213,35th-Bronzeville-IIT,y,FALSE
+30213,35th-Bronzeville-IIT,pnk,FALSE
+30213,35th-Bronzeville-IIT,o,FALSE
+30144,Western,red,FALSE
+30144,Western,blue,FALSE
+30144,Western,g,FALSE
+30144,Western,brn,FALSE
+30144,Western,p,FALSE
+30144,Western,pexp,FALSE
+30144,Western,y,FALSE
+30144,Western,pnk,TRUE
+30144,Western,o,FALSE
+30235,Fullerton,red,FALSE
+30235,Fullerton,blue,FALSE
+30235,Fullerton,g,FALSE
+30235,Fullerton,brn,TRUE
+30235,Fullerton,p,FALSE
+30235,Fullerton,pexp,TRUE
+30235,Fullerton,y,FALSE
+30235,Fullerton,pnk,FALSE
+30235,Fullerton,o,FALSE
+30148,Granville,red,TRUE
+30148,Granville,blue,FALSE
+30148,Granville,g,FALSE
+30148,Granville,brn,FALSE
+30148,Granville,p,FALSE
+30148,Granville,pexp,FALSE
+30148,Granville,y,FALSE
+30148,Granville,pnk,FALSE
+30148,Granville,o,FALSE
+30071,Southport,red,FALSE
+30071,Southport,blue,FALSE
+30071,Southport,g,FALSE
+30071,Southport,brn,TRUE
+30071,Southport,p,FALSE
+30071,Southport,pexp,FALSE
+30071,Southport,y,FALSE
+30071,Southport,pnk,FALSE
+30071,Southport,o,FALSE
+30280,Chicago,red,TRUE
+30280,Chicago,blue,FALSE
+30280,Chicago,g,FALSE
+30280,Chicago,brn,FALSE
+30280,Chicago,p,FALSE
+30280,Chicago,pexp,FALSE
+30280,Chicago,y,FALSE
+30280,Chicago,pnk,FALSE
+30280,Chicago,o,FALSE
+30031,LaSalle/Van Buren,red,FALSE
+30031,LaSalle/Van Buren,blue,FALSE
+30031,LaSalle/Van Buren,g,FALSE
+30031,LaSalle/Van Buren,brn,FALSE
+30031,LaSalle/Van Buren,p,FALSE
+30031,LaSalle/Van Buren,pexp,TRUE
+30031,LaSalle/Van Buren,y,FALSE
+30031,LaSalle/Van Buren,pnk,TRUE
+30031,LaSalle/Van Buren,o,TRUE
+30222,Clinton,red,FALSE
+30222,Clinton,blue,FALSE
+30222,Clinton,g,TRUE
+30222,Clinton,brn,FALSE
+30222,Clinton,p,FALSE
+30222,Clinton,pexp,FALSE
+30222,Clinton,y,FALSE
+30222,Clinton,pnk,TRUE
+30222,Clinton,o,FALSE
+30142,Washington/Wells,red,FALSE
+30142,Washington/Wells,blue,FALSE
+30142,Washington/Wells,g,FALSE
+30142,Washington/Wells,brn,TRUE
+30142,Washington/Wells,p,FALSE
+30142,Washington/Wells,pexp,FALSE
+30142,Washington/Wells,y,FALSE
+30142,Washington/Wells,pnk,FALSE
+30142,Washington/Wells,o,FALSE
+30224,Garfield,red,TRUE
+30224,Garfield,blue,FALSE
+30224,Garfield,g,FALSE
+30224,Garfield,brn,FALSE
+30224,Garfield,p,FALSE
+30224,Garfield,pexp,FALSE
+30224,Garfield,y,FALSE
+30224,Garfield,pnk,FALSE
+30224,Garfield,o,FALSE
+30244,Austin,red,FALSE
+30244,Austin,blue,FALSE
+30244,Austin,g,TRUE
+30244,Austin,brn,FALSE
+30244,Austin,p,FALSE
+30244,Austin,pexp,FALSE
+30244,Austin,y,FALSE
+30244,Austin,pnk,FALSE
+30244,Austin,o,FALSE
+30113,54th/Cermak,red,FALSE
+30113,54th/Cermak,blue,FALSE
+30113,54th/Cermak,g,FALSE
+30113,54th/Cermak,brn,FALSE
+30113,54th/Cermak,p,FALSE
+30113,54th/Cermak,pexp,FALSE
+30113,54th/Cermak,y,FALSE
+30113,54th/Cermak,pnk,TRUE
+30113,54th/Cermak,o,FALSE
+30282,Irving Park,red,FALSE
+30282,Irving Park,blue,FALSE
+30282,Irving Park,g,FALSE
+30282,Irving Park,brn,TRUE
+30282,Irving Park,p,FALSE
+30282,Irving Park,pexp,FALSE
+30282,Irving Park,y,FALSE
+30282,Irving Park,pnk,FALSE
+30282,Irving Park,o,FALSE
+30197,Logan Square,red,FALSE
+30197,Logan Square,blue,TRUE
+30197,Logan Square,g,FALSE
+30197,Logan Square,brn,FALSE
+30197,Logan Square,p,FALSE
+30197,Logan Square,pexp,FALSE
+30197,Logan Square,y,FALSE
+30197,Logan Square,pnk,FALSE
+30197,Logan Square,o,FALSE
+30152,Central Park,red,FALSE
+30152,Central Park,blue,FALSE
+30152,Central Park,g,FALSE
+30152,Central Park,brn,FALSE
+30152,Central Park,p,FALSE
+30152,Central Park,pexp,FALSE
+30152,Central Park,y,FALSE
+30152,Central Park,pnk,TRUE
+30152,Central Park,o,FALSE
+30087,California,red,FALSE
+30087,California,blue,FALSE
+30087,California,g,FALSE
+30087,California,brn,FALSE
+30087,California,p,FALSE
+30087,California,pexp,FALSE
+30087,California,y,FALSE
+30087,California,pnk,TRUE
+30087,California,o,FALSE
+30201,Kedzie,red,FALSE
+30201,Kedzie,blue,FALSE
+30201,Kedzie,g,FALSE
+30201,Kedzie,brn,FALSE
+30201,Kedzie,p,FALSE
+30201,Kedzie,pexp,FALSE
+30201,Kedzie,y,FALSE
+30201,Kedzie,pnk,TRUE
+30201,Kedzie,o,FALSE
+30069,UIC-Halsted,red,FALSE
+30069,UIC-Halsted,blue,TRUE
+30069,UIC-Halsted,g,FALSE
+30069,UIC-Halsted,brn,FALSE
+30069,UIC-Halsted,p,FALSE
+30069,UIC-Halsted,pexp,FALSE
+30069,UIC-Halsted,y,FALSE
+30069,UIC-Halsted,pnk,FALSE
+30069,UIC-Halsted,o,FALSE
+30074,Clark/Lake,red,FALSE
+30074,Clark/Lake,blue,FALSE
+30074,Clark/Lake,g,TRUE
+30074,Clark/Lake,brn,FALSE
+30074,Clark/Lake,p,FALSE
+30074,Clark/Lake,pexp,TRUE
+30074,Clark/Lake,y,FALSE
+30074,Clark/Lake,pnk,TRUE
+30074,Clark/Lake,o,TRUE
+30133,Dempster,red,FALSE
+30133,Dempster,blue,FALSE
+30133,Dempster,g,FALSE
+30133,Dempster,brn,FALSE
+30133,Dempster,p,TRUE
+30133,Dempster,pexp,TRUE
+30133,Dempster,y,FALSE
+30133,Dempster,pnk,FALSE
+30133,Dempster,o,FALSE
+30081,Roosevelt,red,FALSE
+30081,Roosevelt,blue,FALSE
+30081,Roosevelt,g,TRUE
+30081,Roosevelt,brn,FALSE
+30081,Roosevelt,p,FALSE
+30081,Roosevelt,pexp,FALSE
+30081,Roosevelt,y,FALSE
+30081,Roosevelt,pnk,FALSE
+30081,Roosevelt,o,TRUE
+30034,Oak Park,red,FALSE
+30034,Oak Park,blue,TRUE
+30034,Oak Park,g,FALSE
+30034,Oak Park,brn,FALSE
+30034,Oak Park,p,FALSE
+30034,Oak Park,pexp,FALSE
+30034,Oak Park,y,FALSE
+30034,Oak Park,pnk,FALSE
+30034,Oak Park,o,FALSE
+30168,Francisco,red,FALSE
+30168,Francisco,blue,FALSE
+30168,Francisco,g,FALSE
+30168,Francisco,brn,TRUE
+30168,Francisco,p,FALSE
+30168,Francisco,pexp,FALSE
+30168,Francisco,y,FALSE
+30168,Francisco,pnk,FALSE
+30168,Francisco,o,FALSE
+30009,Cicero,red,FALSE
+30009,Cicero,blue,FALSE
+30009,Cicero,g,TRUE
+30009,Cicero,brn,FALSE
+30009,Cicero,p,FALSE
+30009,Cicero,pexp,FALSE
+30009,Cicero,y,FALSE
+30009,Cicero,pnk,FALSE
+30009,Cicero,o,FALSE
+30259,Montrose,red,FALSE
+30259,Montrose,blue,TRUE
+30259,Montrose,g,FALSE
+30259,Montrose,brn,FALSE
+30259,Montrose,p,FALSE
+30259,Montrose,pexp,FALSE
+30259,Montrose,y,FALSE
+30259,Montrose,pnk,FALSE
+30259,Montrose,o,FALSE
+30125,North/Clybourn,red,TRUE
+30125,North/Clybourn,blue,FALSE
+30125,North/Clybourn,g,FALSE
+30125,North/Clybourn,brn,FALSE
+30125,North/Clybourn,p,FALSE
+30125,North/Clybourn,pexp,FALSE
+30125,North/Clybourn,y,FALSE
+30125,North/Clybourn,pnk,FALSE
+30125,North/Clybourn,o,FALSE
+30172,O'Hare,red,FALSE
+30172,O'Hare,blue,TRUE
+30172,O'Hare,g,FALSE
+30172,O'Hare,brn,FALSE
+30172,O'Hare,p,FALSE
+30172,O'Hare,pexp,FALSE
+30172,O'Hare,y,FALSE
+30172,O'Hare,pnk,FALSE
+30172,O'Hare,o,FALSE
+30045,Cumberland,red,FALSE
+30045,Cumberland,blue,TRUE
+30045,Cumberland,g,FALSE
+30045,Cumberland,brn,FALSE
+30045,Cumberland,p,FALSE
+30045,Cumberland,pexp,FALSE
+30045,Cumberland,y,FALSE
+30045,Cumberland,pnk,FALSE
+30045,Cumberland,o,FALSE
+30388,Damen,red,FALSE
+30388,Damen,blue,FALSE
+30388,Damen,g,TRUE
+30388,Damen,brn,FALSE
+30388,Damen,p,FALSE
+30388,Damen,pexp,FALSE
+30388,Damen,y,FALSE
+30388,Damen,pnk,FALSE
+30388,Damen,o,FALSE
+30387,Damen,red,FALSE
+30387,Damen,blue,FALSE
+30387,Damen,g,TRUE
+30387,Damen,brn,FALSE
+30387,Damen,p,FALSE
+30387,Damen,pexp,FALSE
+30387,Damen,y,FALSE
+30387,Damen,pnk,FALSE
+30387,Damen,o,FALSE
