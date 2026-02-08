@@ -79,7 +79,7 @@ After importing the data, it's a good idea to examine it using functions like `g
 
 ### On your own..
 
-Practice importing datasets by going to [https://github.com/menawhalen/R-Short-Course/tree/main/data](https://github.com/menawhalen/R-Short-Course/tree/main/data) and download both dataset we have been using `CIACountries` and `flights`.
+Practice importing datasets by going to [https://github.com/menawhalen/R_short_course_NCSBN/tree/main/data](https://github.com/menawhalen/R_short_course_NCSBN/tree/main/data) and download both dataset we have been using `CIACountries` and `flights`.
 
 * save the files in your data folder
 * open a new R script
@@ -89,6 +89,21 @@ Practice importing datasets by going to [https://github.com/menawhalen/R-Short-C
 ## Joins
 
 In the tidyverse, joining two datasets together is a way to combine data from different sources based on common variables. The dplyr package within the tidyverse provides functions to perform these joins.
+
+### Introduction: Why Joins Matter
+
+In many real-world datasets, information is stored in multiple tables. For example: - The `nycflights13` dataset contains flight information, airlines, airports, and planes all in separate tables. - The CTA ridership and stops datasets contain different types of information about Chicago train stations.
+
+To gain insights, we often need to **combine** these tables using a common key.
+
+#### Review
+
+-   Recall: `mutate()`, `select()`, `filter()`, and `group_by()` are used for manipulating a *single* dataset.
+-   `join` functions let us combine *multiple* datasets.
+
+**Warm-Up:** \> If one dataset lists `station_id` and `rides` and another lists `station_id` and `line`, how could we find which line has the most rides?
+
+
 
 ### Inner Join
 
@@ -256,15 +271,127 @@ emp_df %>%
 ```
 
 
+
+## Conceptual Overview of Joins
+
+| Join Type | Description | Example Use |
+|----------------------|-------------------------|-------------------------|
+| `inner_join()` | Keeps rows with matching keys in both datasets | Find only matching station IDs |
+| `left_join()` | Keeps all rows from the left dataset | Keep all ridership data, even if no station info |
+| `right_join()` | Keeps all rows from the right dataset | Keep all stops, even if no ridership info |
+| `full_join()` | Keeps all rows from both datasets | Combine everything, fill gaps with NA |
+
+## Troubleshooting and Best Practices
+
+Hands-On Practice with CTA Data (Real-World Example)
+
+We’ll use two real datasets: `CTA_ridership.csv` and `CTA_stops_long.csv`. We will also introduce the `janitor` package which features a function called `clean_names()` that changes all the variable names to be lowercase and separated with '_'.
+
+```{r}
+library(janitor)
+
+rides <- read_csv("data/CTA_ridership.csv") %>%
+  mutate(station_id = as.character(station_id))
+
+stops <- read_csv("data/CTA_stops_long.csv") %>%
+  clean_names() %>%
+  mutate(stop_id = as.character(stop_id))
+```
+
+### Example 1: Join by Station Name
+
+```{r}
+left_join(rides, stops, by = c("stationname" = "station_name"))
+```
+
+> What happens when names don’t match exactly? Why might that cause issues?
+
+### Example 2: Join by Station ID
+
+```{r}
+left_join(rides, stops, by = c("station_id" = "stop_id"))
+```
+
+Compare the row counts between the joins:
+
+```{r}
+nrow(inner_join(rides, stops, by = c("stationname" = "station_name")))
+nrow(left_join(rides, stops, by = c("stationname" = "station_name")))
+```
+
+> Why do the results differ? Which join preserves all ridership data?
+
+### Mismatched Column Names
+
+```{r}
+left_join(rides, stops, by = c("stationname" = "station_name"))
+```
+
+### Duplicate Keys
+
+If there are duplicate keys, rows can multiply unexpectedly.
+
+### Checking for Missing Matches
+
+```{r}
+anti_join(rides, stops, by = c("stationname" = "station_name"))
+```
+
+> What does this tell us about stations that appear in `rides` but not `stops`?
+
+------------------------------------------------------------------------
+
+## Advanced Joins
+
+### Filtering Joins
+
+-   `semi_join(x, y)`: keeps rows in `x` that have a match in `y`.
+-   `anti_join(x, y)`: keeps rows in `x` that do *not* have a match in `y`.
+
+### Binding Rows or Columns
+
+-   `bind_rows()` adds more observations.
+-   `bind_cols()` adds more variables.
+
+------------------------------------------------------------------------
+
+
+## On your own..
+
+Answer the following questions either in the exercise below or in your R script
+
+1. Which airlines had the most delayed flights departing from NYC in 2013?
+2. What are the top destinations (airports) for flights departing from NYC in 2013?
+3. Which airlines had the highest average departure delays from each airport?
+4. What is the distribution of flight distances for flights departing from each airport?
+5. Which airlines operated the most flights from each airport in NYC?
+6. Create a dataset where each airline is a row and each column is a month (1-12) to see which is the busiest months for each airline.
+
+```{r join_ex, exercise = TRUE}
+## Q1
+flights %>% 
+  left_join()
+## Q2
+
+```
+
+## Tidy Data
+
+Tidy data is a concept popularized by Hadley Wickham, and it refers to a specific way of organizing data tables in a tabular format to facilitate data analysis. In tidy data:
+
+-   Each variable forms a column.
+-   Each observation forms a row.
+
 ## Pivots
 
 Data often comes in various formats, and its structure might not be ideal for the task at hand. Pivoting helps you reorganize your data to a format that makes it easier to analyze, visualize, or model. For example, you might need to pivot data to:
 
-* Perform Aggregations: Pivoting can simplify data aggregation and summary calculations. You can consolidate multiple columns into one and apply functions like mean, sum, etc.
+-   Perform Aggregations: Pivoting can simplify data aggregation and summary calculations. You can consolidate multiple columns into one and apply functions like mean, sum, etc.
 
-* Create Visualizations: Some visualizations require specific data structures. Pivoting can help organize data to generate meaningful visualizations like time series plots, heatmaps, or faceted graphs.
+-   Create Visualizations: Some visualizations require specific data structures. Pivoting can help organize data to generate meaningful visualizations like time series plots, heatmaps, or faceted graphs.
 
-* Fit Models: Certain modeling techniques might require data in a specific shape. Pivoting can help transform data into a format suitable for predictive modeling or statistical analysis.
+-   Fit Models: Certain modeling techniques might require data in a specific shape. Pivoting can help transform data into a format suitable for predictive modeling or statistical analysis.
+
 
 ### Pivot Longer
 The `pivot_longer()` function is used to convert data from a wide format (with multiple columns) into a long format (fewer columns). It's particularly useful when you have variables spread across different columns and you want to stack them into a single column, often with corresponding values.
@@ -314,20 +441,28 @@ Since we are working with a lot of datasets from the Tidyverse these datasets ar
 
 ## On your own..
 
-Answer the following questions either in the exercise below or in your R script
+Since we are working with a lot of datasets from the Tidyverse these datasets are already in the tidy format and thus pivoting is not needed. But once you combine dataset together there can be options to summarise new variables and thus could lead to pivoting.
 
-1. Which airlines had the most delayed flights departing from NYC in 2013?
-2. What are the top destinations (airports) for flights departing from NYC in 2013?
-3. Which airlines had the highest average departure delays from each airport?
-4. What is the distribution of flight distances for flights departing from each airport?
-5. Which airlines operated the most flights from each airport in NYC?
-6. Create a dataset where each airline is a row and each column is a month (1-12) to see which is the busiest months for each airline.
+Using the package `palmerpenguins`, pivot the dataset to that all the penguin's biological measurement (bill and flipper) are in a tidy format. Use this to make visualizations that show multiple measurements together.
 
-```{r join_ex, exercise = TRUE}
-## Q1
-flights %>% 
-  left_join()
-## Q2
+```{r penguin, exercise = TRUE}
+library(palmerpenguins)
+penguins
+```
+
+
+### CTA STOPS
+
+Let’s look at a real dataset that isn’t tidy: the CTA Stops file.
+
+Each row represents a stop, and multiple columns indicate whether that stop is part of a given train line.
+
+```{r}
+stops <- read_csv("data/CTA_stops.csv")
+glimpse(stops)
 
 ```
 
+Notice the line columns: RED, BLUE, G, BRN, P, Pexp, Y, Pnk, O.
+
+Each of these columns represents the same variable — “train line” — but spread across many columns.
