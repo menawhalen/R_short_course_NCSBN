@@ -1,0 +1,727 @@
+---
+title: "Session-5"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+---
+# Strings and Dates
+
+## Introduction to stringr
+
+stringr is a powerful R package in the tidyverse for working with strings. It provides a set of functions that make it easier to manipulate, analyze, and extract information from character strings. In this tutorial, you'll learn how to use stringr for common string operations .Please see the [cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf) for more details.
+
+### Installing and Loading the stringr Package
+
+Before you can use stringr, you need to install and load the package. Open R or RStudio and run the following commands:
+
+```{r string}
+# Install stringr (only need to do this once)
+#install.packages("stringr")
+
+# Load stringr
+library(stringr)
+
+# Also in tidyverse
+library(tidyverse)
+```
+
+### Basic String Operations
+
+Let's start with some basic string operations.
+
+1.  str_length(): Finding the Length of a String You can use str_length() to find the length (the number of characters) in a string:
+
+```{r length}
+# Example
+my_string <- "Hello, World!"
+str_length(my_string)  # Output: 13
+```
+
+2.  str_to_lower() and str_to_upper(): Changing Case You can use str_to_lower() and str_to_upper() to change the case of a string:
+
+```{r cap}
+str_to_lower(my_string)  # Output: "hello, world!"
+str_to_upper(my_string)  # Output: "HELLO, WORLD!"
+```
+
+### Pattern Matching
+
+stringr provides functions to perform pattern matching and extraction.
+
+3.  str_detect(): Detecting Patterns Use str_detect() to check if a string contains a specific pattern:
+
+```{r detect}
+# Example
+my_string <- "The quick brown fox jumps over the lazy dog."
+str_detect(my_string, "fox")  # Output: TRUE
+```
+
+4.  str_replace(): Replacing Patterns You can use str_replace() to replace a pattern with another string:
+
+```{r replace}
+# Example
+my_string <- "The quick brown fox jumps over the lazy dog."
+str_replace(my_string, "fox", "cat")  # Output: "The quick brown cat jumps over the lazy dog."
+```
+
+5.  str_extract(): Extracting Patterns str_extract() extracts the first occurrence of a pattern from a string:
+
+```{r extract}
+# Example
+my_string <- "Email me at john@example.com or call at 555-123-4567."
+str_extract(my_string, "\\d{3}-\\d{3}-\\d{4}")  # Output: "555-123-4567"
+```
+
+6.  str_split(): Splitting Strings str_split() splits a string into a character vector using a specified delimiter:
+
+```{r split}
+# Example
+my_string <- "apple,banana,cherry"
+str_split(my_string, ",")  # Output: a character vector ["apple", "banana", "cherry"]
+```
+
+String Cleaning 7. str_trim(): Trimming Whitespace Use str_trim() to remove leading and trailing whitespace from a string:
+
+```{r trim}
+# Example
+my_string <- "  Trim me!   "
+str_trim(my_string)  # Output: "Trim me!"
+```
+
+8.  str_squish(): Removing Extra Whitespace str_squish() removes extra whitespace within a string:
+
+```{r squish}
+# Example
+my_string <- "Hello   world    from    R!"
+str_squish(my_string)  # Output: "Hello world from R!"
+```
+
+String Manipulation 9. str_c(): Combining Strings You can use str_c() to concatenate strings together:
+
+```{r conc}
+# Example
+first_name <- "John"
+last_name <- "Doe"
+full_name <- str_c(first_name, " ", last_name)
+```
+
+10. str_sub(): Substring Extraction str_sub() extracts substrings from a string:
+
+```{r sub}
+# Example
+my_string <- "Extract this part"
+str_sub(my_string, start = 9, end = 13)  # Output: "this"
+```
+
+### Summary
+
+stringr is a versatile package for working with strings in R. It provides functions for string manipulation, pattern matching, and cleaning. These functions make it easier to perform various text-related tasks when working with data.
+
+To get more familiar with string manipulation in R, try out these functions with different strings and patterns. The more you practice, the more proficient you'll become in handling strings in R.
+
+## On Your Own..
+
+Using the `sentences` dataset (which is a vector may have to change to a data.frame), practice the following questions.
+
+1.  Calculate and report the average character length of sentences in the "sentences" dataset. Which sentence is the shortest, and which is the longest?
+
+2.  Find all the sentences in the "sentences" dataset that use a comma. How many such sentences are there?
+
+3.  Count how many occurrence of the letter "t" is in each sentence. Which sentence has the most? How many have 0?
+
+4.  In the "sentences" dataset, extract and list all the sentences that contain the word "and" How many sentences contain this word?
+
+5.  Replace all occurrences of the word "good" with "excellent" in the "sentences" dataset. How many replacements were made, and what does the dataset look like after these replacements?
+
+## Introduction to `lubridate`
+
+`lubridate` is a popular R package that makes it easy to work with date-times. It provides a wide range of functions and methods to parse, manipulate, and format date-time objects. This tutorial will cover some of the fundamental aspects of using lubridate for working with date and time data in R. Please see the [cheatsheet](https://rawgit.com/rstudio/cheatsheets/main/lubridate.pdf) for more details.
+
+### Installing and Loading lubridate
+
+To use the lubridate package, you need to install it first. Open R or RStudio and run the following commands:
+
+```{r lubridate}
+# Install lubridate (only need to do this once)
+#install.packages("lubridate")
+
+# Load lubridate
+library(lubridate)
+
+## also in tidyverse
+```
+
+Now, you're ready to start working with date-time objects.
+
+### Creating Date-Time Objects
+
+You can create date-time objects in various ways:
+
+1.  Using ymd() for Date The ymd() function is used to create a date object from year, month, and day components.
+
+```{r lab}
+my_date <- ymd("2023-09-15")
+```
+
+2.  Using mdy() for Date If you have a date in the month-day-year format, you can use the mdy() function.
+
+```{r lab2}
+my_date <- mdy("09-15-2023")
+```
+
+3.  Using ymd_hms() for Date-Time To create a date-time object with hours, minutes, and seconds, use the ymd_hms() function.
+
+```{r lab3}
+my_datetime <- ymd_hms("2023-09-15 14:30:45")
+```
+
+### Extracting Components
+
+You can extract various components of date-time objects:
+
+4.  Extracting Year, Month, Day, etc.
+
+```{r extract-date}
+year(my_date)  # Extract year
+month(my_date)  # Extract month
+day(my_date)  # Extract day
+wday(my_date)  # Extract day of the week (Sunday: 1, Monday: 2, etc.)
+```
+
+### Arithmetic with Date-Times
+
+You can perform arithmetic operations with date-time objects:
+
+5.  Adding Days
+
+```{r adding}
+new_date <- my_date + days(7)  # Add 7 days to my_date
+```
+
+6.  Finding Time Difference
+
+```{r diff}
+diff <- my_date - my_datetime  # Find the time difference between my_date and my_datetime
+
+
+## can use difftime() too
+time1 <- ymd_hms("2023-09-15 08:30:00")
+time2 <- ymd_hms("2023-09-15 12:45:30")
+
+# Calculate the time difference in seconds
+time_diff_seconds <- as.numeric(difftime(time2, time1, units = "secs"))
+
+# Calculate the time difference in hours
+time_diff_hours <- as.numeric(difftime(time2, time1, units = "hours"))
+```
+
+7.  Finding Intervals lubridate provides functions to find intervals between two date-time objects. For example, you can use interval() to create a time interval between two date-times:
+
+```{r int}
+start_time <- ymd_hms("2023-09-15 08:30:00")
+end_time <- ymd_hms("2023-09-15 12:45:30")
+
+# Create an interval
+time_interval <- interval(start_time, end_time)
+
+```
+
+### Formatting Dates
+
+You can format date-time objects for display:
+
+8.  Using format()
+
+```{r format-labs}
+formatted_date <- format(my_date, format = "%A, %B %d, %Y")
+```
+
+### Parsing Dates
+
+You can parse character strings into date-time objects:
+
+9.  Using parse_date_time()
+
+```{r parse}
+date_string <- "Sep 15, 2023 14:30:45"
+parsed_datetime <- parse_date_time(date_string, orders = "mdy HMS")
+```
+
+### Summary
+
+lubridate is a powerful package in R for handling date-time data. It simplifies the creation, extraction, arithmetic, formatting, and parsing of date-time objects. This tutorial covered some of the basic operations you can perform with lubridate. As you explore date-time data, you'll find that lubridate is a valuable tool for your R programming tasks.
+
+### On your Own..
+
+Using the `flights` dataset answer the following questions.
+
+1.  Create a new column in the "flights" dataset that displays the departure time in the "hh:mm:ss" format (e.g., "08:45:00")
+
+2.Extract the year, month, and day from the "dep_time" column in the "flights" dataset and create separate columns for each.
+
+3.  Calculate the average departure delay for flights that occurred on Fridays. How does this compare to the average departure delay on Mondays?
+
+## Inside the Tidyverse
+
+Using these packages along with Tidyverse functions flow together inside the pipe.
+
+Pulling out the first word using `\\w+` and more can be found [here](https://stringr.tidyverse.org/articles/regular-expressions.html).
+
+```{r string-pipe}
+# Sample dataset
+data <- tibble(name = c("John Doe", "Jane Smith", "Bob Johnson"),
+               score = c(85, 92, 78))
+
+# Let's say we want to extract first names from the 'name' column
+data <- data %>%
+  mutate(first_name = str_extract(name, "\\w+"))
+
+# Now, filter the data for scores greater than 80
+high_scorers <- data %>%
+  filter(score > 80)
+
+# Print the result
+print(high_scorers)
+```
+
+Similar ideas can be applied to dates like using `floor_date()`
+
+```{r}
+# Sample dataset with dates and values
+data <- tibble(date = c("2023-05-01", "2023-05-20", "2023-05-31"),
+               value = c(45, 62, 73))
+
+# Convert the 'date' column to a Date class
+data <- data %>%
+  mutate(date = ymd(date))
+
+# Floor the dates to the beginning of the month
+data <- data %>%
+  mutate(week = floor_date(date, unit = "week"))
+
+# Filter the data for dates in May 2023
+may_data <- data %>%
+  filter(week == ymd("2023-05-28"))
+
+# Print the result
+print(may_data)
+```
+
+## On Your Own..
+
+Use the babynames dataset to find for different periods from 1880-2017 (say 7 periods like 1880-1899, etc.) what is the first letter for the top 20 baby names by gender for each of these periods. View it in a bar plot.
+
+
+# Loops
+## Loops and Conditional Statements
+
+### For Loops
+
+A for loop is a fundamental programming construct that allows you to repeat a block of code a specified number of times. It's especially useful when you need to perform the same operation multiple times or iterate over a sequence of elements, such as elements in a list, vector, or data frame.
+
+The basic structure of a for loop looks like this:
+
+```         
+  for (variable in sequence) {
+    # code to be executed in each iteration
+  }
+```
+
+Here's a breakdown of the components:
+
+-   variable: This is a variable that takes on each value in the sequence during each iteration of the loop.
+-   sequence: This defines the range or collection of values that the loop will iterate over. It could be a sequence of numbers (1:10), a vector, a list, or any other iterable data structure.
+
+The code block within the curly braces {} contains the operations you want to perform in each iteration of the loop.
+
+Examples of for loops
+
+```{r loops}
+# Consecutive indexes
+for (i in 1:10){
+  print(i)
+}
+
+for (i in 10:1){
+  print(i)
+}
+
+# Don't need to be consecutive!
+for (i in c(2, 3, 5, 7, 11)){
+  print(i)
+}
+
+## Doesn't have to be a number can be a vector of strings
+for (i in c("mike", "mary", "tom", "sue")){
+  print(i)
+}
+
+```
+
+### Conditional Statements
+
+Conditional statements are an essential part of programming that allow you to control the flow of your code based on certain conditions. In R, there are primarily three ways to implement conditional statements: `if`, `if else`, and the `ifelse()` function.
+
+#### If Statements
+
+The if statement allows you to execute a block of code only if a given condition is true.
+
+```{r if}
+sky <- "sunny"
+if (sky == "sunny"){
+  print("Leave your umbrella at home!")
+}
+
+sky <- "cloudy"
+if (sky == "sunny"){
+  print("Leave your umbrella at home!")
+}
+
+```
+
+#### If-Else Statements
+
+The if else statement extends the if statement to execute different blocks of code based on whether a condition is true or false.
+
+```{r if_else}
+number <- -3
+
+if (number > 0) {
+  print("The number is positive.")
+} else if (number < 0) {
+  print("The number is negative.")
+} else {
+  print("The number is zero.")
+}
+```
+
+#### Ifelse Function
+
+This is for when you want to use if else statements repeatedly to return a vector.
+
+```{r ifelse}
+numbers <- c(-2, 3, 0, -5, 7)
+positive_indicator <- ifelse(numbers > 0, "Positive", "Not Positive")
+print(positive_indicator)
+
+```
+
+## Functions
+
+### Why Build Functions?
+
+Functions are the building blocks of code. Just as we break down tasks into smaller steps in everyday life, functions break down complex coding tasks into manageable units. But why should we bother with building your own functions when so many others exist?
+
+-   Modularity: Functions help us organize code by grouping related actions together. This makes our code more structured, easier to read, and simpler to maintain.
+
+-   Reusability: Once you've built a function to perform a specific task, you can use it as many times as you need without rewriting the same code. This not only saves time but also reduces the chances of errors.
+
+-   Efficiency: Functions promote efficient code development by enabling us to focus on solving specific problems without getting bogged down in larger program logic.
+
+-   Debugging: When an error occurs, functions help narrow down the problematic part of the code, making it easier to identify and fix issues.
+
+### Function Syntax
+
+At its core, a function is a self-contained block of code designed to perform a specific task. Like a recipe, a function takes in ingredients (inputs or arguments) and produces a result (output). Let's break down the basic structure of a function in R:
+
+```         
+# Defining a Function
+function_name <- function(argument1, argument2, ...) {
+  # Code to perform the task
+  return(result)
+}
+```
+
+-   function_name: Choose a meaningful name for your function, describing what it does.
+-   argument1, argument2, ...: These are placeholders for the values (arguments) that the function will work with.
+-   return(result): After performing the task, the function uses the return statement to provide the result.
+
+```{r basic_func}
+
+## find the max between two numbers
+## takes in two number inputs
+find_max <- function(a, b) {
+  if (a > b) {
+    return(a)
+  } else {
+    return(b)
+  }
+}
+
+find_max(1,2)
+find_max(5,3)
+
+## checks even or odd
+## take in one number as the input
+check_even_odd <- function(num) {
+  if (num %% 2 == 0) {
+    return("Even")
+  } else {
+    return("Odd")
+  }
+}
+
+check_even_odd(71)
+check_even_odd(51)
+```
+
+## Exercise!
+
+The height of a lego brick is 9.6 mm. We want to build a tower at a height closest to x m.(Remember 1000 mm in a m.)
+
+Imagine your starter code is: x=3 \# I want to build a tower that is \~ 3 m high
+
+1.  Write a statement to calculate how many bricks are needed.
+2.  Write code using a while loop to calculate the number of bricks needed.
+3.  Challenge: Can you add an argument to the function that will allow you to return a any unit you want.
+
+```{r}
+
+```
+
+## Apply (Base R)
+
+### `apply` vs. `map`
+
+The apply family of functions (`apply`,`lapply`,`sapply`,`vapply`) has traditionally been a go-to tool for applying functions across rows or columns of data, or over elements in lists. While apply functions are still widely used, map functions from the`purrr`package offer similar functionality with additional benefits, like better compatibility with the pipe (`%\>%\`) and more intuitive outputs.
+
+### `apply` with Matrices and Data Frames
+
+`apply` is often used for applying functions over rows or columns in a matrix or data frame. For instance: Here's a brief overview of how `apply` functions work and how you might achieve similar outcomes using map.
+
+```{r}
+# Create a matrix
+matrix_data <- matrix(1:9, nrow = 3)
+
+# Apply the `sum` function to each row (MARGIN = 1)
+row_sums <- apply(matrix_data, MARGIN = 1, FUN = sum)
+row_sums
+
+# Apply the `sum` function to each column (MARGIN = 2)
+col_sums <- apply(matrix_data, MARGIN = 2, FUN = sum)
+col_sums
+
+```
+
+In the example above:
+
+-   `MARGIN = 1` applies the function to each row.
+
+-   `MARGIN = 2` applies the function to each column.
+
+### `lapply`, `sapply`, and `vapply` for Lists and Vectors
+
+When working with lists or vectors, you can use `lapply` and `sapply`. These functions return the results in slightly different formats:
+
+-   `lapply` returns a list.
+
+-   `sapply` tries to simplify the result into a vector or matrix, if possible.
+
+-   `vapply` is similar to `sapply`, but it requires you to specify the output type for more reliability.
+
+Example with `sapply`:
+
+```{r}
+# Create a vector
+values <- c(1, 2, 3, 4)
+
+# Square each value using sapply
+squared_values <- sapply(values, function(x) x^2)
+squared_values
+
+```
+
+### Moving to `map` in the Pipe
+
+With the rise of the tidyverse, `map` has become a more popular option, especially within pipes, where it can be more readable and flexible. The `map` functions also include type-specific options (`map_dbl`, `map_chr`, etc.) to simplify results directly into vectors, like `sapply`.
+
+```{r}
+# Using map to achieve the same result
+library(purrr)
+
+squared_values_map <- map_dbl(values, ~ .x^2)
+squared_values_map
+
+```
+
+## Map
+
+The `map` function is a powerful tool in the tidyverse package that allows you to *apply a function to each element of a list or vector*, and then returns a list containing the results. It's particularly useful when you have repetitive tasks to perform on multiple elements. This function is part of the `purrr` package within the tidyverse.
+
+Here is an example of map working where we define a function that squares each item in a vector.
+
+```{r map_sq, message=FALSE}
+library(tidyverse)
+# Create a list of values
+values <- c(2, 4, 6, 8)
+
+# Define a function to be applied
+square <- function(x) {
+  return(x^2)
+}
+
+# Use map to apply the function to each element
+result <- map(values, square)
+
+# The result is a list with squared values
+result
+## To get results back to a vector unlist()
+unlist(result)
+```
+
+The map function is especially handy when you have complex tasks, such as reading multiple files, performing calculations on multiple datasets, or creating multiple plots. It helps you avoid writing repetitive code and enhances the readability of your code.
+
+For instance, suppose you have a list of file names and you want to read each file and perform some operations on its content:
+
+```         
+  files <- c("file1.csv", "file2.csv", "file3.csv")
+  
+  # Define a function to read and process a file
+  process_file <- function(filename) {
+    data <- read_csv(filename)
+    # Perform operations on 'data'
+    return(processed_data)
+  }
+  
+  # Use map to process each file
+  processed_files <- map(files, process_file)
+```
+
+### Practice with the `penguins` dataset
+
+`nest` is used to group data into a nested structure. When combined with map, you can apply a function to each nested group separately and return the results as a new column.
+
+```{r pen_map}
+library(palmerpenguins)
+data("penguins")
+
+penguins %>% 
+  group_by(sex) %>% 
+  summarise(mean_length = mean(bill_length_mm, na.rm = TRUE))
+
+ penguins %>% 
+  group_by(species) %>% 
+  nest() %>% 
+  mutate(mean_body_mass = map(data, ~ mean(.x$body_mass_g, na.rm = TRUE)),
+         mean_bill_length = map(data, ~ mean(.x$bill_length_mm, na.rm = TRUE)),
+         mean_bill_depth = map(data, ~ mean(.x$bill_depth_mm, na.rm = TRUE)))
+ 
+```
+
+`map` returns a list where each element contains the output of applying the specified function to the corresponding element of the input data. It's useful when you expect the output to have different types or structures.
+
+`map_dbl` specifically returns a numeric vector. It's useful when you expect the output to be a numeric value, and it simplifies the output into a vector.
+
+```{r map_pen_dbl}
+ ## use map_dbl for number outputs
+  penguins %>% 
+  group_by(species) %>% 
+  nest() %>% 
+  mutate(mean_body_mass = map_dbl(data, ~ mean(.x$body_mass_g, na.rm = TRUE)),
+         mean_bill_length = map_dbl(data, ~ mean(.x$bill_length_mm, na.rm = TRUE)),
+         mean_bill_depth = map_dbl(data, ~ mean(.x$bill_depth_mm, na.rm = TRUE)))
+
+```
+
+### `Map2`
+
+### **Mapping over Multiple Lists with `map2`**
+
+Students can use `map2` to apply functions that need two input vectors. Here, we calculate the BMI for a list of weights and heights.
+
+```{r}
+weights <- c(60, 72, 90)
+heights <- c(1.65, 1.75, 1.80)
+
+# Define a function to calculate BMI
+calc_bmi <- function(weight, height) {
+  weight / (height^2)
+}
+
+# Use map2 to apply calc_bmi on both vectors
+bmis <- map2_dbl(weights, heights, calc_bmi)
+bmis
+
+```
+
+Now use a function we make with nesting and mapping together.
+
+```{r nest_map_funct}
+# Define a function to calculate mean and median flipper length
+## puts in a whole dataset (helpful for nest)
+
+calculate_stats <- function(data) {
+  mean_length <- mean(data$flipper_length_mm, na.rm = TRUE)
+  median_length <- median(data$flipper_length_mm, na.rm = TRUE)
+  
+  return(data.frame(mean_length, median_length))
+}
+
+# Group data by species and island
+## then use calculate_stats
+peng_stats <- penguins %>% 
+  group_by(species, island) %>% 
+  nest() %>% 
+  mutate(stats = map(data, calculate_stats)) 
+
+peng_stats
+## cant really see it
+## need to select and unnest the dataframe
+peng_stats %>% 
+  select(stats) %>%
+  unnest()
+
+### another way
+
+penguins %>%
+  group_by(species, island) %>%
+  nest() %>%
+  mutate(
+    stats = map(data, ~ tibble(
+      mean_flipper = mean(.x$flipper_length_mm, na.rm = TRUE),
+      sd_flipper = sd(.x$flipper_length_mm, na.rm = TRUE),
+      mean_body_mass = mean(.x$body_mass_g, na.rm = TRUE),
+      sd_body_mass = sd(.x$body_mass_g, na.rm = TRUE)
+    ))
+  ) %>%
+  unnest(stats)
+```
+
+##Real-World Examples: When `map` Really Helps
+
+The examples below are cases where `map` or `map2` genuinely earns its place — you couldn't achieve the same thing as cleanly with `mutate`, `summarise`, or a simple vectorised operation.
+
+### Modeling
+
+A very common real-world task is fitting a model separately for each group. map inside a nested tibble keeps every model neatly organised alongside its data. This is sometimes called the split-apply-combine pattern.
+
+```{r}
+penguin_models <- penguins %>%
+  drop_na() %>%
+  group_by(species) %>%
+  nest() %>%                         
+  mutate(
+    model   = map(data, ~ lm(body_mass_g ~ flipper_length_mm, data = .x)),
+    r2      = map_dbl(model, ~ summary(.x)$r.squared),
+    slope   = map_dbl(model, ~ coef(.x)["flipper_length_mm"])
+  )
+
+penguin_models %>% 
+  select(species, r2, slope)
+```
+
+Why not just use `lm(body_mass_g ~ flipper_length_mm * species)`? You could for this case, but once you want per-group R², residuals, or predictions stored as tidy columns, the nested map approach scales much more naturally. You end up with a self-contained tibble you can filter, sort, or pass to further `map` calls.
+
+We will explore this more in session 6 with in depth modeling and analysis.
+
+### Example 2: Running PCA on Each Group's Numeric Columns
+
+`map` is particularly useful when the function you want to apply returns something complex — like a whole PCA object — rather than a single number. There is no mutate/summarise equivalent for this.
+
+Try to perform PCA by species for all numerical variables in the `palmerpenguins` dataset using `prcomp`. Find out the % of variance explained by the first principal component.
+
+```{r}
+
+```
+

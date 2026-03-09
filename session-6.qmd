@@ -1,0 +1,571 @@
+---
+title: "Session-6"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+---
+
+## Working with Probability Distributions in R
+
+Before fitting models, it helps to understand how R thinks about probability distributions. R has a consistent naming system for working with distributions, built around four prefixes that each do something different.
+
+### The Four Prefixes
+
+For any distribution, R provides four functions:
+
+| Prefix | What it gives you | Example |
+|--------|-------------------|---------|
+| `d`    | **Density** (height of the curve at a value) | `dnorm(x)` |
+| `p`    | **Probability** (area under the curve to the left of a value) | `pnorm(q)` |
+| `q`    | **Quantile** (the value that corresponds to a given probability) | `qnorm(p)` |
+| `r`    | **Random samples** from the distribution | `rnorm(n)` |
+
+The distribution name follows the prefix: `norm`, `t`, `f`, `chisq`, `binom`,
+`pois`, `exp`, `unif`, and so on.
+
+---
+
+### The Normal Distribution
+
+The normal distribution is the most commonly used. Its two parameters are the mean (`mean`) and standard deviation (`sd`), which default to 0 and 1 (the standard normal).
+
+```{r}
+# d: what is the height of the density curve at x = 1?
+dnorm(1, mean = 0, sd = 1)
+
+# p: what proportion of values fall below 1.96?
+pnorm(1.96, mean = 0, sd = 1)       # roughly 0.975
+
+# p: what proportion fall *above* 1.96?
+pnorm(1.96, mean = 0, sd = 1, lower.tail = FALSE)   # roughly 0.025
+
+# q: what value cuts off the top 5%?
+qnorm(0.95, mean = 0, sd = 1)       # roughly 1.645
+
+# r: draw 5 random values from a N(0,1)
+rnorm(5, mean = 0, sd = 1)
+```
+
+`lower.tail = FALSE` is a useful argument available on all `p` and `q` functions. Instead of computing P(X ≤ q) it computes P(X > q), which saves you writing `1 - pnorm(...)`.
+
+### The t Distribution
+
+Used when estimating means from small samples, and the backbone of t-tests and regression coefficient tests. Its only shape parameter is degrees of freedom (`df`).
+```{r}
+# p: two-tailed p-value for a t statistic of 2.5 with 20 df
+2 * pt(-abs(2.5), df = 20)
+
+# q: critical value for a two-tailed test at alpha = 0.05, 20 df
+qt(0.975, df = 20)      # roughly 2.086
+
+# r: simulate 1000 t-distributed values
+rt(1000, df = 20)
+```
+
+
+### The Chi-Squared Distribution
+
+Comes up in goodness-of-fit tests, tests of independence, and as part of the F distribution. Parameterised by degrees of freedom only.
+
+```{r}
+# p: p-value for a chi-squared statistic of 7.8 with 3 df
+pchisq(7.8, df = 3, lower.tail = FALSE)
+
+# q: critical value at alpha = 0.05 with 3 df
+qchisq(0.95, df = 3)    # roughly 7.815
+
+# r: generate random chi-squared values
+rchisq(10, df = 3)
+```
+
+
+### The F Distribution
+
+Used in ANOVA and to test whether a regression model explains significant
+variance. Parameterised by two degrees of freedom: `df1` (numerator) and `df2` (denominator).
+```{r}
+# p: p-value for an F statistic of 4.5 with df1 = 2, df2 = 30
+pf(4.5, df1 = 2, df2 = 30, lower.tail = FALSE)
+
+# q: critical value at alpha = 0.05
+qf(0.95, df1 = 2, df2 = 30)    # roughly 3.316
+
+# r: simulate F-distributed values
+rf(10, df1 = 2, df2 = 30)
+```
+
+---
+
+### The Binomial Distribution
+
+For count data: the number of successes in `size` independent trials, each with probability `prob` of success.
+
+```{r}
+# d: probability of getting exactly 3 heads in 10 fair coin flips
+dbinom(3, size = 10, prob = 0.5)
+
+# p: probability of getting 3 or fewer heads
+pbinom(3, size = 10, prob = 0.5)
+
+# q: smallest number of heads such that P(X <= x) >= 0.95
+qbinom(0.95, size = 10, prob = 0.5)
+
+# r: simulate 8 experiments of 10 flips each
+rbinom(8, size = 10, prob = 0.5)
+```
+
+
+### A Note on `set.seed`
+
+Any time you use an `r` function, the results will be different each time you run the code. Use `set.seed` with any integer to make your results reproducible.
+```{r}
+set.seed(42)
+rnorm(5)   # same five numbers every time this is run
+```
+
+It is good practice to put a single `set.seed` call at the top of any script or code chunk that involves random number generation.
+
+## Inference
+
+Statistical inference allows us to draw conclusions about a population based on a sample. The key ideas here include point estimates, confidence intervals, and hypothesis testing.
+
+#### **Point Estimates:**
+
+A **point estimate** provides a single best guess for the value of an unknown parameter (e.g., population mean). Common point estimates include the sample mean or sample median.
+
+#### **Confidence Intervals:**
+
+A **confidence interval (CI)** gives a range of plausible values for a parameter, along with a level of confidence (e.g., 95% CI means we are 95% confident the true parameter lies within this range).
+
+#### **Hypothesis Testing:**
+
+Hypothesis testing is a method for testing a claim about a population based on sample data.
+
+-   **Permutation Testing:** A non-parametric approach to hypothesis testing, where we compare the observed test statistic to a distribution of test statistics generated by resampling.
+
+-   **t-test:** A test for comparing the means of two groups, assuming the data is normally distributed.
+
+-   **Chi-squared** Test: Used to test the association between categorical variables.
+
+-   **p-values:** The p-value tells you the probability of observing data as extreme as what was observed, assuming the null hypothesis is true. A smaller p-value indicates stronger evidence against the null hypothesis.
+
+### **Simulation Studies**
+
+Simulation studies help us explore the behavior of statistical methods, such as hypothesis testing, under various conditions. For example, the following simulation code generates random samples from a normal distribution and calculates the t-statistic for each sample:
+
+Lets do some simulations about point estimates and look at their properties - sample mean vs sample median
+
+```{r, message=FALSE}
+library(tidyverse)
+nsim <- 1000  # Number of simulations
+sample_size <- 30  # Sample size for each sample
+
+# Generate a tibble with mean and median from each simulation
+sim_data <- tibble(
+  sim = 1:nsim,
+  mean_result = map_dbl(1:nsim, ~ mean(rnorm(sample_size))),
+  median_result = map_dbl(1:nsim, ~ median(rnorm(sample_size)))
+)
+
+# Reshape data for easy plotting
+sim_data_long <- sim_data %>%
+  pivot_longer(cols = c(mean_result, median_result), names_to = "metric", values_to = "value")
+
+# Plot distributions of sample mean and sample median
+ggplot(sim_data_long, aes(x = value, fill = metric)) +
+  geom_histogram(alpha = 0.6, position = "identity", bins = 30) +
+  facet_wrap(~ metric) +
+  labs(title = "Distribution of Sample Mean vs Sample Median", x = "Value", y = "Frequency") +
+  theme_minimal()
+```
+
+Let's look at confidence interval coverage for a proportion.
+
+```{r}
+true_p <- 0.5  # True population proportion
+sample_size <- 100
+nsim <- 1000  # Number of simulations
+
+# Simulate confidence intervals
+ci_data <- tibble(
+  sim = 1:nsim,
+  sample_prop = map_dbl(1:nsim, ~ mean(rbinom(sample_size, 1, true_p))),
+  se = map_dbl(1:nsim, ~ sqrt((mean(rbinom(sample_size, 1, true_p)) * (1 - mean(rbinom(sample_size, 1, true_p))) / sample_size))),
+  lower_ci = sample_prop - qnorm(0.05, lower.tail = F) * se,
+  upper_ci = sample_prop + qnorm(0.05, lower.tail = F) * se
+) %>%
+  mutate(contains_true_p = (lower_ci <= true_p & upper_ci >= true_p))
+
+# Coverage proportion
+mean(ci_data$contains_true_p)
+
+# Plot confidence intervals, with intervals containing the true p in a different color
+ggplot(ci_data, aes(x = sim, y = sample_prop)) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, color = contains_true_p), width = 0.2) +
+  geom_hline(yintercept = true_p, linetype = "dashed", color = "red") +
+  scale_color_manual(values = c("red", "blue")) +
+  labs(title = "Confidence Interval Coverage for Proportion", x = "Simulation", y = "Sample Proportion") +
+  theme_minimal()
+```
+
+Let's do hypothesis testing "by hand". We'll do a t-test by hand.
+
+```{r}
+mu0 <- 50  # Null hypothesis mean
+sample_size <- 30
+nsim <- 1000
+alpha <- 0.05
+
+# Perform hypothesis test
+t_test_data <- tibble(
+  sim = 1:nsim,
+  sample_mean = map_dbl(1:nsim, ~ mean(rnorm(sample_size, mean = 52, sd = 5))),
+  sample_sd = map_dbl(1:nsim, ~ sd(rnorm(sample_size, mean = 52, sd = 5))),
+  t_stat = (sample_mean - mu0) / (sample_sd / sqrt(sample_size)),
+  reject_null = abs(t_stat) > qt(1 - alpha / 2, df = sample_size - 1)
+)
+
+# Proportion of tests that rejected the null hypothesis
+mean(t_test_data$reject_null)
+
+# Plot distribution of t-statistics and critical regions
+ggplot(t_test_data, aes(x = t_stat, fill = reject_null)) +
+  geom_histogram(bins = 30, alpha = 0.6) +
+  geom_vline(xintercept = c(qt(1 - alpha / 2, df = sample_size - 1), -qt(1 - alpha / 2, df = sample_size - 1)), linetype = "dashed", color = "red") +
+  labs(title = "Distribution of t-Statistics with Rejection Regions", x = "t-Statistic", y = "Frequency") +
+  scale_fill_manual(values = c("blue", "red")) +
+  theme_minimal()
+```
+
+Let's do a permutation test
+
+```{r}
+group1 <- rnorm(20, mean = 5, sd = 1)
+group2 <- rnorm(20, mean = 5.5, sd = 1)
+obs_diff <- mean(group2) - mean(group1)
+
+# Perform permutation test
+perm_data <- tibble(
+  perm = 1:1000,
+  perm_diff = map_dbl(1:1000, ~ {
+    permuted <- sample(c(group1, group2))
+    mean(permuted[21:40]) - mean(permuted[1:20])
+  })
+)
+
+# Calculate p-value
+p_value <- mean(abs(perm_data$perm_diff) >= abs(obs_diff))
+
+# Plot permutation distribution and observed difference
+ggplot(perm_data, aes(x = perm_diff)) +
+  geom_histogram(bins = 30, fill = "lightblue", color = "black") +
+  geom_vline(xintercept = obs_diff, linetype = "dashed", color = "red") +
+  labs(title = "Permutation Test Distribution", x = "Difference in Means", y = "Frequency") +
+  annotate("text", x = obs_diff, y = 30, label = paste("Observed Diff =", round(obs_diff, 2)), color = "red") +
+  theme_minimal()
+```
+
+Let's talk about p-values.
+
+```{r}
+mu0 <- 0
+n <- 30
+nsim <- 1000
+
+# Simulate p-values
+p_values_data <- tibble(
+  sim = 1:nsim,
+  sample_mean = map_dbl(1:nsim, ~ mean(rnorm(n, mean = 1))),  # Mean set to 1 to test under the alternative
+  sample_sd = map_dbl(1:nsim, ~ sd(rnorm(n, mean = 1))),
+  t_stat = (sample_mean - mu0) / (sample_sd / sqrt(n)),
+  p_value = 2 * (1 - pt(abs(t_stat), df = n - 1))
+)
+
+# Plot distribution of p-values
+ggplot(p_values_data, aes(x = p_value)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  labs(title = "Distribution of p-values (Alternative Hypothesis True)", x = "p-value", y = "Frequency") +
+  theme_minimal()
+
+
+```
+
+## Infer Package
+
+The [infer](https://infer.tidymodels.org/index.html) package provides a tidy, grammar-based framework for statistical inference. It allows you to conduct hypothesis tests, bootstrap intervals, and permutation tests using a pipeline that mirrors the logic of statistical reasoning:
+
+1.  Specify the variable(s) involved
+
+2.  Hypothesize the null model
+
+3.  Generate resamples under the null
+
+4.  Calculate the test statistic
+
+5.  Visualize the distribution
+
+6.  Get the p-value or confidence interval
+
+### Grammar of `infer`
+
+```         
+data %>%
+  specify(response ~ explanatory) %>%     # variables
+  hypothesize(null = "independence") %>%  # form of null
+  generate(reps = 1000, type = "permute") %>%   # how to simulate
+  calculate(stat = "diff in means")       # test statistic
+```
+
+-   `specify()` allows you to specify the variable, or relationship between variables, that you’re interested in.
+
+-   `hypothesize()` allows you to declare the null hypothesis.
+
+-   `generate()` allows you to generate data reflecting the null hypothesis.
+
+-   `calculate()` allows you to calculate a distribution of statistics from the generated data to form the null distribution.
+
+#### Permutation Test
+
+```{r}
+library(infer)
+
+group1 <- rnorm(20, mean = 5, sd = 1)
+group2 <- rnorm(20, mean = 5.5, sd = 1)
+
+df <- tibble(
+  value = c(group1, group2),
+  group = rep(c("A", "B"), each = 20)
+)
+
+obs_diff <- df %>%
+  specify(value ~ group) %>%
+  calculate(stat = "diff in means", order = c("B", "A"))
+
+
+perm_dist <- df %>%
+  specify(value ~ group) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in means", order = c("B", "A"))
+
+
+perm_dist %>%
+  get_p_value(obs_stat = obs_diff, direction = "two_sided")
+
+# Plot
+perm_dist %>%
+  visualize() +
+  shade_p_value(obs_stat = obs_diff, direction = "two_sided")
+
+
+```
+
+#### Bootstrap
+
+```{r}
+prop_df <- tibble(
+  response = factor(rbinom(100, size = 1, prob = 0.5), levels = c(0,1))
+)
+
+boot_dist <- prop_df %>%
+  specify(response ~ NULL, success = "1") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "prop")
+
+boot_dist %>%
+  get_ci(level = 0.95, type = "percentile")
+
+
+```
+
+#### One-sample simulation
+
+```{r}
+x <- rnorm(40, mean = 52, sd = 5)
+df <- tibble(x = x)
+
+obs_mean <- df %>% 
+  specify(x ~ NULL) %>% 
+  calculate(stat = "mean")
+
+null_dist <- df %>%
+  specify(x ~ NULL) %>%
+  hypothesize(null = "point", mu = 50) %>%
+  generate(reps = 1000, type = "bootstrap") %>%   # simulate sampling variation
+  calculate(stat = "mean")
+
+get_p_value(null_dist, obs_stat = obs_mean, direction = "two_sided")
+
+```
+
+# Regression
+
+## Model Building and Analysis
+
+The overarching goal is to move from implicit knowledge in the data to explicit knowledge in a quantitative model. This facilitates a deeper understanding of the data, aids in predictions, and enhances the applicability of the model to new domains.
+
+### Partitioning Data: Patterns and Residuals
+
+A model can be conceptualized as partitioning data into patterns and residuals. Visualizations help identify patterns, which are then made precise with a model. This process iterates, replacing the original response variable with the residuals from the model. This transition from implicit knowledge to explicit models enhances generalizability and usability.
+
+### Exploring Diamond Pricing
+
+#### Identifying Patterns
+
+An initial observation indicates a surprising relationship between the quality of diamonds and their price. Lower quality diamonds exhibit higher prices.
+
+```{r}
+library(tidyverse)
+ggplot(diamonds, aes(cut, price)) + geom_boxplot()
+ggplot(diamonds, aes(color, price)) + geom_boxplot()
+ggplot(diamonds, aes(clarity, price)) + geom_boxplot()
+
+```
+
+#### Addressing Confounding Variables
+
+It looks like lower quality diamonds have higher prices because there is an important confounding variable: the weight (carat) of the diamond. The weight of the diamond is the single most important factor for determining the price of the diamond, and lower quality diamonds tend to be larger.
+
+1.  Focus on diamonds smaller than 2.5 carats (99.7% of the data)
+2.  Log-transform the carat and price variables.
+
+```{r}
+library(hexbin)
+diamonds2 <- diamonds %>% 
+  filter(carat <= 2.5) %>% 
+  mutate(lprice = log2(price), lcarat = log2(carat))
+
+ggplot(diamonds2, aes(lcarat, lprice)) + geom_hex(bins = 50)
+mod_diamond <- lm(lprice ~ lcarat, data = diamonds2)
+broom::tidy(mod_diamond)
+```
+
+#### Incorporating Categorical Variables
+
+A more complex model includes additional predictors like color, cut, and clarity, providing a comprehensive understanding of their effects.
+
+```{r}
+mod_diamond2 <- lm(lprice ~ lcarat + color + cut + clarity, data = diamonds2)
+broom::tidy(mod_diamond2)
+```
+
+#### Broom
+
+Used to tidy up modeling output. <https://broom.tidymodels.org/>
+
+-   tidy
+-   augment
+-   glance
+
+## Many Models
+
+### Fundamentals
+
+1.  **Using Many Simple Models**: Employing a multitude of simple models aids in comprehending intricate datasets.
+2.  **List-Columns**: Leveraging list-columns to store diverse data structures within a data frame, such as a column containing linear models.
+3.  **Broom Package**: Utilizing the broom package by David Robinson to convert models into tidy data, enabling the application of various analysis techniques.
+
+### gapminder
+
+The [gapminder](https://cran.r-project.org/web/packages/gapminder/readme/README.html) data summarises the progression of countries over time, looking at statistics like life expectancy and GDP. Let's focus addressing: "How does life expectancy change over time for each country?" Initial plots are hard to interpret due to the dataset's size. To address this, linear models are fitted to each country to identify trends.
+
+#### ModelR
+
+Piping within the tidyverse and modeling <https://modelr.tidyverse.org/>
+
+```{r}
+library(modelr)
+library(gapminder)
+gapminder
+
+gapminder %>% 
+  ggplot(aes(year, lifeExp, group = country)) +
+    geom_line(alpha = 1/3)
+
+# Example with New Zealand
+nz <- filter(gapminder, country == "New Zealand")
+nz_mod <- lm(lifeExp ~ year, data = nz)
+## can't look at all countries
+```
+
+### Nested data
+
+To fit models to every country efficiently, we use nested data frames, which group data by country and continent.
+
+```{r}
+by_country <- gapminder %>% 
+  group_by(country, continent) %>% 
+  nest()
+by_country
+```
+
+### List-Columns
+
+A model-fitting function is defined, and the map function is used to apply it to each country's data. The resulting models are stored as list-columns in the data frame.
+
+```{r}
+country_model <- function(df) {
+  lm(lifeExp ~ year, data = df)
+}
+
+by_country <- by_country %>% 
+  mutate(model = map(data, country_model))
+
+```
+
+### Unnesting
+
+Residuals are computed for each model-data pair, and the nested data frame is transformed into a regular data frame using unnest.
+
+```{r}
+by_country <- by_country %>% 
+  mutate(
+    resids = map2(data, model, add_residuals)
+  )
+by_country
+
+resids <- unnest(by_country, resids)
+resids
+
+resids %>% 
+  ggplot(aes(year, resid)) +
+    geom_line(aes(group = country), alpha = 1 / 3) + 
+    geom_smooth(se = FALSE)
+
+## by continent
+resids %>% 
+  ggplot(aes(year, resid, group = country)) +
+    geom_line(alpha = 1 / 3) + 
+    facet_wrap(~continent)
+```
+
+### Model Quality
+
+The broom package is introduced for assessing model quality. The glance function is applied to extract model quality metrics, providing insights into model performance.
+
+```{r}
+glance <- by_country %>% 
+  mutate(glance = map(model, broom::glance)) %>% 
+  unnest(glance, .drop = TRUE)
+
+glance
+
+
+glance %>% 
+  arrange(r.squared)
+
+bad_fit <- filter(glance, r.squared < 0.25)
+
+gapminder %>% 
+  semi_join(bad_fit, by = "country") %>% 
+  ggplot(aes(year, lifeExp, colour = country)) +
+    geom_line()
+```
+
+------------------------------------------------------------------------
+
+On your Own...
+
+1.  Diamonds - use color cut and clarity to model price. (log transform if needed and analyze residuals and diagnostics).
+2.  Gapminder - predict life expantancy by continent (analyze fully)
