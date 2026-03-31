@@ -14,17 +14,16 @@ Before fitting models, it helps to understand how R thinks about probability dis
 
 For any distribution, R provides four functions:
 
-| Prefix | What it gives you | Example |
-|--------|-------------------|---------|
-| `d`    | **Density** (height of the curve at a value) | `dnorm(x)` |
-| `p`    | **Probability** (area under the curve to the left of a value) | `pnorm(q)` |
+| Prefix | What it gives you                                                | Example    |
+|------------------|-------------------------------------|------------------|
+| `d`    | **Density** (height of the curve at a value)                     | `dnorm(x)` |
+| `p`    | **Probability** (area under the curve to the left of a value)    | `pnorm(q)` |
 | `q`    | **Quantile** (the value that corresponds to a given probability) | `qnorm(p)` |
-| `r`    | **Random samples** from the distribution | `rnorm(n)` |
+| `r`    | **Random samples** from the distribution                         | `rnorm(n)` |
 
-The distribution name follows the prefix: `norm`, `t`, `f`, `chisq`, `binom`,
-`pois`, `exp`, `unif`, and so on.
+The distribution name follows the prefix: `norm`, `t`, `f`, `chisq`, `binom`, `pois`, `exp`, `unif`, and so on.
 
----
+------------------------------------------------------------------------
 
 ### The Normal Distribution
 
@@ -47,11 +46,12 @@ qnorm(0.95, mean = 0, sd = 1)       # roughly 1.645
 rnorm(5, mean = 0, sd = 1)
 ```
 
-`lower.tail = FALSE` is a useful argument available on all `p` and `q` functions. Instead of computing P(X ≤ q) it computes P(X > q), which saves you writing `1 - pnorm(...)`.
+`lower.tail = FALSE` is a useful argument available on all `p` and `q` functions. Instead of computing P(X ≤ q) it computes P(X \> q), which saves you writing `1 - pnorm(...)`.
 
 ### The t Distribution
 
 Used when estimating means from small samples, and the backbone of t-tests and regression coefficient tests. Its only shape parameter is degrees of freedom (`df`).
+
 ```{r}
 # p: two-tailed p-value for a t statistic of 2.5 with 20 df
 2 * pt(-abs(2.5), df = 20)
@@ -62,7 +62,6 @@ qt(0.975, df = 20)      # roughly 2.086
 # r: simulate 1000 t-distributed values
 rt(1000, df = 20)
 ```
-
 
 ### The Chi-Squared Distribution
 
@@ -79,11 +78,10 @@ qchisq(0.95, df = 3)    # roughly 7.815
 rchisq(10, df = 3)
 ```
 
-
 ### The F Distribution
 
-Used in ANOVA and to test whether a regression model explains significant
-variance. Parameterised by two degrees of freedom: `df1` (numerator) and `df2` (denominator).
+Used in ANOVA and to test whether a regression model explains significant variance. Parameterised by two degrees of freedom: `df1` (numerator) and `df2` (denominator).
+
 ```{r}
 # p: p-value for an F statistic of 4.5 with df1 = 2, df2 = 30
 pf(4.5, df1 = 2, df2 = 30, lower.tail = FALSE)
@@ -95,7 +93,7 @@ qf(0.95, df1 = 2, df2 = 30)    # roughly 3.316
 rf(10, df1 = 2, df2 = 30)
 ```
 
----
+------------------------------------------------------------------------
 
 ### The Binomial Distribution
 
@@ -115,10 +113,10 @@ qbinom(0.95, size = 10, prob = 0.5)
 rbinom(8, size = 10, prob = 0.5)
 ```
 
-
 ### A Note on `set.seed`
 
 Any time you use an `r` function, the results will be different each time you run the code. Use `set.seed` with any integer to make your results reproducible.
+
 ```{r}
 set.seed(42)
 rnorm(5)   # same five numbers every time this is run
@@ -164,8 +162,9 @@ sample_size <- 30  # Sample size for each sample
 # Generate a tibble with mean and median from each simulation
 sim_data <- tibble(
   sim = 1:nsim,
-  mean_result = map_dbl(1:nsim, ~ mean(rnorm(sample_size))),
-  median_result = map_dbl(1:nsim, ~ median(rnorm(sample_size)))
+  data = map(sim, ~ rnorm(sample_size)),
+  mean_result = map_dbl(data, ~ mean(.x)),
+  median_result = map_dbl(data, ~ median(.x))
 )
 
 # Reshape data for easy plotting
@@ -190,8 +189,9 @@ nsim <- 1000  # Number of simulations
 # Simulate confidence intervals
 ci_data <- tibble(
   sim = 1:nsim,
-  sample_prop = map_dbl(1:nsim, ~ mean(rbinom(sample_size, 1, true_p))),
-  se = map_dbl(1:nsim, ~ sqrt((mean(rbinom(sample_size, 1, true_p)) * (1 - mean(rbinom(sample_size, 1, true_p))) / sample_size))),
+  data = map(sim, ~rbinom(sample_size, 1, true_p)),
+  sample_prop = map_dbl(data, ~ mean(.x)),
+  se = sqrt(sample_prop * (1 - sample_prop) / sample_size),
   lower_ci = sample_prop - qnorm(0.05, lower.tail = F) * se,
   upper_ci = sample_prop + qnorm(0.05, lower.tail = F) * se
 ) %>%
@@ -220,8 +220,9 @@ alpha <- 0.05
 # Perform hypothesis test
 t_test_data <- tibble(
   sim = 1:nsim,
-  sample_mean = map_dbl(1:nsim, ~ mean(rnorm(sample_size, mean = 52, sd = 5))),
-  sample_sd = map_dbl(1:nsim, ~ sd(rnorm(sample_size, mean = 52, sd = 5))),
+  data = map(1:nsim, ~ rnorm(sample_size,mean=52,sd=5)),
+  sample_mean = map_dbl(data, ~ mean(.x)),
+  sample_sd = map_dbl(data, ~ sd(.x)),
   t_stat = (sample_mean - mu0) / (sample_sd / sqrt(sample_size)),
   reject_null = abs(t_stat) > qt(1 - alpha / 2, df = sample_size - 1)
 )
@@ -276,8 +277,9 @@ nsim <- 1000
 # Simulate p-values
 p_values_data <- tibble(
   sim = 1:nsim,
-  sample_mean = map_dbl(1:nsim, ~ mean(rnorm(n, mean = 1))),  # Mean set to 1 to test under the alternative
-  sample_sd = map_dbl(1:nsim, ~ sd(rnorm(n, mean = 1))),
+  data = map(1:nsim, ~ rnorm(n,mean = 0)),
+  sample_mean = map_dbl(data, ~ mean(.x)),  # Mean set to 1 to test under the alternative
+  sample_sd = map_dbl(data, ~ sd(.x)),
   t_stat = (sample_mean - mu0) / (sample_sd / sqrt(n)),
   p_value = 2 * (1 - pt(abs(t_stat), df = n - 1))
 )
@@ -317,7 +319,7 @@ data %>%
   calculate(stat = "diff in means")       # test statistic
 ```
 
--   `specify()` allows you to specify the variable, or relationship between variables, that you’re interested in.
+-   `specify()` allows you to specify the variable, or relationship between variables, that you're interested in.
 
 -   `hypothesize()` allows you to declare the null hypothesis.
 
