@@ -1,0 +1,1020 @@
+---
+title: "Session 8"
+format: 
+  html:
+    embed-resources: true
+
+editor: visual
+---
+
+## Overview
+
+This session covers two major extensions of the linear model framework you built in Session 7.
+
+**Part 1 — Generalized Linear Models (GLMs):** When the response variable is binary, a count, or otherwise non-normal, ordinary linear regression breaks down. GLMs extend the framework by letting the response follow a distribution from the exponential family and connecting the linear predictor to the mean via a *link function*. We'll focus on logistic regression (binary outcomes) and Poisson regression (counts), with a look at model assessment and visualization.
+
+**Part 2 — Regularization:** When models have many predictors, or predictors are correlated, ordinary least squares can overfit or produce unstable coefficient estimates. Regularization adds a penalty to the fitting criterion that shrinks coefficients toward zero. We'll cover ridge regression, the lasso, and elastic net, and use cross-validation to choose the penalty strength.
+
+Both topics are covered in depth in *An Introduction to Statistical Learning with Applications in R* (2nd ed.) by James, Witten, Hastie, and Tibshirani — a freely available and highly readable reference. GLMs are in **Chapter 4** (Classification) and **Chapter 4.6** (Generalized Linear Models); regularization is in **Chapter 6** (Linear Model Selection and Regularization). The book website is at [statlearning.com](https://www.statlearning.com/resources-second-edition) and includes the full PDF, slides, and lab code.
+
+------------------------------------------------------------------------
+
+## Setup
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(broom)
+library(ggfortify)
+library(patchwork)
+library(glmnet)      # ridge, lasso, elastic net
+library(ISLR2)       # datasets from the textbook
+library(lme4)        # mixed effects models
+library(lmerTest)    # p-values for lmer via Satterthwaite
+library(broom.mixed) # tidy() for lmer/glmer objects
+```
+
+------------------------------------------------------------------------
+
+# Part 1: Generalized Linear Models
+
+## The GLM Framework
+
+A GLM has three components:
+
+1.  A **random component** — the distribution of the response variable (normal, binomial, Poisson, …)
+2.  A **systematic component** — the linear predictor: $\eta = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p$
+3.  A **link function** — $g(\mu) = \eta$, connecting the mean of the response to the linear predictor
+
+| Response type | Distribution | Typical link | R family argument |
+|-----------------|-----------------|-----------------|---------------------|
+| Continuous | Normal (Gaussian) | Identity: $\mu = \eta$ | `gaussian` (default = `lm`) |
+| Binary (0/1) | Binomial | Logit: $\log\frac{\mu}{1-\mu} = \eta$ | `binomial` |
+| Count (0, 1, 2, …) | Poisson | Log: $\log(\mu) = \eta$ | `poisson` |
+| Rate or proportion | Gamma | Log or inverse | `Gamma` |
+
+The key function is `glm()`, which works exactly like `lm()` with one extra required argument: `family`.
+
+```{r, eval=FALSE}
+?glm
+```
+
+The `family` argument takes a family object — `binomial()`, `poisson()`, `gaussian()` — each of which has a default link function. You can override the link: `binomial(link = "probit")` for a probit model, for example.
+
+------------------------------------------------------------------------
+
+## Logistic Regression
+
+### The setup
+
+Logistic regression models the *log-odds* (logit) of a binary outcome as a linear function of predictors:
+
+$$\log\left(\frac{P(Y=1)}{1-P(Y=1)}\right) = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p$$
+
+This keeps predicted probabilities in (0, 1) and lets us model a binary response with the linear model machinery. The coefficients are estimated by maximum likelihood rather than least squares.
+
+We'll use the `Default` dataset from `ISLR2` — credit card customers, with `default` (Yes/No) as the outcome.
+
+```{r}
+data(Default, package = "ISLR2")
+glimpse(Default)
+```
+
+### Explore first
+
+```{r, fig.width=9, fig.height=4}
+p1 <- ggplot(Default, aes(x = balance, fill = default)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Balance by Default Status", x = "Balance", fill = "Default") +
+  theme_minimal()
+
+p2 <- ggplot(Default, aes(x = income, fill = default)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Income by Default Status", x = "Income", fill = "Default") +
+  theme_minimal()
+
+p1 + p2
+```
+
+```{r}
+# Class balance
+Default %>% count(default) %>% mutate(prop = n / sum(n))
+```
+
+### Fitting the model
+
+```{r}
+mod_logit <- glm(default ~ balance + income + student,
+                 data    = Default,
+                 family  = binomial)
+```
+
+The formula interface is identical to `lm()`. The only addition is `family = binomial`, which selects the binomial distribution and logit link function by default.
+
+### Reading the output
+
+```{r}
+summary(mod_logit)
+```
+
+The output looks similar to `lm()` with a few important differences:
+
+-   **Coefficients** are on the log-odds scale. A positive coefficient means the log-odds of the outcome increase with that predictor; a negative coefficient means they decrease.
+-   **z value** replaces the t-statistic (the Wald statistic: estimate / std. error). For large samples this behaves like a t, but it's labelled z because it's asymptotically normal.
+-   **Deviance** replaces sums of squares. The *null deviance* is the deviance of an intercept-only model; the *residual deviance* is the deviance of your fitted model. A large drop indicates your predictors explain meaningful variation.
+-   There is no R² in the output. We'll compute pseudo-R² below.
+
+```{r}
+tidy(mod_logit, conf.int = TRUE)
+```
+
+```{r}
+glance(mod_logit)
+```
+
+`glance()` returns the AIC, BIC, log-likelihood, and null/residual deviance — the main tools for model comparison with GLMs.
+
+### Interpreting coefficients: odds ratios
+
+Coefficients from logistic regression are log-odds, which are hard to interpret directly. Exponentiating gives **odds ratios** — the multiplicative change in the odds of the outcome for a one-unit increase in the predictor, holding others constant.
+
+```{r}
+tidy(mod_logit, exponentiate = TRUE, conf.int = TRUE)
+```
+
+An odds ratio of 1.006 for `balance` means each additional dollar of balance multiplies the odds of defaulting by 1.006 — a 0.6% increase per dollar. An odds ratio greater than 1 means increased risk; less than 1 means decreased risk.
+
+### Getting predicted probabilities
+
+`predict()` with `type = "response"` returns predicted probabilities on the (0, 1) scale — after applying the inverse logit. Without `type = "response"`, you get log-odds (the linear predictor scale).
+
+```{r}
+# Log-odds (linear predictor scale)
+head(predict(mod_logit, type = "link"))
+
+# Probabilities (response scale)
+head(predict(mod_logit, type = "response"))
+```
+
+```{r}
+# Predict for new observations
+new_customers <- tibble(
+  balance = c(500, 1500, 2500),
+  income  = c(40000, 40000, 40000),
+  student = factor(c("No", "No", "No"), levels = c("No", "Yes"))
+)
+
+predict(mod_logit, newdata = new_customers, type = "response")
+```
+
+### Visualizing the probability curve
+
+One of the most useful plots for logistic regression is the fitted probability curve overlaid with the actual binary outcomes. We plot the raw 0/1 outcomes as jittered points (so overlapping observations don't stack) and draw the model's predicted probability curve on top. This makes the S-shape of the logistic function concrete and shows where the model is most and least certain.
+
+```{r}
+# Marginal probability curve over balance, holding income and student fixed
+balance_grid <- tibble(
+  balance = seq(min(Default$balance), max(Default$balance), length.out = 300),
+  income  = median(Default$income),
+  student = factor("No", levels = c("No", "Yes"))
+)
+
+balance_grid <- balance_grid %>%
+  mutate(prob = predict(mod_logit, newdata = ., type = "response"))
+
+ggplot(balance_grid, aes(x = balance, y = prob)) +
+  geom_point(data = Default, aes(x = balance, y = as.numeric(default == "Yes"), color = default),
+             alpha = 0.2, size = 0.8, position = position_jitter(height = 0.02)) +
+  geom_line(linewidth = 1, color = "blue") +
+  scale_color_manual(values = c("No" = "grey50", "Yes" = "red")) +
+  labs(title = "Predicted Probability of Default vs Balance",
+       subtitle = "Points show actual outcomes (jittered slightly); line shows model-predicted probability",
+       x = "Balance", y = "P(Default)", color = "Default") +
+  theme_minimal()
+```
+
+### Classification and the confusion matrix
+
+Converting probabilities to class predictions requires a threshold. The default is 0.5, but this should be chosen based on the problem — in a rare-event setting like this, 0.5 may miss most positives.
+
+```{r}
+aug_logit <- augment(mod_logit, type.predict = "response") %>%
+  mutate(
+    predicted_class = factor(ifelse(.fitted > 0.5, "Yes", "No"), levels = c("No", "Yes"))
+  )
+
+# Confusion matrix
+table(Predicted = aug_logit$predicted_class, Actual = aug_logit$default)
+```
+
+```{r}
+# Overall accuracy, sensitivity, specificity
+aug_logit %>%
+  summarise(
+    accuracy    = mean(predicted_class == default),
+    sensitivity = sum(predicted_class == "Yes" & default == "Yes") / sum(default == "Yes"),
+    specificity = sum(predicted_class == "No"  & default == "No")  / sum(default == "No")
+  )
+```
+
+High specificity but low sensitivity is typical when the positive class is rare — most defaults are missed by a 0.5 threshold. Lowering the threshold increases sensitivity at the cost of more false positives.
+
+### Model comparison with `anova()` and AIC
+
+For GLMs, `anova()` uses likelihood-ratio tests (comparing deviance) rather than F-tests:
+
+```{r}
+mod_logit_null    <- glm(default ~ 1,       data = Default, family = binomial)
+mod_logit_balance <- glm(default ~ balance, data = Default, family = binomial)
+
+anova(mod_logit_null, mod_logit_balance, mod_logit, test = "Chisq")
+```
+
+Each row tests whether the additional terms significantly reduce deviance. The `test = "Chisq"` argument requests a likelihood-ratio chi-squared test, which is appropriate for GLMs.
+
+### Pseudo-R²
+
+GLMs don't have a natural R². McFadden's pseudo-R² is the most common substitute: it compares the log-likelihood of the fitted model to the null model. Values between 0.2 and 0.4 are generally considered good fits.
+
+```{r}
+# McFadden's pseudo-R²
+1 - (glance(mod_logit)$logLik / glance(mod_logit_null)$logLik)
+```
+
+------------------------------------------------------------------------
+
+## Poisson Regression
+
+### When to use it
+
+Poisson regression is for count outcomes — the number of events in a fixed period, area, or group. The Poisson distribution assumes the mean equals the variance; if your counts show much more spread than that (overdispersion), a negative binomial model may be more appropriate.
+
+We'll use the `Bikeshare` dataset from `ISLR2`, which records hourly bike rental counts along with weather and time variables.
+
+```{r}
+data(Bikeshare, package = "ISLR2")
+glimpse(Bikeshare)
+```
+
+```{r, fig.width=8, fig.height=4}
+p1 <- ggplot(Bikeshare, aes(x = bikers)) +
+  geom_histogram(bins = 40, fill = "blue", alpha = 0.8) +
+  labs(title = "Distribution of Hourly Bike Rentals", x = "Count", y = "Frequency") +
+  theme_minimal()
+
+p2 <- ggplot(Bikeshare, aes(x = factor(hr), y = bikers)) +
+  geom_boxplot(fill = "blue", alpha = 0.6, outlier.size = 0.5) +
+  labs(title = "Rentals by Hour of Day", x = "Hour", y = "Count") +
+  theme_minimal()
+
+p1 + p2
+```
+
+### Fitting the model
+
+```{r}
+mod_pois <- glm(bikers ~ hr + workingday + temp + weathersit,
+                data   = Bikeshare,
+                family = poisson)
+
+tidy(mod_pois) %>% print(n = 15)
+```
+
+The log link means the linear predictor predicts the *log* of the expected count. Exponentiated coefficients are **rate ratios** — the multiplicative change in the expected count for a one-unit increase in the predictor.
+
+```{r}
+tidy(mod_pois, exponentiate = TRUE, conf.int = TRUE) %>%
+  filter(!str_starts(term, "hr")) %>%   # suppress the 23 hour dummies for readability
+  print()
+```
+
+### Checking for overdispersion
+
+The Poisson model assumes mean = variance. A quick check: the residual deviance divided by its degrees of freedom should be close to 1 for a well-fitting Poisson model.
+
+```{r}
+glance(mod_pois)
+
+# Dispersion ratio
+glance(mod_pois)$deviance / glance(mod_pois)$df.residual
+```
+
+A value substantially greater than 1 (here it will likely be well above 1) signals overdispersion. In that case, a quasi-Poisson model adjusts the standard errors without changing the estimates:
+
+```{r}
+mod_qpois <- glm(bikers ~ hr + workingday + temp + weathersit,
+                 data   = Bikeshare,
+                 family = quasipoisson)
+
+# Compare standard errors — quasi-Poisson SEs will be larger
+bind_rows(
+  tidy(mod_pois)  %>% filter(term == "temp") %>% mutate(model = "Poisson"),
+  tidy(mod_qpois) %>% filter(term == "temp") %>% mutate(model = "Quasi-Poisson")
+) %>% select(model, term, estimate, std.error, p.value)
+```
+
+### Visualizing fitted counts
+
+```{r, fig.width=8, fig.height=4}
+augment(mod_pois, type.predict = "response") %>%
+  ggplot(aes(x = .fitted, y = bikers)) +
+  geom_point(alpha = 0.15, size = 0.8) +
+  geom_abline(slope = 1, intercept = 0, color = "red", linetype = "dashed") +
+  labs(title = "Observed vs Fitted Counts (Poisson)",
+       x = "Fitted", y = "Observed") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+## GLM Diagnostics
+
+GLM diagnostics work similarly to linear regression, but the interpretation of some plots shifts because the residuals are no longer expected to be normally distributed.
+
+There are several residual types for GLMs:
+
+-   **Response residuals** — observed minus fitted (on the response scale). These will *not* be normally distributed for non-Gaussian families.
+-   **Pearson residuals** — response residuals divided by the square root of the variance function. Standardizes for the mean-variance relationship.
+-   **Deviance residuals** — signed square roots of each observation's contribution to the residual deviance. These are the default in `plot.glm()` and are closest to the normal-theory residuals for large samples.
+
+```{r, fig.width=9, fig.height=7}
+# autoplot works on glm objects too
+autoplot(mod_logit, which = 1:4, ncol = 2) +
+  theme_minimal()
+```
+
+For GLMs, the **Residuals vs Fitted** and **Scale-Location** plots are the most useful. Don't expect the Q-Q plot to follow a straight line for binomial or Poisson models — the deviance residuals are only approximately normal.
+
+```{r}
+# Compare residual types manually
+augment(mod_pois) %>%
+  select(.fitted, .resid) %>%    # .resid is deviance residuals
+  ggplot(aes(.fitted, .resid)) +
+  geom_point(alpha = 0.2, size = 0.7) +
+  geom_smooth(se = FALSE, color = "blue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Deviance Residuals vs Fitted (Poisson)",
+       x = "Fitted (log scale)", y = "Deviance Residual") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+# Part 2: Regularization
+
+## Why Regularize?
+
+Ordinary least squares minimizes the residual sum of squares:
+
+$$\text{RSS} = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+
+When $p$ is large relative to $n$, or when predictors are correlated, OLS can:
+
+-   **Overfit** — fit the training data very well but generalize poorly to new data
+-   **Produce unstable estimates** — small changes in the data cause large swings in coefficients
+-   **Fail entirely** — if $p > n$, OLS has no unique solution
+
+Regularization adds a penalty term to the objective function that shrinks coefficients toward zero, trading a small increase in bias for a potentially large reduction in variance. This is covered thoroughly in **Chapter 6 of ISLR2**.
+
+The two most common penalties give rise to **ridge regression** and the **lasso**:
+
+$$\text{Ridge: } \text{RSS} + \lambda \sum_{j=1}^{p} \beta_j^2 \qquad \text{Lasso: } \text{RSS} + \lambda \sum_{j=1}^{p} |\beta_j|$$
+
+$\lambda \geq 0$ is the tuning parameter — larger $\lambda$ applies more shrinkage. At $\lambda = 0$ you recover OLS; as $\lambda \to \infty$ all coefficients go to zero.
+
+The key difference: the lasso's $|\beta_j|$ penalty can shrink coefficients *exactly* to zero, performing automatic variable selection. Ridge shrinks all coefficients toward zero but keeps them nonzero.
+
+------------------------------------------------------------------------
+
+## The `glmnet` Package
+
+All regularized regression in R flows through the `glmnet` package (Friedman, Hastie, Tibshirani). The main functions are:
+
+-   `glmnet()` — fits a regularized model across a range of lambda values simultaneously
+-   `cv.glmnet()` — runs k-fold cross-validation to choose the best lambda
+-   `predict()` — generates predictions at any lambda value
+-   `coef()` — extracts coefficients at any lambda value
+-   `plot()` — plots the coefficient path or CV curve
+
+`glmnet` does **not** use the formula interface. It requires a **matrix** of predictors (`x`) and a **vector** of responses (`y`). This is a meaningful difference from `lm()` and `glm()` — you need to build the model matrix explicitly.
+
+```{r, eval=FALSE}
+?glmnet
+?cv.glmnet
+```
+
+------------------------------------------------------------------------
+
+## Preparing Data: `model.matrix()`
+
+`model.matrix()` converts a formula and data frame into the predictor matrix that `glmnet` expects. It handles factor encoding automatically — the same way `lm()` does internally — and strips the intercept column (which `glmnet` adds itself).
+
+```{r}
+data(Hitters, package = "ISLR2")
+
+# Remove rows with missing salary
+Hitters <- na.omit(Hitters)
+glimpse(Hitters)
+```
+
+```{r}
+# Build the model matrix — [, -1] drops the intercept column
+x <- model.matrix(Salary ~ ., data = Hitters)[, -1]
+y <- Hitters$Salary
+
+dim(x)   # 263 observations, 19 predictors (after dummy encoding)
+```
+
+The `~ .` shorthand uses all other columns as predictors. Categorical variables like `League` and `Division` are automatically dummy-encoded by `model.matrix()`.
+
+------------------------------------------------------------------------
+
+## Ridge Regression
+
+Ridge regression adds an L2 penalty — the sum of squared coefficients — to the RSS. This has a specific geometric interpretation: it constrains the coefficient vector to lie within a sphere centered at zero. The size of that sphere is controlled by $\lambda$. When predictors are correlated, OLS spreads the coefficient mass arbitrarily across them; ridge distributes it more evenly, stabilizing estimates at the cost of some bias.
+
+An important practical note: `glmnet` **standardizes predictors internally** before fitting, so coefficients are estimated on a common scale. This is essential for penalized methods — without standardization, the penalty would unfairly punish predictors measured in large units. The coefficients returned are back-transformed to the original scale, but the penalty was applied equally.
+
+Set `alpha = 0` in `glmnet()` for ridge. Rather than fitting at a single lambda, `glmnet` fits the model simultaneously across a grid of 100 lambda values (from very large to very small), returning the full coefficient *path* in one call. This is computationally efficient because of the warm-start algorithm used internally.
+
+```{r}
+ridge_mod <- glmnet(x, y, alpha = 0)
+```
+
+### The coefficient path
+
+Each line is one predictor's coefficient value as lambda changes. Reading right to left (decreasing lambda = less penalty = more freedom):
+
+```{r}
+plot(ridge_mod, xvar = "lambda", label = TRUE)
+title("Ridge: Coefficient Path", line = 3)
+```
+
+At the far left (large lambda), everything is crushed toward zero — the penalty dominates. Moving right, coefficients expand toward their OLS values as the penalty weakens. The number of predictors at the top of the plot is always 19 for ridge — no coefficients ever reach exactly zero.
+
+### Choosing lambda with cross-validation
+
+The coefficient path shows *what happens* at every lambda, but doesn't tell you which lambda to use. That's the job of `cv.glmnet()`, which performs k-fold cross-validation (default k = 10) across the lambda grid. In each fold, it holds out a subset of the data, fits the model on the rest, and measures prediction error on the held-out portion. Averaging across folds gives an honest estimate of out-of-sample error at each lambda.
+
+```{r}
+set.seed(417)   # cv.glmnet involves random fold assignment
+cv_ridge <- cv.glmnet(x, y, alpha = 0)
+plot(cv_ridge)
+title("Ridge: Cross-Validation MSE vs Lambda", line = 3)
+```
+
+The y-axis is mean squared error across held-out folds; the x-axis is log(lambda). The error bars show the standard deviation of CV error across folds. Two vertical dashed lines are drawn automatically:
+
+-   **`lambda.min`** — the lambda value that minimizes CV error. Use this when prediction accuracy is the primary goal.
+-   **`lambda.1se`** — the *largest* lambda whose CV error is within one standard error of the minimum. The "one standard error rule" deliberately favors more shrinkage when the CV curve is flat — the simpler model performs nearly as well, so you take it.
+
+```{r}
+cv_ridge$lambda.min    # optimal lambda
+cv_ridge$lambda.1se    # more conservative choice
+```
+
+The `cvm` component of the `cv.glmnet` object holds the mean CV error at each lambda; `cvsd` holds the standard deviation. These are what the plot is drawing.
+
+### Extracting and visualizing coefficients
+
+`coef()` on a `cv.glmnet` object extracts coefficients at a specified lambda. The `s` argument takes either a numeric lambda value or the string `"lambda.min"` / `"lambda.1se"`.
+
+The return value is a sparse matrix — a memory-efficient format used because lasso models can have many exact zeros. Converting with `as.matrix()` then `as_tibble()` gives a tidy data frame. The column name after conversion will be `"1"` (glmnet's generic name for a single lambda value), which we rename for clarity.
+
+```{r}
+# Raw sparse matrix output
+coef(cv_ridge, s = "lambda.min")
+```
+
+```{r}
+# Tidy for plotting
+ridge_coefs <- coef(cv_ridge, s = "lambda.min") %>%
+  as.matrix() %>%
+  as_tibble(rownames = "term") %>%
+  setNames(c("term", "estimate")) %>%
+  filter(term != "(Intercept)") %>%
+  arrange(desc(abs(estimate)))
+
+ggplot(ridge_coefs, aes(x = estimate, y = reorder(term, abs(estimate)))) +
+  geom_col(fill = "blue", alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(title = "Ridge Coefficients at lambda.min",
+       x = "Coefficient", y = NULL) +
+  theme_minimal()
+```
+
+Notice every predictor has a nonzero coefficient — ridge shrinks but does not select. This is a fundamental property of the L2 penalty.
+
+------------------------------------------------------------------------
+
+## The Lasso
+
+The lasso (Least Absolute Shrinkage and Selection Operator) replaces the L2 penalty with an L1 penalty — the sum of absolute values of coefficients. This seemingly small change has a large consequence: the L1 penalty has a sharp corner at zero, which means the optimization solution can land *exactly* at zero for some coefficients. Ridge can only approach zero asymptotically; lasso can hit it.
+
+This makes the lasso a simultaneous estimation and variable selection method. Rather than deciding which variables to include as a separate step, the penalty does it automatically during fitting. This is especially powerful when you believe the true model is sparse — only a subset of predictors genuinely matter.
+
+Set `alpha = 1`. Everything else in the workflow is identical to ridge.
+
+```{r}
+set.seed(417)
+cv_lasso <- cv.glmnet(x, y, alpha = 1)
+plot(cv_lasso)
+title("Lasso: Cross-Validation MSE vs Lambda", line = 3)
+```
+
+Look at the numbers printed along the top of the CV plot — these are the counts of nonzero coefficients at each lambda value. At the right (large lambda, heavy penalty), very few predictors survive. Moving left, more enter the model. This is a feature unique to the lasso: the plot tells you simultaneously how well the model fits *and* how complex it is.
+
+```{r}
+cv_lasso$lambda.min
+cv_lasso$lambda.1se
+```
+
+### Coefficients and variable selection
+
+```{r}
+# At lambda.min: best predictive performance
+coef(cv_lasso, s = "lambda.min")
+```
+
+```{r}
+# At lambda.1se: sparser model, nearly as good
+coef(cv_lasso, s = "lambda.1se")
+```
+
+At `lambda.1se`, more coefficients are exactly zero. This is a deliberate trade — you're accepting a small increase in CV error for a simpler, more interpretable model. In most applied settings, `lambda.1se` is the preferred default unless pure predictive performance is the goal.
+
+```{r}
+# Lasso coefficient plot — zeros are substantively meaningful
+lasso_coefs <- coef(cv_lasso, s = "lambda.1se") %>%
+  as.matrix() %>%
+  as_tibble(rownames = "term") %>%
+  setNames(c("term", "estimate")) %>%
+  filter(term != "(Intercept)")
+
+ggplot(lasso_coefs, aes(x = estimate, y = reorder(term, abs(estimate)),
+                        fill = estimate != 0)) +
+  geom_col(alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("FALSE" = "grey70", "TRUE" = "blue"),
+                    labels = c("Zeroed out", "Retained"),
+                    name = NULL) +
+  labs(title = "Lasso Coefficients at lambda.1se",
+       subtitle = "Grey bars = coefficients shrunk exactly to zero (excluded from model)",
+       x = "Coefficient", y = NULL) +
+  theme_minimal()
+```
+
+### Coefficient path for lasso
+
+```{r}
+lasso_path <- glmnet(x, y, alpha = 1)
+plot(lasso_path, xvar = "lambda", label = TRUE)
+title("Lasso: Coefficient Path", line = 3)
+```
+
+The lasso path looks strikingly different from ridge: coefficients don't taper smoothly — they hit zero at different lambda values and stay there. This is the sparsity-inducing property made visible. Each kink in the path is where another predictor enters (moving right to left) or exits (moving left to right) the active set. The order in which variables enter as lambda decreases roughly reflects their importance to the model.
+
+------------------------------------------------------------------------
+
+## Elastic Net
+
+Elastic net blends ridge and lasso by mixing their penalties, controlled by `alpha`:
+
+$$\text{Elastic Net: } \text{RSS} + \lambda \left[ \frac{1-\alpha}{2} \sum \beta_j^2 + \alpha \sum |\beta_j| \right]$$
+
+-   `alpha = 0` → pure ridge
+-   `alpha = 1` → pure lasso
+-   `0 < alpha < 1` → elastic net
+
+Elastic net inherits the sparsity of lasso (some coefficients go to zero) while using the ridge component to handle correlated predictors more gracefully. The lasso has an undesirable tendency with correlated predictors: it tends to arbitrarily pick one and drop the rest, even when they all carry similar information. The ridge penalty provides a "grouping effect" — correlated predictors are shrunk together. Elastic net at, say, `alpha = 0.5` gets you variable selection *and* grouped shrinkage.
+
+```{r}
+set.seed(417)
+cv_enet <- cv.glmnet(x, y, alpha = 0.5)
+
+# Compare CV errors at lambda.min across all three methods
+tibble(
+  method  = c("Ridge", "Lasso", "Elastic Net (alpha=0.5)"),
+  lambda  = c(cv_ridge$lambda.min, cv_lasso$lambda.min, cv_enet$lambda.min),
+  cv_mse  = c(min(cv_ridge$cvm),   min(cv_lasso$cvm),   min(cv_enet$cvm))
+)
+```
+
+In practice, `alpha` itself can be treated as a hyperparameter to tune. This requires an outer cross-validation loop around `cv.glmnet()`, which is more naturally handled by the `tidymodels` framework — something we'll return to later in the course.
+
+------------------------------------------------------------------------
+
+## Comparing OLS, Ridge, and Lasso
+
+Putting the three estimators side by side makes the shrinkage concrete. We'll extract coefficients from all three at their respective optimal lambda values and plot them together.
+
+```{r}
+# OLS — broom::tidy() gives a clean tibble directly
+ols_coefs <- lm(Salary ~ ., data = Hitters) %>%
+  tidy() %>%
+  filter(term != "(Intercept)") %>%
+  select(term, estimate) %>%
+  mutate(method = "OLS")
+
+# Ridge at lambda.min — coef() returns a sparse matrix; setNames() handles the column rename
+# robustly regardless of what glmnet names the column internally
+ridge_coefs_min <- coef(cv_ridge, s = "lambda.min") %>%
+  as.matrix() %>%
+  as_tibble(rownames = "term") %>%
+  setNames(c("term", "estimate")) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(method = "Ridge")
+
+# Lasso at lambda.min
+lasso_coefs_min <- coef(cv_lasso, s = "lambda.min") %>%
+  as.matrix() %>%
+  as_tibble(rownames = "term") %>%
+  setNames(c("term", "estimate")) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(method = "Lasso")
+
+all_coefs <- bind_rows(ols_coefs, ridge_coefs_min, lasso_coefs_min)
+
+ggplot(all_coefs, aes(x = estimate, y = term, color = method, shape = method)) +
+  geom_point(size = 2.5, alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_color_manual(values = c("OLS" = "grey30", "Ridge" = "blue", "Lasso" = "red")) +
+  labs(title = "Coefficient Estimates: OLS vs Ridge vs Lasso",
+       x = "Estimate", y = NULL, color = "Method", shape = "Method") +
+  theme_minimal()
+```
+
+A few things to look for in this plot: ridge coefficients (blue) are pulled toward zero relative to OLS (grey), but maintain the same sign and ranking. Lasso coefficients (red) are also shrunk, and some are exactly zero — those predictors are absent from the model entirely. Where OLS has a large coefficient, ridge and lasso shrink it; where OLS has a small coefficient, lasso may zero it out while ridge keeps a shrunken version.
+
+------------------------------------------------------------------------
+
+## Regularization for Logistic Regression
+
+`glmnet` handles regularized GLMs too — just pass `family = "binomial"` (as a string, unlike in `glm()`). This gives you a regularized logistic regression, which is extremely useful for high-dimensional classification problems.
+
+```{r}
+# Regularized logistic regression on the Default dataset
+x_default <- model.matrix(default ~ balance + income + student,
+                           data = Default)[, -1]
+y_default  <- as.numeric(Default$default == "Yes")
+
+set.seed(417)
+cv_logit_lasso <- cv.glmnet(x_default, y_default,
+                             alpha  = 1,
+                             family = "binomial")
+plot(cv_logit_lasso)
+title("Regularized Logistic Regression: CV Deviance", line = 3)
+```
+
+```{r}
+coef(cv_logit_lasso, s = "lambda.min")
+```
+
+The workflow is identical to the Gaussian case — the penalty structure and cross-validation work the same way; only the loss function changes.
+
+------------------------------------------------------------------------
+
+## Predictions from `glmnet`
+
+`predict()` for `cv.glmnet` objects works similarly to `lm()` and `glm()`, with a few differences:
+
+-   The `newx` argument (not `newdata`) takes a matrix, so you need `model.matrix()` for new data too.
+-   `s` specifies the lambda value to use.
+-   For classification, `type = "response"` gives probabilities; `type = "class"` gives predicted class labels.
+
+```{r}
+# Predictions on training data at lambda.min
+pred_ridge <- predict(cv_ridge, newx = x, s = "lambda.min")
+pred_lasso <- predict(cv_lasso, newx = x, s = "lambda.min")
+
+# Compare test MSE (using training data here for illustration; in practice use a held-out set)
+tibble(
+  method = c("OLS", "Ridge", "Lasso"),
+  mse    = c(
+    mean((y - predict(lm(Salary ~ ., data = Hitters)))^2),
+    mean((y - pred_ridge)^2),
+    mean((y - pred_lasso)^2)
+  )
+)
+```
+
+Note that comparing methods on training data favors OLS — always use a held-out test set or cross-validation for honest comparison.
+
+------------------------------------------------------------------------
+
+## A Proper Train/Test Split
+
+```{r}
+set.seed(417)
+train_idx <- sample(1:nrow(Hitters), nrow(Hitters) * 0.7)
+
+x_train <- x[train_idx, ];   y_train <- y[train_idx]
+x_test  <- x[-train_idx, ];  y_test  <- y[-train_idx]
+
+# Fit on training set
+cv_ridge_train <- cv.glmnet(x_train, y_train, alpha = 0)
+cv_lasso_train <- cv.glmnet(x_train, y_train, alpha = 1)
+ols_train      <- lm(Salary ~ ., data = Hitters[train_idx, ])
+
+# Evaluate on test set
+tibble(
+  method   = c("OLS", "Ridge", "Lasso"),
+  test_mse = c(
+    mean((y_test - predict(ols_train,      newdata = Hitters[-train_idx, ]))^2),
+    mean((y_test - predict(cv_ridge_train, newx = x_test, s = "lambda.min"))^2),
+    mean((y_test - predict(cv_lasso_train, newx = x_test, s = "lambda.min"))^2)
+  ),
+  test_rmse = sqrt(test_mse)
+)
+```
+
+This is the honest comparison. Regularization methods generally improve on OLS when p is not small relative to n, or when predictors are correlated.
+
+------------------------------------------------------------------------
+
+# Part 3: Fixed and Random Effects — Hierarchical Modeling
+
+## Why Grouped Data Needs a Different Approach
+
+So far every model has treated observations as independent. In practice, data are often *clustered* — students within schools, patients within hospitals, repeated measures on the same person, animals within litters. Observations within the same cluster tend to be more similar to each other than to observations in other clusters. Ignoring this structure violates the independence assumption and leads to:
+
+-   **Underestimated standard errors** — you effectively have less independent information than the sample size suggests
+-   **Incorrect inference** — p-values and confidence intervals will be too narrow
+-   **Confounded estimates** — cluster-level variables (e.g., school quality) get tangled up with individual-level variables
+
+The solution is a **mixed effects model** (also called a multilevel model or hierarchical model), which explicitly partitions variability into within-cluster and between-cluster components.
+
+### Fixed vs random effects: the conceptual distinction
+
+|   | Fixed effects | Random effects |
+|------------------------|------------------------|------------------------|
+| **What they are** | Parameters for specific, named levels you care about | Parameters drawn from a distribution over a population of levels |
+| **Inference** | About those specific levels | About the population of levels |
+| **Typical use** | Treatment conditions, specific interventions, demographic groups | Schools, hospitals, subjects, sites — clusters you sampled from a larger population |
+| **Number of levels** | Usually small | Can be large |
+| **In the formula** | `y ~ group` | `(1 | group)` |
+
+A model with both fixed and random effects is a **mixed effects model**. The "fixed" part is everything you've seen in `lm()` and `glm()`. The "random" part adds cluster-level intercepts (and optionally slopes) that are themselves modeled as draws from a normal distribution.
+
+The random intercept model for observation $i$ in cluster $j$ is:
+
+$$y_{ij} = \underbrace{(\beta_0 + b_{0j})}_{\text{cluster intercept}} + \beta_1 x_{ij} + \epsilon_{ij}$$
+
+where $b_{0j} \sim N(0, \sigma^2_b)$ is the random intercept for cluster $j$, and $\epsilon_{ij} \sim N(0, \sigma^2)$ is the residual. The model estimates $\sigma^2_b$ (how much clusters vary in their baseline) and $\sigma^2$ (within-cluster residual variance) simultaneously.
+
+------------------------------------------------------------------------
+
+## The `lme4` Package
+
+Mixed effects models in R are fit with `lme4` (Linear Mixed-Effects Models using Eigen and S4). The two main functions are:
+
+-   `lmer()` — for continuous (Gaussian) responses; equivalent to `lm()` with random effects
+-   `glmer()` — for non-Gaussian responses (binomial, Poisson, etc.); equivalent to `glm()` with random effects
+
+The formula interface extends the standard one with a random effects syntax inside parentheses:
+
+| Formula | Meaning |
+|------------------------------------|------------------------------------|
+| `y ~ x + (1 | group)` | Random intercepts by group |
+| `y ~ x + (x | group)` | Random intercepts and random slopes for `x` by group |
+| `y ~ x + (1 | school/class)` | Nested random effects: classes within schools |
+| `y ~ x + (1 | school) + (1 | student)` | Crossed random effects |
+
+```{r, message=FALSE, warning=FALSE}
+```
+
+------------------------------------------------------------------------
+
+## Random Intercept Model
+
+We'll use the `sleepstudy` dataset from `lme4` — reaction times from 18 subjects measured over 10 days of sleep deprivation. Each subject has 10 repeated measurements; subjects are the clustering variable.
+
+```{r}
+data(sleepstudy, package = "lme4")
+glimpse(sleepstudy)
+```
+
+### Explore the structure
+
+```{r, fig.width=9, fig.height=5}
+ggplot(sleepstudy, aes(x = Days, y = Reaction, group = Subject, color = Subject)) +
+  geom_line(alpha = 0.6) +
+  geom_point(alpha = 0.6, size = 1) +
+  labs(title = "Reaction Time Over Days of Sleep Deprivation",
+       subtitle = "Each line is one subject",
+       x = "Days of sleep deprivation", y = "Reaction time (ms)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Two things are immediately clear: reaction time increases with days (a fixed effect), and subjects differ substantially in their baseline reaction time and in how steeply they worsen (suggesting random intercepts *and* random slopes).
+
+### Fitting the models
+
+```{r}
+# Random intercepts only — subjects differ in baseline, but same slope
+mod_ri <- lmer(Reaction ~ Days + (1 | Subject), data = sleepstudy)
+
+# Random intercepts and slopes — subjects differ in both baseline and rate of change
+mod_rs <- lmer(Reaction ~ Days + (Days | Subject), data = sleepstudy)
+```
+
+### Reading the output
+
+```{r}
+summary(mod_ri)
+```
+
+The summary has two major sections that don't appear in `lm()` output:
+
+-   **Random effects** — shows the estimated variance and standard deviation for the random intercept (`Subject`) and the residual. The "Corr" column in the random slopes model would show the estimated correlation between random intercepts and slopes.
+-   **Fixed effects** — the population-average coefficient for `Days`, interpreted just like an `lm()` coefficient. This is the average slope across all subjects.
+
+The **ICC** (Intraclass Correlation Coefficient) measures what proportion of total variance is between clusters. You can compute it from the variance components:
+
+```{r}
+# Extract variance components
+vc <- as.data.frame(VarCorr(mod_ri))
+vc
+
+# ICC = between-cluster variance / total variance
+icc <- vc$vcov[1] / sum(vc$vcov)
+cat("ICC:", round(icc, 3), "\n")
+```
+
+An ICC of, say, 0.4 means 40% of the total variability in reaction time is attributable to stable between-subject differences — a strong argument for including the random effect.
+
+### Tidy output with `broom.mixed`
+
+The `broom` package doesn't handle `lmer` objects directly — use `broom.mixed` instead (already loaded in the setup chunk):
+
+```{r}
+# Fixed effects table
+tidy(mod_ri, effects = "fixed", conf.int = TRUE)
+
+# Variance components
+tidy(mod_ri, effects = "ran_pars")
+```
+
+### Comparing random intercepts vs random slopes
+
+```{r}
+anova(mod_ri, mod_rs)
+```
+
+`anova()` on two `lmer` objects performs a likelihood-ratio test. A significant result here means the added complexity of random slopes is justified by the data — subjects genuinely differ in their rate of change, not just their starting point.
+
+### Visualizing random effects
+
+The random effects themselves (the $b_{0j}$ values) can be extracted with `ranef()`. These are the cluster-specific deviations from the population-average intercept.
+
+```{r}
+# Extract random intercepts
+ranef_df <- ranef(mod_ri)$Subject %>%
+  as_tibble(rownames = "Subject") %>%
+  rename(intercept_deviation = `(Intercept)`) %>%
+  arrange(intercept_deviation)
+
+ggplot(ranef_df, aes(x = intercept_deviation, y = reorder(Subject, intercept_deviation))) +
+  geom_col(fill = "blue", alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  labs(title = "Random Intercepts by Subject",
+       subtitle = "Deviation from population-average baseline reaction time",
+       x = "Random intercept (ms)", y = "Subject") +
+  theme_minimal()
+```
+
+### Fitted trajectories
+
+One of the most useful visualizations for mixed models is plotting the model's fitted values for each cluster, which incorporate both the fixed effects and the cluster-specific random effects.
+
+```{r, fig.width=9, fig.height=5}
+augment(mod_rs) %>%
+  ggplot(aes(x = Days)) +
+  geom_point(aes(y = Reaction), alpha = 0.5, size = 1.2) +
+  geom_line(aes(y = .fitted, group = Subject, color = Subject), linewidth = 0.8) +
+  labs(title = "Fitted Trajectories (Random Intercepts + Slopes)",
+       x = "Days of sleep deprivation", y = "Reaction time (ms)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Each line is the model's prediction for that subject — it uses both the population-average fixed effect and that subject's estimated random intercept and slope.
+
+------------------------------------------------------------------------
+
+## Mixed Effects with Non-Gaussian Responses: `glmer()`
+
+`glmer()` extends `lmer()` to non-Gaussian responses, combining the GLM framework with random effects. The syntax adds a `family` argument, exactly like `glm()`.
+
+We'll use a simple binary example: the `cbpp` dataset from `lme4`, which records contagious bovine pleuropneumonia incidence in cattle herds.
+
+```{r}
+data(cbpp, package = "lme4")
+glimpse(cbpp)
+```
+
+```{r}
+# Binomial GLMM — herd is the clustering variable
+mod_glmm <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd),
+                  data   = cbpp,
+                  family = binomial)
+
+summary(mod_glmm)
+```
+
+```{r}
+tidy(mod_glmm, effects = "fixed", exponentiate = TRUE, conf.int = TRUE)
+```
+
+The fixed effects are interpreted as odds ratios, exactly as in logistic regression. The random effect captures herd-to-herd variability in baseline incidence beyond what `period` explains.
+
+------------------------------------------------------------------------
+
+## When to Use Fixed vs Random Effects
+
+A few practical rules of thumb:
+
+-   Use **random effects** when the groups are a *sample* from a larger population you want to generalize to (subjects, schools, sites, litters). The goal is to account for clustering and estimate population-level parameters.
+-   Use **fixed effects** (i.e., dummy variables for each group) when you have a *small, exhaustive set* of groups you care about specifically, and you're not trying to generalize beyond them.
+-   If you have **fewer than \~5 groups**, there isn't enough information to reliably estimate the between-group variance — fixed effects are more appropriate.
+-   Random effects models **borrow strength** across clusters: estimates for data-sparse clusters are pulled toward the population mean (shrinkage). This is a feature, not a bug — it produces better predictions for new clusters.
+
+------------------------------------------------------------------------
+
+## Putting It Together: Full Session Workflow
+
+```{r, eval=FALSE}
+# --- GLM workflow ---
+# 1. Explore response distribution and class balance
+# 2. Fit
+mod <- glm(y ~ x1 + x2 + x3, data = df, family = binomial)
+
+# 3. Tidy output (odds ratios for logistic)
+tidy(mod, exponentiate = TRUE, conf.int = TRUE)
+glance(mod)
+
+# 4. Predictions on new data
+predict(mod, newdata = new_df, type = "response")
+
+# 5. Model comparison
+anova(mod_null, mod, test = "Chisq")
+
+# 6. Diagnostics
+autoplot(mod, which = 1:4, ncol = 2) + theme_minimal()
+
+
+# --- Regularization workflow ---
+# 1. Build matrix
+x <- model.matrix(y ~ ., data = df)[, -1]
+y <- df$y
+
+# 2. Cross-validate to find lambda
+set.seed(417)
+cv_mod <- cv.glmnet(x, y, alpha = 1)   # alpha=1 for lasso, 0 for ridge
+plot(cv_mod)
+
+# 3. Inspect CV-chosen lambda
+cv_mod$lambda.min
+cv_mod$lambda.1se
+
+# 4. Coefficients at chosen lambda
+coef(cv_mod, s = "lambda.1se") %>%
+  as.matrix() %>%
+  as_tibble(rownames = "term") %>%
+  setNames(c("term", "estimate"))
+
+# 5. Predictions on new data
+new_x <- model.matrix(~ x1 + x2 + x3, data = new_df)[, -1]
+predict(cv_mod, newx = new_x, s = "lambda.1se")
+
+
+# --- Mixed effects workflow ---
+library(lme4); library(lmerTest); library(broom.mixed)
+
+# 1. Explore cluster structure
+ggplot(df, aes(x = x, y = y, group = cluster)) + geom_line(alpha = 0.5)
+
+# 2. Fit random intercept model
+mod_ri <- lmer(y ~ x + (1 | cluster), data = df)
+
+# 3. Check if random slopes are needed
+mod_rs <- lmer(y ~ x + (x | cluster), data = df)
+anova(mod_ri, mod_rs)
+
+# 4. Fixed effects and variance components
+tidy(mod_ri, effects = "fixed",   conf.int = TRUE)
+tidy(mod_ri, effects = "ran_pars")
+
+# 5. ICC
+vc <- as.data.frame(VarCorr(mod_ri))
+vc$vcov[1] / sum(vc$vcov)
+
+# 6. Random effects (cluster deviations)
+ranef(mod_ri)
+
+# 7. Fitted trajectories
+augment(mod_ri) %>%
+  ggplot(aes(x = x, y = .fitted, group = cluster)) + geom_line()
+```
+
+------------------------------------------------------------------------
