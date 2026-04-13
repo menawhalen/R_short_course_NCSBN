@@ -1,0 +1,753 @@
+---
+title: "Session 7"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+---
+
+## Linear Modeling in R
+
+| Concept | R |
+|-----------------------------------------------------|-------------------|
+| Fit a model | `lm(y ~ x, data = mydata)` |
+| Formula with multiple predictors | `y ~ x1 + x2` |
+| Observation-level output (fitted, residuals) | `augment(model)` from `broom` |
+| Coefficient table | `tidy(model)` from `broom` |
+| Model-level fit statistics (R², AIC, …) | `glance(model)` from `broom` |
+
+The formula interface (`y ~ x`) is used consistently across nearly all modeling functions in R — `lm()`, `glm()`, `lmer()`, and more. Once you know it, it transfers everywhere.
+
+------------------------------------------------------------------------
+
+## Setup
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(broom)
+library(ggfortify)   # autoplot() for lm diagnostics
+library(patchwork)   # combining ggplots
+library(GGally)      # pairs plots
+library(car)         # vif(), leveneTest()
+```
+
+We'll use the built-in `mtcars` dataset throughout. It contains fuel efficiency (`mpg`) alongside engine and vehicle characteristics for 32 cars.
+
+------------------------------------------------------------------------
+
+## Reading the Documentation
+
+Before writing a line of modeling code, it's worth knowing how to navigate R's help system. This will save you constantly searching the web for argument names and return values.
+
+### `?lm` — the function's help page
+
+```{r, eval=FALSE}
+?lm
+```
+
+Every help page has the same structure. The parts that matter most in practice:
+
+-   **Usage** — shows the function signature and all arguments with their defaults. `lm(formula, data, subset, weights, na.action, ...)` tells you immediately that `formula` and `data` are the core arguments.
+-   **Arguments** — describes each argument in detail. For `lm`, this is where you learn that `formula` uses R's formula interface, and `na.action` controls what happens to missing values.
+-   **Value** — describes what the function *returns*. `lm()` returns an object of class `"lm"`, and this section lists all the named components it contains.
+-   **See Also** — points to related functions. For `lm` this links you to `summary.lm`, `predict.lm`, `residuals`, and others.
+-   **Examples** — runnable code at the bottom. When in doubt, scroll here first.
+
+### What's inside an `lm` object?
+
+`lm()` returns a list with named components. Use `names()` to see them all, and `$` to extract any one:
+
+```{r}
+mod_simple <- lm(mpg ~ wt, data = mtcars)
+
+names(mod_simple)
+```
+
+```{r}
+mod_simple$coefficients      # the fitted coefficients
+
+head(mod_simple$fitted.values)  # predicted values for each observation
+
+head(mod_simple$residuals)      # observed minus predicted
+```
+
+You rarely need to reach into the object directly — helper functions like `coef()`, `fitted()`, `residuals()`, and `summary()` are cleaner — but knowing the structure helps you understand what those functions are doing under the hood.
+
+### `summary()` and how to read it
+
+`summary()` is the base R way to get a full model report:
+
+```{r}
+summary(mod_simple)
+```
+
+Reading this output top to bottom:
+
+-   **Call** — the formula you used. Useful for confirming you fitted the model you intended.
+-   **Residuals** — five-number summary of the residuals. Ideally symmetric around zero: median close to zero, min/max roughly equal in magnitude.
+-   **Coefficients table** — one row per term. `Estimate` is the coefficient, `Std. Error` is its standard error, `t value` is the t-statistic, and `Pr(>|t|)` is the two-sided p-value. The significance stars are a quick guide — don't rely on them exclusively.
+-   **Residual standard error** — sigma, the estimated noise level on the scale of the response variable.
+-   **R-squared** — proportion of variance explained. `Adjusted R-squared` penalises for the number of predictors and is more useful for model comparison.
+-   **F-statistic** — tests whether the model as a whole explains more variance than an intercept-only model.
+
+### Getting help on methods
+
+When a function behaves differently depending on the class of its input, R uses *methods*. `summary()` on an `lm` object actually calls `summary.lm()`. If the generic help page isn't detailed enough, go directly to the method:
+
+```{r, eval=FALSE}
+?summary.lm     # summary method for lm objects
+?predict.lm     # prediction from lm objects
+?plot.lm        # base R diagnostic plots
+```
+
+------------------------------------------------------------------------
+
+## Exploring the Data First
+
+Good modeling starts with good visualization.
+
+```{r}
+glimpse(mtcars)
+```
+
+```{r}
+summary(mtcars[, c("mpg", "hp", "wt", "disp", "cyl")])
+```
+
+### Pairs plot
+
+`ggpairs()` from `GGally` gives you scatterplots, correlations, and marginal distributions in one call.
+
+```{r, message=FALSE, fig.width=8, fig.height=7}
+mtcars %>%
+  select(mpg, hp, wt, disp) %>%
+  ggpairs(
+    lower = list(continuous = wrap("smooth", method = "lm", se = FALSE)),
+    diag  = list(continuous = wrap("densityDiag", alpha = 0.5)),
+    upper = list(continuous = wrap("cor", size = 4))
+  ) +
+  theme_minimal() +
+  labs(title = "Pairwise relationships in mtcars")
+```
+
+`wt` shows the strongest negative correlation with `mpg` — a natural starting point.
+
+------------------------------------------------------------------------
+
+## Simple Linear Regression
+
+### Fitting the model
+
+```{r}
+mod_simple <- lm(mpg ~ wt, data = mtcars)
+summary(mod_simple)
+```
+
+The coefficient for `wt` is about −5.3: each additional 1,000 lbs of weight is associated with a drop of roughly 5.3 mpg on average.
+
+### Extracting components directly
+
+These base R helper functions are cleaner than reaching into the object with `$`:
+
+```{r}
+coef(mod_simple)        # coefficients
+sigma(mod_simple)       # residual standard error
+confint(mod_simple)     # 95% confidence intervals for coefficients
+```
+
+### Tidying the output with `broom`
+
+`summary()` is fine for reading, but awkward to work with programmatically. `broom` converts model output into standard tibbles you can pipe into further code or combine across models.
+
+**`tidy()` — coefficient table**
+
+```{r}
+tidy(mod_simple, conf.int = TRUE)
+```
+
+**`glance()` — one-row model summary**
+
+```{r}
+glance(mod_simple)
+```
+
+**`augment()` — observation-level quantities**
+
+```{r}
+augment(mod_simple) %>% head()
+```
+
+Each row gets `.fitted` (predicted value), `.resid` (residual), `.hat` (leverage), `.cooksd` (Cook's distance), and `.std.resid` (standardized residual).
+
+### Visualizing the fit
+
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(size = 2, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "MPG vs. Weight",
+    subtitle = paste0("R² = ", round(glance(mod_simple)$r.squared, 3)),
+    x = "Weight (1000 lbs)",
+    y = "Miles per Gallon"
+  ) +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+## Regression Diagnostics
+
+Always check diagnostics before interpreting coefficients. `ggfortify` lets `autoplot()` work directly on `lm` objects, producing `ggplot2` versions of the standard four diagnostic plots.
+
+```{r, fig.width=9, fig.height=7}
+autoplot(mod_simple, which = 1:4, ncol = 2, label.size = 3) +
+  theme_minimal()
+```
+
+### Reading the four plots
+
+| Plot | What to look for | Warning sign |
+|----------------|-------------------------------|-------------------------|
+| **Residuals vs Fitted** | Random scatter around zero | Curve → non-linearity; funnel → heteroscedasticity |
+| **Normal Q-Q** | Points on the diagonal line | Heavy tails → non-normal residuals |
+| **Scale-Location** | Flat red line, even spread | Upward trend → heteroscedasticity |
+| **Cook's Distance** | No bars dramatically taller than others | Large spikes → influential observations |
+
+### Building the plots manually with `augment()`
+
+`autoplot()` is convenient, but using `augment()` directly gives you full control over appearance — you can colour points by a grouping variable, label specific observations, or adjust any aesthetic. Because `augment()` returns a plain tibble, every column is available in `aes()` just like any other data frame column.
+
+The key columns we'll use here:
+
+-   `.fitted` — the model's predicted value for each observation. Used as the x-axis in residual plots to check whether any problems are systematic across the range of predictions.
+-   `.resid` — the raw residual (observed minus fitted). This is the primary quantity in most diagnostic plots.
+-   `.std.resid` — the standardized residual, scaled by its estimated standard deviation. Puts residuals on a common scale (roughly ±2 for well-behaved data) so outliers stand out clearly regardless of the response variable's units.
+-   `.cooksd` — Cook's distance, which combines the size of the residual and the leverage of the point into a single influence measure. High values flag observations that have an outsized effect on the fitted coefficients.
+-   `.hat` — leverage, measuring how far each observation's predictor values are from the center of the predictor space. High-leverage points can be influential even when their residuals are small.
+
+```{r}
+aug_simple <- augment(mod_simple)
+
+# Residuals vs Fitted
+# geom_hline adds a reference line at zero — residuals should scatter randomly around it
+# geom_smooth (loess by default) reveals any systematic curvature in the residuals
+p1 <- ggplot(aug_simple, aes(.fitted, .resid)) +
+  geom_point(alpha = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_smooth(se = FALSE, color = "blue", linewidth = 0.8) +
+  labs(title = "Residuals vs Fitted", x = "Fitted values", y = "Residuals") +
+  theme_minimal()
+
+# Normal Q-Q
+# stat_qq maps sorted standardized residuals against theoretical normal quantiles
+# stat_qq_line draws the reference diagonal they should follow if normality holds
+p2 <- ggplot(aug_simple, aes(sample = .std.resid)) +
+  stat_qq(alpha = 0.7) +
+  stat_qq_line(color = "red", linetype = "dashed") +
+  labs(title = "Normal Q-Q", x = "Theoretical Quantiles", y = "Standardized Residuals") +
+  theme_minimal()
+
+# Scale-Location
+# sqrt(abs(.std.resid)) stabilizes the variance so we can see spread trends more clearly
+# a flat loess line means constant variance; an upward trend signals heteroscedasticity
+p3 <- ggplot(aug_simple, aes(.fitted, sqrt(abs(.std.resid)))) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(se = FALSE, color = "blue", linewidth = 0.8) +
+  labs(title = "Scale-Location", x = "Fitted values", y = "√|Standardized Residuals|") +
+  theme_minimal()
+
+# Cook's Distance
+# geom_col draws one bar per observation; seq_along() produces sequential row numbers
+# the dashed line is 4/n, a common rule of thumb for flagging influential points
+p4 <- ggplot(aug_simple, aes(seq_along(.cooksd), .cooksd)) +
+  geom_col(fill = "blue", alpha = 0.7) +
+  geom_hline(yintercept = 4 / nrow(mtcars), linetype = "dashed", color = "red") +
+  labs(title = "Cook's Distance", x = "Observation", y = "Cook's Distance") +
+  theme_minimal()
+
+# patchwork's / operator stacks rows; + places plots side by side within a row
+(p1 + p2) / (p3 + p4)
+```
+
+### Identifying influential observations
+
+```{r}
+aug_simple %>%
+  filter(.cooksd > 4 / nrow(mtcars)) %>%
+  select(.rownames, mpg, wt, .fitted, .resid, .cooksd, .hat) %>%
+  arrange(desc(.cooksd))
+```
+
+`4/n` is a common rule of thumb for Cook's distance. It's a starting point, not a hard cutoff — always examine flagged observations in context rather than removing them automatically.
+
+------------------------------------------------------------------------
+
+## Multiple Linear Regression
+
+### Formula syntax reference
+
+| Formula | Meaning |
+|------------------------------------|------------------------------------|
+| `y ~ x` | Simple regression |
+| `y ~ x1 + x2` | Multiple regression, no interaction |
+| `y ~ x1 + x2 + x1:x2` | Main effects plus interaction term |
+| `y ~ x1 * x2` | Shorthand: main effects + interaction |
+| `y ~ .` | All other variables as predictors |
+| `y ~ . - x3` | All variables except `x3` |
+| `y ~ I(x^2)` | Polynomial: `I()` protects the expression from formula parsing |
+| `y ~ poly(x, 2)` | Orthogonal polynomial (numerically more stable) |
+
+### Fitting the model
+
+```{r}
+mod_multi <- lm(mpg ~ wt + hp + disp, data = mtcars)
+tidy(mod_multi)
+```
+
+### Comparing models
+
+`glance()` side by side makes quick work of model comparison:
+
+```{r}
+list(
+  simple = mod_simple,
+  multi  = mod_multi
+) %>%
+  map(glance) %>%
+  bind_rows(.id = "model") %>%
+  select(model, r.squared, adj.r.squared, AIC, BIC, sigma)
+```
+
+For a formal F-test of whether the added predictors improve fit over the simpler model:
+
+```{r}
+anova(mod_simple, mod_multi)
+```
+
+A significant p-value means the additional terms explain meaningful variance beyond `wt` alone.
+
+### Including categorical variables
+
+R automatically creates dummy variables for `factor` columns. The first level (alphabetically, or by factor order) becomes the reference category, absorbed into the intercept.
+
+```{r}
+mtcars_f <- mtcars %>% mutate(cyl = factor(cyl))
+
+mod_cat <- lm(mpg ~ wt + hp + cyl, data = mtcars_f)
+tidy(mod_cat)
+```
+
+`cyl6` and `cyl8` are the estimated differences in `mpg` relative to 4-cylinder cars, holding `wt` and `hp` constant. To change the reference level:
+
+```{r}
+mtcars_f <- mtcars_f %>% mutate(cyl = relevel(cyl, ref = "8"))
+lm(mpg ~ wt + hp + cyl, data = mtcars_f) %>% tidy()
+```
+
+### Multicollinearity: Variance Inflation Factor
+
+VIF quantifies how much the variance of each coefficient is inflated by correlation with the other predictors. A VIF of 1 means no inflation (the predictor is uncorrelated with all others); values above 5 are worth investigating, and above 10 indicate serious collinearity that will destabilize coefficient estimates.
+
+`vif()` comes from the `car` package (Companion to Applied Regression by Fox & Weisberg), which is a go-to source for regression diagnostics in R. We loaded it in the setup chunk, but if you ever see `could not find function "vif"`, that's your reminder to `library(car)`.
+
+```{r}
+vif(mod_multi)
+```
+
+```{r}
+# Confirm with a correlation matrix
+mtcars %>%
+  select(wt, hp, disp) %>%
+  cor() %>%
+  round(3)
+```
+
+`wt`, `hp`, and `disp` are all highly correlated — the VIFs reflect that, and including all three simultaneously makes it hard to disentangle their individual effects on `mpg`.
+
+### Diagnostics for multiple regression
+
+```{r, fig.width=9, fig.height=7}
+autoplot(mod_multi, which = 1:4, ncol = 2, label.size = 3) +
+  theme_minimal()
+```
+
+Plot residuals against each predictor individually to catch non-linearity the global plot might miss:
+
+```{r, fig.width=9, fig.height=4}
+aug_multi <- augment(mod_multi)
+
+p_wt   <- ggplot(aug_multi, aes(wt,   .resid)) + geom_point(alpha=0.7) + geom_smooth(se=FALSE, color="blue") + geom_hline(yintercept=0, linetype="dashed", color="red") + labs(x="wt",   y="Residuals") + theme_minimal()
+p_hp   <- ggplot(aug_multi, aes(hp,   .resid)) + geom_point(alpha=0.7) + geom_smooth(se=FALSE, color="blue") + geom_hline(yintercept=0, linetype="dashed", color="red") + labs(x="hp",   y="Residuals") + theme_minimal()
+p_disp <- ggplot(aug_multi, aes(disp, .resid)) + geom_point(alpha=0.7) + geom_smooth(se=FALSE, color="blue") + geom_hline(yintercept=0, linetype="dashed", color="red") + labs(x="disp", y="Residuals") + theme_minimal()
+
+p_wt + p_hp + p_disp
+```
+
+------------------------------------------------------------------------
+
+## ANOVA
+
+ANOVA is a special case of the linear model — when all predictors are categorical, `lm()` fits an ANOVA model. The `aov()` function is a wrapper around `lm()` that formats output in the traditional ANOVA table style. The underlying computation is identical.
+
+We'll use `PlantGrowth`: plant weight under a control condition and two treatment conditions.
+
+```{r}
+data(PlantGrowth)
+glimpse(PlantGrowth)
+table(PlantGrowth$group)
+```
+
+### Visualize first
+
+```{r}
+ggplot(PlantGrowth, aes(x = group, y = weight, fill = group)) +
+  geom_boxplot(alpha = 0.6, show.legend = FALSE) +
+  geom_jitter(width = 0.1, alpha = 0.6, show.legend = FALSE) +
+  labs(title = "Plant Weight by Treatment Group",
+       x = "Group", y = "Weight (g)") +
+  theme_minimal()
+```
+
+### One-way ANOVA with `aov()`
+
+```{r}
+mod_aov <- aov(weight ~ group, data = PlantGrowth)
+summary(mod_aov)
+```
+
+The output is a standard ANOVA table: sum of squares, degrees of freedom, mean squares, F-statistic, and p-value. A significant F-test means at least one group mean differs from the others — it doesn't say which ones.
+
+### `aov()` and `lm()` are the same model
+
+```{r}
+mod_lm_aov <- lm(weight ~ group, data = PlantGrowth)
+summary(mod_lm_aov)
+```
+
+Same coefficients, same residuals. `aov()` just reshapes the summary. Use whichever matches your reporting context — `lm()` when you want coefficients, `aov()` when you want the ANOVA table.
+
+### Post-hoc tests: Tukey's HSD
+
+When the overall F-test is significant, Tukey's Honest Significant Difference test identifies *which* pairs of group means differ while controlling the family-wise error rate across all comparisons. It's built into base R — no extra package needed — via `TukeyHSD()`, which takes an `aov` object (not an `lm` object, so make sure you use `aov()` to fit the model if you plan to run post-hoc tests).
+
+```{r}
+TukeyHSD(mod_aov)
+```
+
+The output gives each pairwise comparison: the estimated difference in means (`diff`), lower and upper 95% confidence interval bounds, and an adjusted p-value that accounts for the number of comparisons being made.
+
+```{r}
+plot(TukeyHSD(mod_aov))
+```
+
+Confidence intervals that don't cross zero indicate a significant pairwise difference. `broom::tidy()` works on `TukeyHSD` output too, which is useful if you want to pipe the results into a `ggplot`:
+
+```{r}
+tidy(TukeyHSD(mod_aov))
+```
+
+### Two-way ANOVA
+
+With two categorical predictors you can test main effects and their interaction. We'll use `ToothGrowth`: tooth length in guinea pigs given different doses of vitamin C via two delivery methods.
+
+```{r}
+data(ToothGrowth)
+ToothGrowth <- ToothGrowth %>% mutate(dose = factor(dose))
+glimpse(ToothGrowth)
+```
+
+```{r}
+ggplot(ToothGrowth, aes(x = dose, y = len, fill = supp)) +
+  geom_boxplot(alpha = 0.6) +
+  labs(title = "Tooth Length by Dose and Supplement",
+       x = "Dose (mg/day)", y = "Tooth Length (mm)", fill = "Supplement") +
+  theme_minimal()
+```
+
+```{r}
+mod_2way <- aov(len ~ supp * dose, data = ToothGrowth)
+summary(mod_2way)
+```
+
+`supp * dose` expands to `supp + dose + supp:dose`. Always check the interaction term first — if it's significant, the main effects can't be interpreted in isolation.
+
+```{r}
+tidy(mod_2way)
+```
+
+### Checking ANOVA assumptions
+
+ANOVA shares the same assumptions as linear regression. Check them the same way:
+
+```{r, fig.width=9, fig.height=7}
+autoplot(mod_2way, which = 1:4, ncol = 2) +
+  theme_minimal()
+```
+
+For a formal test of equal variances across groups, use Levene's test. This comes from the `car` package — the same one we used for `vif()`. Unlike Bartlett's test (which is in base R), Levene's test is robust to non-normality, making it a better default choice for ANOVA assumption checking.
+
+```{r}
+leveneTest(len ~ supp * dose, data = ToothGrowth)
+```
+
+The formula syntax here mirrors the ANOVA model — you're testing equality of variance across all cells defined by the combination of `supp` and `dose`. A non-significant result (p \> 0.05) supports the homoscedasticity assumption and means you can proceed with confidence in the ANOVA results. If the test is significant, consider transforming the response variable or using Welch's ANOVA (`oneway.test()`) which relaxes the equal-variance requirement.
+
+------------------------------------------------------------------------
+
+## Visualizing Model Results
+
+### Coefficient plot
+
+Plotting coefficients with confidence intervals is often clearer than a table, especially with many predictors.
+
+```{r}
+tidy(mod_multi, conf.int = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  ggplot(aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high)) +
+  geom_pointrange(color = "blue", size = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Regression Coefficients with 95% CIs",
+       x = "Estimate", y = NULL) +
+  theme_minimal()
+```
+
+### Actual vs. predicted
+
+```{r}
+augment(mod_multi) %>%
+  ggplot(aes(x = .fitted, y = mpg)) +
+  geom_point(alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Actual vs. Predicted MPG",
+       x = "Predicted", y = "Actual") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+## Prediction
+
+`predict()` is the base R workhorse for generating predictions from any fitted model. You pass it the model object and a `newdata` argument — a data frame with the same column names as your predictors. The number of rows determines how many predictions you get.
+
+### Point predictions
+
+By default, `predict()` returns a plain numeric vector of fitted values — one per row of `newdata`.
+
+```{r}
+new_cars <- tibble(
+  wt   = c(2.5, 3.5, 4.5),
+  hp   = c(100, 150, 200),
+  disp = c(150, 200, 300)
+)
+
+predict(mod_multi, newdata = new_cars)
+```
+
+### Confidence and prediction intervals
+
+Adding `interval = "confidence"` or `interval = "prediction"` changes the return value from a vector to a matrix with three columns: `fit` (the point estimate), `lwr` (lower bound), and `upr` (upper bound).
+
+```{r}
+ci <- predict(mod_multi, newdata = new_cars, interval = "confidence")
+ci
+```
+
+```{r}
+pi <- predict(mod_multi, newdata = new_cars, interval = "prediction")
+pi
+```
+
+The distinction between the two interval types is important:
+
+-   A **confidence interval** expresses uncertainty about the *mean* response at that predictor value — how precisely we've estimated the regression surface. It shrinks as sample size grows.
+-   A **prediction interval** expresses uncertainty about a *single new observation* at that predictor value. It must also account for the irreducible observation-level noise (sigma), so it will always be wider than the confidence interval, regardless of how large your sample is.
+
+We can attach both sets of intervals back to the input data for a clean comparison:
+
+```{r}
+new_cars %>%
+  bind_cols(
+    as_tibble(ci) %>% rename(fit_ci = fit, lower_ci = lwr, upper_ci = upr),
+    as_tibble(pi) %>% rename(fit_pi = fit, lower_pi = lwr, upper_pi = upr)
+  )
+```
+
+### Visualizing both bands
+
+For simple regression we can show both intervals as ribbon layers over the full predictor range. The trick is to generate a fine grid of `wt` values with `seq()`, predict at each point, then use `geom_ribbon()` twice with different `alpha` values to distinguish the two bands. `bind_cols()` re-attaches the predictor values to the matrix output from `predict()` so the x-axis is available inside `ggplot`.
+
+```{r}
+pred_grid <- tibble(wt = seq(min(mtcars$wt), max(mtcars$wt), length.out = 100))
+
+ci_band <- predict(mod_simple, newdata = pred_grid, interval = "confidence") %>%
+  as_tibble() %>% bind_cols(pred_grid)
+
+pi_band <- predict(mod_simple, newdata = pred_grid, interval = "prediction") %>%
+  as_tibble() %>% bind_cols(pred_grid)
+
+ggplot() +
+  # Outer (wider) ribbon = prediction interval
+  geom_ribbon(data = pi_band, aes(x = wt, ymin = lwr, ymax = upr), alpha = 0.15) +
+  # Inner (narrower) ribbon = confidence interval
+  geom_ribbon(data = ci_band, aes(x = wt, ymin = lwr, ymax = upr), alpha = 0.35) +
+  geom_line(data = ci_band, aes(x = wt, y = fit), linewidth = 1) +
+  geom_point(data = mtcars, aes(x = wt, y = mpg), alpha = 0.6) +
+  labs(
+    title = "Regression with Confidence and Prediction Intervals",
+    subtitle = "Darker band = 95% CI for mean; lighter band = 95% PI for new observation",
+    x = "Weight (1000 lbs)", y = "MPG"
+  ) +
+  theme_minimal()
+```
+
+Notice the bands are narrowest near the center of the data (where `wt` is close to its mean) and widen toward the edges — a natural consequence of the leverage structure of regression.
+
+------------------------------------------------------------------------
+
+## Dealing with Non-Linearity: Polynomial Terms
+
+If residual plots suggest curvature, add polynomial terms using `I()` (raw polynomials, interpretable coefficients) or `poly()` (orthogonal polynomials, numerically more stable).
+
+```{r}
+mod_poly <- lm(mpg ~ wt + I(wt^2), data = mtcars)
+
+glance(mod_simple)$r.squared   # linear
+glance(mod_poly)$r.squared     # quadratic
+```
+
+```{r}
+pred_poly <- tibble(wt = seq(min(mtcars$wt), max(mtcars$wt), length.out = 200)) %>%
+  mutate(
+    linear    = predict(mod_simple, newdata = .),
+    quadratic = predict(mod_poly,   newdata = .)
+  )
+
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(alpha = 0.7) +
+  geom_line(data = pred_poly, aes(y = linear,    color = "Linear"),    linewidth = 1) +
+  geom_line(data = pred_poly, aes(y = quadratic, color = "Quadratic"), linewidth = 1) +
+  scale_color_manual(values = c("Linear" = "blue", "Quadratic" = "red")) +
+  labs(title = "Linear vs. Quadratic Fit", color = "Model",
+       x = "Weight (1000 lbs)", y = "MPG") +
+  theme_minimal()
+```
+
+Use `anova()` to formally test whether the quadratic term improves fit:
+
+```{r}
+anova(mod_simple, mod_poly)
+```
+
+------------------------------------------------------------------------
+
+## Variable Transformations
+
+Polynomials handle curvature within the linear model framework, but sometimes a transformation of the response or predictors is a better solution — especially when the relationship is multiplicative, the variance is non-constant, or the residuals are skewed.
+
+### Log transformation
+
+The log transformation is the most common. It's appropriate when the response is strictly positive, the relationship with predictors is multiplicative rather than additive, or residuals show a right-skewed pattern or a funnel shape in the Scale-Location plot.
+
+```{r}
+# Compare: linear vs log-transformed response
+mod_log <- lm(log(mpg) ~ wt + hp, data = mtcars)
+
+# Side-by-side diagnostics
+p_linear <- autoplot(lm(mpg ~ wt + hp, data = mtcars), which = 1, label.size = 3) +
+  labs(title = "Linear response") + theme_minimal()
+
+p_log <- autoplot(mod_log, which = 1, label.size = 3) +
+  labs(title = "Log response") + theme_minimal()
+
+p_linear + p_log
+```
+
+Interpreting log-transformed coefficients requires care. When the *response* is log-transformed (log-level model), a one-unit increase in a predictor is associated with a multiplicative change in the response. For small coefficients, the coefficient ≈ the proportional change:
+
+```{r}
+tidy(mod_log)
+
+# More precise: exponentiate the coefficient to get the multiplicative factor
+exp(coef(mod_log)["wt"])
+```
+
+This says each additional 1,000 lbs of weight multiplies `mpg` by roughly `exp(−0.201) ≈ 0.82`, a 18% decrease.
+
+### Log-log transformation
+
+When both response and predictor are log-transformed (log-log model), the coefficient is interpreted as an elasticity — the percentage change in Y for a 1% change in X. This is common when modeling things like price, income, or biological scaling relationships.
+
+```{r}
+mod_loglog <- lm(log(mpg) ~ log(wt) + log(hp), data = mtcars)
+tidy(mod_loglog)
+```
+
+The coefficient on `log(wt)` is approximately the elasticity of fuel efficiency with respect to weight.
+
+### Square root transformation
+
+Useful when the response is a count or the variance scales with the mean (common in ecological or biological data):
+
+```{r}
+mod_sqrt <- lm(sqrt(mpg) ~ wt + hp, data = mtcars)
+```
+
+### Transformations in practice: `mutate()` first
+
+For clarity, it's often cleaner to create transformed columns explicitly before fitting rather than nesting functions inside the formula. This makes your diagnostics and augment output easier to work with:
+
+```{r}
+mtcars_log <- mtcars %>%
+  mutate(
+    log_mpg = log(mpg),
+    log_wt  = log(wt),
+    log_hp  = log(hp)
+  )
+
+mod_loglog2 <- lm(log_mpg ~ log_wt + log_hp, data = mtcars_log)
+
+# Now augment() returns the transformed scale, which is what the model lives on
+augment(mod_loglog2) %>% head()
+```
+
+When you work on the transformed scale, diagnostics should be checked there (which is what `augment()` and `autoplot()` will do automatically). If you need to back-transform predictions to the original scale, use `exp()` for log-transformed responses — but remember that `exp(mean(log(y))) ≠ mean(y)`, so back-transformed fitted values estimate the *median* of the original distribution, not the mean.
+
+------------------------------------------------------------------------
+
+## Putting It Together: A Full Workflow
+
+```{r, eval=FALSE}
+# 1. Explore
+ggpairs(mtcars %>% select(mpg, wt, hp, cyl))
+
+# 2. Fit
+mod_final <- lm(mpg ~ wt + hp + factor(cyl), data = mtcars)
+
+# 3. Coefficients and fit statistics
+tidy(mod_final, conf.int = TRUE)
+glance(mod_final)
+
+# 4. Diagnostics
+autoplot(mod_final, which = 1:4, ncol = 2) + theme_minimal()
+
+# 5. Collinearity
+vif(mod_final)
+
+# 6. Predict with intervals
+predict(mod_final,
+        newdata = tibble(wt = 3.0, hp = 150, cyl = factor(6, levels = c(4, 6, 8))),
+        interval = "prediction")
+```
+
+------------------------------------------------------------------------
+
+## On Your Own
+
+1.  **`faraway::fat`** — Fit a model predicting body fat percentage from several body measurements. Check for multicollinearity with VIF, examine all four diagnostic plots, and identify any influential observations by Cook's distance. Try building the Cook's distance plot manually with `augment()` and label the flagged rows.
+
+2.  **`diamonds` (revisited)** — Build on the log-transformed model from last session: `log2(price) ~ log2(carat) + cut + color + clarity`. Use `tidy()`, `glance()`, and `augment()` to fully characterize the model. Plot residuals against each categorical predictor — does the equal-variance assumption hold across all levels? Back-transform a few predictions to the original dollar scale and attach confidence intervals.
+
+3.  **ANOVA on `InsectSprays`** — This built-in dataset records insect counts under six different sprays. Fit a one-way ANOVA, check assumptions with `autoplot()` and `leveneTest()`, run Tukey's HSD, and make a plot using the tidy output from `TukeyHSD()` that clearly communicates which groups differ. The response is a count — does a square root transformation improve the residuals?
+
+4.  **Simulation** — Generate data with a known quadratic relationship (`y = 2x - x^2 + noise`). Fit a linear model and a quadratic model. Compare their diagnostic plots, use `anova()` to formally test whether the quadratic term improves fit, and then try a log transformation of `y` instead — does it fix the residuals or make them worse?
