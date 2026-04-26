@@ -1,0 +1,1195 @@
+---
+title: "Session 9: Extensions, Reference & Visualizations"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    code-fold: false
+editor: visual
+---
+
+## Overview
+
+This session is a technical reference for the extended R modeling ecosystem. The focus is on syntax, packages, and practical workflow. Each section introduces the relevant packages, shows the key function calls, and demonstrates the output. Treat this document as a reference you can return to when a specific model type or visualization comes up in your own work.
+
+------------------------------------------------------------------------
+
+## Setup
+
+```{r, message=FALSE, warning=FALSE}
+# GLM extensions
+library(MASS)          # polr(), glm.nb()
+library(nnet)          # multinom()
+library(VGAM)          # vglm(), wide family support
+library(geepack)       # geeglm()
+library(ordinal)       # clm(), cumulative link models
+library(betareg)       # beta regression for proportions
+
+# Model fit & testing
+library(lmtest)        # lrtest(), waldtest(), coeftest()
+library(car)           # Anova() Type II/III
+library(performance)   # check_model(), compare_performance()
+library(DescTools)     # PseudoR2()
+
+# Classification
+library(pROC)          # roc(), auc(), ggroc()
+
+# Survival
+library(survival)      # Surv(), survfit(), coxph()
+library(ggsurvfit)     # ggplot2-native KM plots
+library(survminer)     # ggcoxzph(), ggforest()
+
+# Forest plots & tables
+library(finalfit)      # finalfit(), or_plot(), hr_plot()
+library(forestplot)    # manual forest plots
+library(gtsummary)     # tbl_regression(), tbl_summary()
+
+# Propensity scores
+library(MatchIt)       # matchit()
+library(WeightIt)      # weightit() for IPW
+library(cobalt)        # love.plot(), bal.tab()
+
+# Visualization
+library(factoextra)    # fviz_pca_biplot(), fviz_eig()
+library(ggcorrplot)    # ggcorrplot()
+library(pheatmap)      # pheatmap()
+library(ggridges)      # geom_density_ridges()
+library(ggrepel)       # geom_text_repel() for volcano plots
+
+# Time series
+library(forecast)      # auto.arima(), forecast(), autoplot()
+
+# Core
+library(tidyverse)
+library(broom)
+library(broom.mixed)
+library(patchwork)
+```
+
+------------------------------------------------------------------------
+
+# Part 1: GLM Extensions & Package Ecosystem
+
+## What Base `glm()` Supports
+
+Base R's `glm()` covers the core exponential family distributions. Everything in the table below works out of the box with no additional packages:
+
+| Family | Link options | Typical use case |
+|-----------------|------------------------|-------------------------------|
+| `gaussian()` | `identity`, `log`, `inverse` | Continuous response (= `lm`) |
+| `binomial()` | `logit`, `probit`, `cloglog` | Binary 0/1, proportions |
+| `poisson()` | `log`, `identity`, `sqrt` | Counts, rates |
+| `Gamma()` | `inverse`, `log`, `identity` | Positive continuous, skewed |
+| `inverse.gaussian()` | `1/mu^2`, `inverse`, `log` | Positive, heavy right tail |
+| `quasi()` | any | Variance function without full distribution assumption |
+| `quasibinomial()` | `logit` | Binomial with overdispersion |
+| `quasipoisson()` | `log` | Poisson with overdispersion |
+
+**What base `glm()` cannot do:** ordinal or multinomial responses, zero-inflated counts, negative binomial with estimated dispersion, correlated/clustered outcomes (GEE or GLMM), beta regression for proportions strictly between 0 and 1, or robust variance estimation.
+
+------------------------------------------------------------------------
+
+## Extended GLM Package Reference Table
+
+This table covers the most commonly used packages for models that go beyond base `glm()`. Packages are grouped by response type.
+
+### Binary, Ordinal & Multinomial Responses
+
+| Package | Model | Key function | Notes |
+|----------------|----------------|------------------------|----------------|
+| Base R | Logistic (logit) | `glm(..., family=binomial)` | Default; logit link |
+| Base R | Probit | `glm(..., family=binomial(link="probit"))` | Same syntax, different link |
+| Base R | Complementary log-log | `glm(..., family=binomial(link="cloglog"))` | Asymmetric; grouped survival data |
+| `MASS` | Ordinal (proportional odds) | `polr(y ~ x, data, Hess=TRUE)` | Classic PO model; `tidy()` works |
+| `ordinal` | Ordinal (cumulative link) | `clm(y ~ x, data, link="logit")` | More flexible than `polr`; mixed effects via `clmm()` |
+| `nnet` | Multinomial logistic | `multinom(y ~ x, data)` | Baseline-category logit; fast |
+| `VGAM` | Multinomial, ordinal, many more | `vglm(y ~ x, family=multinomial)` | Huge family library; see Part 1.5 |
+
+### Count & Rate Responses
+
+| Package | Model | Key function | Notes |
+|----------------|----------------|------------------------|----------------|
+| Base R | Poisson | `glm(..., family=poisson)` | Assumes mean = variance |
+| Base R | Quasi-Poisson | `glm(..., family=quasipoisson)` | Overdispersion correction; no likelihood |
+| `MASS` | Negative binomial | `glm.nb(y ~ x, data)` | Estimates dispersion parameter |
+
+
+### Correlated & Clustered Outcomes
+
+| Package | Model | Key function | Notes |
+|----------------|----------------|------------------------|----------------|
+| `geepack` | GEE (population-average) | `geeglm(y ~ x, id=id, corstr="exchangeable")` | Marginal interpretation; robust SE |
+| `lme4` | GLMM (subject-specific) | `glmer(y ~ x + (1|id), family=binomial)` | Conditional interpretation |
+| `ordinal` | Ordinal GLMM | `clmm(y ~ x + (1|id), data)` | Mixed ordinal model |
+
+### Specialized Responses
+
+| Package | Model | Key function | Notes |
+|----------------|----------------|------------------------|----------------|
+| `betareg` | Beta regression (proportions) | `betareg(y ~ x, data)` | Response strictly in (0,1) |
+| `VGAM` | Tobit, log-normal, many others | `vglm(y ~ x, family=tobit)` | See VGAM section |
+
+------------------------------------------------------------------------
+
+## Probit & Link Function Comparison
+
+All three binary link functions use identical `glm()` syntax — only the `link` argument changes.
+
+```{r}
+data(Default, package = "ISLR2")
+
+mod_logit  <- glm(default ~ balance + income, data = Default, family = binomial(link = "logit"))
+mod_probit <- glm(default ~ balance + income, data = Default, family = binomial(link = "probit"))
+mod_cloglog <- glm(default ~ balance + income, data = Default, family = binomial(link = "cloglog"))
+```
+
+The coefficients are on different scales but the predicted probabilities will be similar in the middle of the distribution and differ more in the tails. The cloglog link is asymmetric — it approaches 0 more slowly than 1, making it appropriate when the event is rare or the data have a grouped survival structure.
+
+```{r, fig.width=9, fig.height=4}
+# Compare predicted probabilities across a balance grid
+grid <- tibble(
+  balance = seq(0, 2700, length.out = 300),
+  income  = median(Default$income)
+) %>%
+  mutate(
+    logit   = predict(mod_logit,   newdata = ., type = "response"),
+    probit  = predict(mod_probit,  newdata = ., type = "response"),
+    cloglog = predict(mod_cloglog, newdata = ., type = "response")
+  ) %>%
+  pivot_longer(logit:cloglog, names_to = "link", values_to = "prob")
+
+ggplot(grid, aes(x = balance, y = prob, color = link)) +
+  geom_line(linewidth = 1) +
+  scale_color_manual(values = c("logit" = "steelblue", "probit" = "tomato", "cloglog" = "forestgreen")) +
+  labs(title = "Predicted P(Default) by Link Function",
+       subtitle = "Income held at median",
+       x = "Balance", y = "Predicted probability", color = "Link") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+## Ordinal Logistic Regression
+
+Use when the outcome has ordered categories (e.g., pain severity: none / mild / moderate / severe) and you want to model the cumulative probability of being at or below each level.
+
+### `MASS::polr()` — proportional odds model
+
+```{r}
+data(housing, package = "MASS")   # housing satisfaction data
+
+mod_polr <- polr(Sat ~ Infl + Type + Cont, data = housing,
+                 weights = Freq, Hess = TRUE)
+summary(mod_polr)
+```
+
+```{r}
+# tidy() gives coefficients + intercepts (the cutpoints between categories)
+tidy(mod_polr, conf.int = TRUE, exponentiate = TRUE) %>%
+  print(n = 20)
+```
+
+Coefficients exponentiated are **odds ratios** for moving up one level in the ordinal scale. The `|` rows (e.g., `Low|Medium`) are the cutpoint intercepts — they define where the cumulative probability curve crosses each threshold.
+
+### `ordinal::clm()` — cumulative link model
+
+`clm()` fits the same model but offers more link functions (`logit`, `probit`, `cloglog`, `cauchit`) and a cleaner interface for testing the proportional odds assumption via `nominal_test()`.
+
+```{r}
+mod_clm <- clm(Sat ~ Infl + Type + Cont, data = housing, weights = Freq)
+summary(mod_clm)
+```
+
+```{r}
+# Test proportional odds assumption — significant result = assumption violated
+nominal_test(mod_clm)
+```
+
+A significant result here means a predictor's effect is not constant across thresholds, violating the proportional odds assumption. In that case, consider a partial proportional odds model or multinomial logistic regression.
+
+------------------------------------------------------------------------
+
+## Multinomial Logistic Regression
+
+Use when the outcome has unordered categories (e.g., transportation mode: car / bus / bike).
+
+### `nnet::multinom()`
+
+```{r, message=FALSE}
+mod_multi <- multinom(Species ~ Sepal.Length + Sepal.Width + Petal.Length,
+                      data = iris, trace = FALSE)
+summary(mod_multi)
+```
+
+```{r}
+tidy(mod_multi, exponentiate = TRUE, conf.int = TRUE)
+```
+
+Each row is one predictor for one non-reference category vs the baseline. Exponentiated coefficients are **relative risk ratios** (RRR) — the ratio of probabilities of being in that category vs the baseline for a one-unit change in the predictor. Reference category is the first level of the response factor.
+
+------------------------------------------------------------------------
+
+## VGAM: Vector Generalized Additive Models
+
+`VGAM` is a large package with its own modeling engine — `vglm()` — that supports a very wide range of response distributions and link combinations not available elsewhere. The syntax is similar to `glm()` but uses `vglm()` and VGAM-specific family objects.
+
+```{r, message=FALSE, warning=FALSE}
+library(VGAM)
+```
+
+### Key families in VGAM
+
+| Family | Use case |
+|----|----|
+| `multinomial()` | Multinomial logistic regression |
+| `cumulative(parallel=TRUE)` | Proportional odds (ordinal) |
+| `cumulative(parallel=FALSE)` | Non-proportional odds (unconstrained) |
+| `acat()` | Adjacent categories logit model |
+| `cratio()` | Continuation ratio model |
+| `tobit()` | Tobit regression for censored continuous outcomes |
+| `posnegbinomial()` | Positive negative binomial (zero-truncated) |
+| `beta.ab()` | Beta regression |
+| `zipoissonff()` | Zero-inflated Poisson |
+
+### Example: multinomial with `vglm()`
+
+```{r}
+mod_vglm <- vglm(Species ~ Sepal.Length + Sepal.Width + Petal.Length,
+                 family = multinomial,
+                 data   = iris)
+summary(mod_vglm)
+```
+
+```{r}
+coef(mod_vglm, matrix = TRUE)   # coefficients organised by response category
+```
+
+### Example: proportional odds with `vglm()`
+
+```{r}
+# Ordered factor needed
+iris_ord <- iris %>%
+  mutate(Sepal.cut = cut(Sepal.Width, breaks = 3,
+                         labels = c("narrow", "medium", "wide"),
+                         ordered = TRUE))
+
+mod_po <- vglm(Sepal.cut ~ Petal.Length + Petal.Width,
+               family = cumulative(parallel = TRUE, link = "logitlink"),
+               data   = iris_ord)
+summary(mod_po)
+```
+
+Setting `parallel = FALSE` relaxes the proportional odds assumption and estimates separate slopes for each threshold — a direct test of whether PO holds.
+
+### GEE Syntax Reference — `geepack`
+
+GEE models the population-average (marginal) effect. Coefficients are interpreted the same way as the equivalent GLM, but standard errors are robust to within-cluster correlation. The key extra arguments are `id` (cluster identifier) and `corstr` (working correlation structure).
+
+```{r, eval=FALSE}
+library(geepack)
+
+# Working correlation structures: "independence", "exchangeable", "ar1", "unstructured"
+mod_gee <- geeglm(
+  y ~ x1 + x2,
+  data    = df,
+  id      = subject_id,          # cluster variable (unquoted or as variable)
+  family  = binomial,
+  corstr  = "exchangeable",      # assumed correlation structure within clusters
+  std.err = "san.se"             # sandwich (robust) SE — default
+)
+
+summary(mod_gee)
+tidy(mod_gee, exponentiate = TRUE, conf.int = TRUE)
+```
+
+**Choosing `corstr`:**
+
+| Structure | When to use |
+|----------------------------------|-------------------------------------|
+| `"independence"` | Ignore clustering (wrong but sometimes compared against) |
+| `"exchangeable"` | All observations within cluster equally correlated (most common) |
+| `"ar1"` | Correlation decays with time lag — longitudinal data |
+| `"unstructured"` | Estimate all pairwise correlations — needs many clusters |
+
+GEE vs GLMM: GEE gives you the population-average effect ("how does the average person change?"); GLMM gives you the subject-specific effect ("how does a particular person change?"). For binary outcomes the two estimates are numerically different even in expectation.
+
+------------------------------------------------------------------------
+
+# Part 2: Deviance, Testing & Model Fit Reference
+
+## Testing Reference Table
+
+Different packages and model types require different testing approaches. This table covers the main options:
+
+| Test | Function | Package | When to use |
+|-----------------|------------------|-----------------|----------------------|
+| Likelihood ratio test | `anova(mod1, mod2, test="Chisq")` | Base R | Nested GLMs; most common |
+| LRT (explicit) | `lrtest(mod1, mod2)` | `lmtest` | Same as above, cleaner output |
+| Wald test | `waldtest(mod1, mod2)` | `lmtest` | Faster approximation; less accurate in small samples |
+| Wald test (coef) | `coeftest(mod, vcov=sandwich)` | `lmtest` + `sandwich` | Robust SE-based inference |
+| Type II/III ANOVA | `Anova(mod, type="II")` | `car` | Handles unbalanced designs; works on `glm`, `lm`, `lmer` |
+| Score test | `anova(mod, test="Rao")` | Base R | Alternative to LRT; useful when full model is hard to fit |
+| Deviance goodness-of-fit | `1 - pchisq(deviance(mod), df.residual(mod))` | Base R | For Poisson: tests if model fits better than saturated |
+| Overdispersion test | `dispersiontest(mod)` | `AER` | Formal test of Poisson equidispersion |
+| PH assumption (Cox) | `cox.zph(mod)` | `survival` | Tests proportional hazards via Schoenfeld residuals |
+| PO assumption (ordinal) | `nominal_test(mod)` | `ordinal` | Tests proportional odds via score test |
+
+## Goodness-of-Fit Metrics Reference Table
+
+| Metric | Function | Package | Notes |
+|-----------------|--------------------|------------------|-----------------|
+| AIC | `AIC(mod)` / `glance(mod)$AIC` | Base R / `broom` | Lower = better; penalizes parameters |
+| BIC | `BIC(mod)` / `glance(mod)$BIC` | Base R / `broom` | Stronger penalty than AIC; favors parsimony |
+| McFadden's R² | `PseudoR2(mod, "McFadden")` | `DescTools` | 0.2–0.4 considered good; most common pseudo-R² |
+| Nagelkerke R² | `PseudoR2(mod, "Nagelkerke")` | `DescTools` | Scaled 0–1; easier to communicate |
+| Cox-Snell R² | `PseudoR2(mod, "CoxSnell")` | `DescTools` | Cannot reach 1 for binary outcomes |
+| Tjur's R² | `PseudoR2(mod, "Tjur")` | `DescTools` | Discrimination-based; binary only |
+| All pseudo-R² | `PseudoR2(mod)` | `DescTools` | Returns all available metrics at once |
+| R² (various) | `r2(mod)` | `performance` | Smart dispatch; works on `lm`, `glm`, `lmer` |
+| Model comparison | `compare_performance(m1, m2, m3)` | `performance` | Side-by-side table with multiple metrics |
+[Performance package details](https://easystats.github.io/performance/)
+
+![Performance Workflow](https://easystats.github.io/performance/reference/figures/figure_workflow.png)
+
+### Multi-model comparison pipeline
+
+```{r, eval=FALSE}
+# Fit several candidate models
+models <- list(
+  m1 = glm(y ~ x1,           data = df, family = binomial),
+  m2 = glm(y ~ x1 + x2,      data = df, family = binomial),
+  m3 = glm(y ~ x1 + x2 + x3, data = df, family = binomial)
+)
+
+# AIC/BIC table with broom
+models %>%
+  map(glance) %>%
+  bind_rows(.id = "model") %>%
+  select(model, AIC, BIC, deviance, df.residual, nobs)
+
+# Or with performance
+library(performance)
+compare_performance(models$m1, models$m2, models$m3, rank = TRUE)
+```
+
+------------------------------------------------------------------------
+
+# Part 3: ROC Curves & Classification Diagnostics
+
+## `pROC` Core Workflow
+
+```{r, message=FALSE}
+library(pROC)
+
+data(Default, package = "ISLR2")
+mod_logit <- glm(default ~ balance + income + student,
+                 data = Default, family = binomial)
+
+# Build the ROC object
+roc_obj <- roc(
+  response  = Default$default,
+  predictor = predict(mod_logit, type = "response"),
+  levels    = c("No", "Yes"),   # negative level first
+  quiet     = TRUE
+)
+
+roc_obj        # prints AUC
+auc(roc_obj)   # extract AUC
+ci.auc(roc_obj)  # 95% CI via DeLong method
+```
+
+### ggplot-native ROC curve
+
+`ggroc()` returns a `ggplot` object so all standard `ggplot2` layers apply:
+
+```{r}
+ggroc(roc_obj, color = "steelblue", linewidth = 1) +
+  geom_abline(slope = 1, intercept = 1, linetype = "dashed", color = "grey50") +
+  annotate("text", x = 0.4, y = 0.2,
+           label = paste0("AUC = ", round(auc(roc_obj), 3)),
+           size = 4.5, color = "steelblue") +
+  labs(title = "ROC Curve — Default Model",
+       x = "Specificity", y = "Sensitivity") +
+  theme_minimal()
+```
+
+Note: `ggroc()` plots specificity on the x-axis running right to left (high specificity on the left) — this matches the traditional ROC orientation.
+
+### Comparing two models on one plot
+
+```{r}
+mod_simple <- glm(default ~ balance, data = Default, family = binomial)
+
+roc_simple <- roc(Default$default,
+                  predict(mod_simple, type = "response"),
+                  levels = c("No", "Yes"), quiet = TRUE)
+
+roc_full   <- roc(Default$default,
+                  predict(mod_logit, type = "response"),
+                  levels = c("No", "Yes"), quiet = TRUE)
+
+ggroc(list("Balance only" = roc_simple, "Full model" = roc_full),
+      linewidth = 1) +
+  geom_abline(slope = 1, intercept = 1, linetype = "dashed", color = "grey50") +
+  scale_color_manual(values = c("Balance only" = "tomato", "Full model" = "steelblue")) +
+  labs(title = "ROC Curve Comparison", x = "Specificity",
+       y = "Sensitivity", color = "Model") +
+  theme_minimal()
+```
+
+```{r}
+# Formal DeLong test comparing two ROC curves
+roc.test(roc_simple, roc_full)
+```
+
+### Threshold selection with `coords()`
+
+`coords()` returns sensitivity and specificity at every threshold. The Youden index (sensitivity + specificity − 1) is maximized at the optimal operating point.
+
+```{r}
+# All thresholds with sens/spec
+all_coords <- coords(roc_full, x = "all", ret = c("threshold", "sensitivity", "specificity"))
+
+# Optimal threshold by Youden index
+best <- coords(roc_full, x = "best", best.method = "youden",
+               ret = c("threshold", "sensitivity", "specificity"))
+best
+```
+
+```{r}
+# Annotate optimal point on ROC plot
+ggroc(roc_full, color = "steelblue", linewidth = 1) +
+  geom_abline(slope = 1, intercept = 1, linetype = "dashed", color = "grey50") +
+  geom_point(aes(x = best$specificity, y = best$sensitivity),
+             color = "tomato", size = 4) +
+  annotate("text", x = best$specificity - 0.08, y = best$sensitivity - 0.04,
+           label = paste0("Threshold = ", round(best$threshold, 3)),
+           color = "tomato", size = 3.5) +
+  labs(title = "ROC with Optimal Threshold (Youden Index)",
+       x = "Specificity", y = "Sensitivity") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+# Part 4: Survival Analysis
+
+## Survival Objects & Kaplan-Meier
+
+The `survival` package is the foundation. Every survival analysis starts with a `Surv()` object that pairs event times with event/censoring status.
+
+```{r}
+data(lung, package = "survival")
+glimpse(lung)
+```
+
+`lung` contains survival data for 228 patients with advanced lung cancer. Key variables: `time` (days), `status` (1=censored, 2=dead), `sex` (1=male, 2=female), `age`, `ph.ecog` (ECOG performance score).
+
+```{r}
+# Recode status to 0/1 (0=censored, 1=event) — tidier for most functions
+lung <- lung %>%
+  mutate(
+    status = ifelse(status == 2, 1, 0),
+    sex    = factor(sex, levels = c(1, 2), labels = c("Male", "Female"))
+  )
+```
+
+### `survfit()` and Kaplan-Meier estimates
+
+```{r}
+# Overall KM curve
+km_overall <- survfit(Surv(time, status) ~ 1, data = lung)
+summary(km_overall, times = c(180, 365, 540))
+```
+
+```{r}
+# Stratified by sex
+km_sex <- survfit(Surv(time, status) ~ sex, data = lung)
+km_sex
+```
+
+### KM plots with `ggsurvfit`
+
+`ggsurvfit` gives `ggplot2`-native KM plots. The `add_risktable()` layer adds the number at risk below the plot — standard in clinical publications.
+
+```{r, fig.width=8, fig.height=6}
+km_sex %>%
+  ggsurvfit(linewidth = 1) +
+  add_confidence_interval(alpha = 0.15) +
+  add_risktable(risktable_stats = "n.risk") +
+  scale_color_manual(values = c("Male" = "steelblue", "Female" = "tomato")) +
+  scale_fill_manual(values  = c("Male" = "steelblue", "Female" = "tomato")) +
+  labs(title = "Kaplan-Meier Survival Curves by Sex",
+       subtitle = "Lung cancer dataset (survival package)",
+       x = "Days", y = "Survival probability") +
+  theme_minimal()
+```
+
+### Log-rank test
+
+```{r}
+survdiff(Surv(time, status) ~ sex, data = lung)
+```
+
+The log-rank test compares survival curves across groups under the null that they are identical. The chi-squared statistic and p-value are printed directly.
+
+------------------------------------------------------------------------
+
+## Cox Proportional Hazards
+
+```{r}
+mod_cox <- coxph(Surv(time, status) ~ sex + age + ph.ecog,
+                 data = lung)
+summary(mod_cox)
+```
+
+```{r}
+# Tidy output — exponentiate for hazard ratios
+tidy(mod_cox, exponentiate = TRUE, conf.int = TRUE)
+```
+
+```{r}
+glance(mod_cox)
+```
+
+Hazard ratios \> 1 indicate increased hazard (shorter survival); \< 1 indicate decreased hazard. Here a HR for `sex` (Female vs Male) \< 1 means women have lower hazard of death.
+
+### Second dataset: `veteran`
+
+```{r}
+data(veteran, package = "survival")
+
+mod_cox2 <- coxph(Surv(time, status) ~ trt + celltype + karno + diagtime + age + prior,
+                  data = veteran)
+tidy(mod_cox2, exponentiate = TRUE, conf.int = TRUE)
+```
+
+### Testing the proportional hazards assumption
+
+The PH assumption requires that the hazard ratio between any two individuals is constant over time. `cox.zph()` tests this via Schoenfeld residuals — a significant p-value for a covariate means its effect is not constant over time.
+
+```{r}
+ph_test <- cox.zph(mod_cox)
+ph_test
+```
+
+```{r, fig.width=9, fig.height=6}
+# Plot Schoenfeld residuals — should be flat if PH holds
+ggcoxzph(ph_test)
+```
+
+A non-flat smoothed line in the Schoenfeld residual plot indicates time-varying effects. Common remedies: stratify by the violating variable (`strata()` in the formula), add a time interaction (`tt()` in `coxph`), or use a time-varying coefficient model.
+
+
+------------------------------------------------------------------------
+
+# Part 5: Forest Plots & 'Publication' Tables
+
+## `finalfit` — Lead Workflow
+
+`finalfit` is designed for clinical data analysis and produces publication-ready tables and plots directly from model objects. It integrates variable labels, handles missing data, and generates forest plots in a single call.
+
+```{r, message=FALSE, warning=FALSE}
+library(finalfit)
+```
+
+### `summary_factorlist()` — Table 1
+
+```{r}
+lung %>%
+  summary_factorlist(
+    dependent   = "status",
+    explanatory = c("age", "sex", "ph.ecog"),
+    p           = TRUE,
+    add_dependent_label = TRUE
+  )
+```
+
+### `finalfit()` — regression table with confidence intervals
+
+```{r}
+lung %>%
+  finalfit(
+    dependent   = "status",
+    explanatory = c("sex", "age", "ph.ecog")
+  )
+```
+
+The output combines univariate and multivariable results in one table — the format expected in most clinical journals.
+
+### `or_plot()` — logistic regression forest plot
+
+```{r, fig.width=8, fig.height=4, message=FALSE, warning=FALSE}
+Default %>%
+  mutate(default = as.numeric(default == "Yes")) %>%
+  or_plot(
+    dependent   = "default",
+    explanatory = c("balance", "income", "student")
+  )
+```
+
+### `hr_plot()` — Cox regression forest plot
+
+```{r, fig.width=8, fig.height=4, message=FALSE, warning=FALSE}
+lung %>%
+  hr_plot(
+    dependent   = "Surv(time, status)",
+    explanatory = c("sex", "age", "ph.ecog")
+  )
+```
+
+------------------------------------------------------------------------
+
+## `forestplot` Package — Manual Forest Plots
+
+`forestplot` gives you complete control over the appearance. It's built around a data frame of labels, means, and confidence intervals — useful when `finalfit` doesn't quite produce the layout you need.
+
+```{r, message=FALSE}
+library(forestplot)
+
+# Extract HR estimates from Cox model
+cox_tidy <- tidy(mod_cox, exponentiate = TRUE, conf.int = TRUE) %>%
+  filter(term != "(Intercept)")
+
+# Build the table structure forestplot expects
+fp_data <- tibble(
+  label     = cox_tidy$term,
+  mean      = cox_tidy$estimate,
+  lower     = cox_tidy$conf.low,
+  upper     = cox_tidy$conf.high
+)
+
+fp_data %>%
+  forestplot(
+    labeltext = label,
+    mean      = mean,
+    lower     = lower,
+    upper     = upper,
+    zero      = 1,                        # reference line at HR=1
+    boxsize   = 0.2,
+    col       = fpColors(box = "steelblue", line = "steelblue", zero = "grey50"),
+    xlab      = "Hazard Ratio (95% CI)",
+    title     = "Cox Model: Lung Cancer"
+  )
+```
+
+------------------------------------------------------------------------
+
+## `gtsummary` — Publication Tables
+
+```{r, message=FALSE}
+library(gtsummary)
+```
+
+### Descriptive table (`tbl_summary`)
+
+```{r}
+lung %>%
+  select(age, sex, ph.ecog, status) %>%
+  tbl_summary(
+    by      = sex,
+    missing = "no"
+  ) %>%
+  add_p() %>%
+  add_overall()
+```
+
+### Regression table (`tbl_regression`)
+
+```{r}
+mod_cox %>%
+  tbl_regression(
+    exponentiate = TRUE,
+    label        = list(sex ~ "Sex", age ~ "Age (years)", ph.ecog ~ "ECOG score")
+  ) %>%
+  bold_p() %>%
+  add_glance_source_note()
+```
+
+
+------------------------------------------------------------------------
+
+# Part 6: Propensity Score Methods
+
+## Setup and Data
+
+```{r}
+data(lalonde, package = "MatchIt")
+glimpse(lalonde)
+```
+
+`lalonde` is a classic dataset studying the effect of a job training program (`treat`) on 1978 earnings (`re78`). The treatment is not randomly assigned, so observed covariates need to be balanced.
+
+```{r}
+# Covariate balance before matching
+lalonde %>%
+  group_by(treat) %>%
+  summarise(across(c(age, educ, re74, re75), mean)) %>%
+  pivot_longer(-treat) %>%
+  pivot_wider(names_from = treat, values_from = value, names_prefix = "treat_") %>%
+  mutate(diff = treat_1 - treat_0)
+```
+
+------------------------------------------------------------------------
+
+## Matching with `MatchIt`
+
+`matchit()` estimates propensity scores and performs matching in one call. The most common approach is 1:1 nearest-neighbor matching on the logit of the propensity score.
+
+```{r}
+library(MatchIt)
+
+m_out <- matchit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data   = lalonde,
+  method = "nearest",    # nearest-neighbor matching
+  ratio  = 1,            # 1:1 matching
+  distance = "logit"     # match on logit of PS
+)
+
+summary(m_out, un = FALSE)   # balance after matching
+```
+
+### Balance visualization with `cobalt`
+
+```{r, fig.width=7, fig.height=5, message=FALSE}
+library(cobalt)
+
+love.plot(
+  m_out,
+  thresholds  = c(m = 0.1),   # 0.1 SMD threshold line
+  colors      = c("tomato", "steelblue"),
+  shapes      = c("circle", "circle"),
+  sample.names = c("Unmatched", "Matched"),
+  title = "Covariate Balance: Before and After Matching"
+)
+```
+
+Points to the left of the dashed line (SMD \< 0.1) are considered well-balanced. The goal is to bring all covariates inside this threshold.
+
+### Outcome analysis on matched data
+
+```{r}
+# Extract matched dataset
+matched_data <- match.data(m_out)
+
+# Outcome model on matched sample — include matching weights
+mod_matched <- lm(re78 ~ treat + age + educ + re74 + re75,
+                  data    = matched_data,
+                  weights = weights)
+
+tidy(mod_matched, conf.int = TRUE) %>%
+  filter(term == "treat")
+```
+
+The coefficient on `treat` is the estimated average treatment effect on the treated (ATT) after covariate adjustment.
+
+------------------------------------------------------------------------
+
+## Inverse Probability Weighting with `WeightIt`
+
+IPW keeps the full dataset and reweights observations to create a pseudo-population where treatment is independent of measured confounders. It is more efficient than matching when the sample is large.
+
+```{r, message=FALSE}
+library(WeightIt)
+
+w_out <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data   = lalonde,
+  method = "ps",          # propensity score weighting
+  estimand = "ATE"        # average treatment effect; use "ATT" for treated only
+)
+
+summary(w_out)
+```
+
+### Balance after IPW
+
+```{r, fig.width=7, fig.height=5}
+love.plot(
+  w_out,
+  thresholds   = c(m = 0.1),
+  colors       = c("tomato", "steelblue"),
+  sample.names = c("Unweighted", "IPW"),
+  title = "Covariate Balance: IPW"
+)
+```
+
+### Weighted outcome model
+
+```{r}
+mod_ipw <- lm(re78 ~ treat + age + educ + re74 + re75,
+              data    = lalonde,
+              weights = w_out$weights)
+
+tidy(mod_ipw, conf.int = TRUE) %>%
+  filter(term == "treat")
+```
+
+For more robust inference with IPW, use a weighted estimating equation via `survey::svyglm()` or the `sandwich` package to get HC-robust standard errors.
+
+------------------------------------------------------------------------
+
+# Part 7: Exploratory Visualizations
+
+## `factoextra` — PCA Biplots
+
+`factoextra` wraps base R's `prcomp()` output in `ggplot2`-compatible plots. The biplot shows both observations and variable loadings in the same space — a useful first look at multivariate structure.
+
+```{r, fig.width=7, fig.height=6, message=FALSE}
+library(factoextra)
+
+pca_res <- prcomp(iris[, 1:4], scale. = TRUE)
+
+fviz_pca_biplot(
+  pca_res,
+  geom.ind  = "point",
+  col.ind   = iris$Species,
+  palette   = c("steelblue", "tomato", "forestgreen"),
+  addEllipses = TRUE,
+  col.var   = "black",
+  repel     = TRUE,
+  legend.title = "Species",
+  title = "PCA Biplot — Iris"
+)
+```
+
+```{r, fig.width=6, fig.height=4}
+fviz_eig(pca_res, addlabels = TRUE, barfill = "steelblue", barcolor = "steelblue") +
+  labs(title = "Scree Plot — Variance Explained by Component") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+## Correlation Heatmaps
+
+```{r, fig.width=6, fig.height=5}
+library(ggcorrplot)
+
+corr_mat <- cor(mtcars, use = "complete.obs")
+
+ggcorrplot(
+  corr_mat,
+  method   = "square",
+  type     = "lower",
+  lab      = TRUE,
+  lab_size = 2.5,
+  colors   = c("tomato", "white", "steelblue"),
+  title    = "Correlation Matrix — mtcars"
+)
+```
+
+```{r, fig.width=7, fig.height=6, message=FALSE}
+library(pheatmap)
+
+# Annotated heatmap — scale rows so patterns are visible
+pheatmap(
+  corr_mat,
+  color            = colorRampPalette(c("tomato", "white", "steelblue"))(100),
+  display_numbers  = TRUE,
+  number_format    = "%.2f",
+  fontsize_number  = 7,
+  main             = "Correlation Heatmap — mtcars"
+)
+```
+
+------------------------------------------------------------------------
+
+## Ridge Plots — Distribution Comparisons
+
+`ggridges` is excellent for comparing distributions across many groups without overcrowding a standard density plot.
+
+```{r, fig.width=7, fig.height=5, message=FALSE}
+library(ggridges)
+
+ggplot(diamonds %>% sample_n(5000),
+       aes(x = price, y = cut, fill = cut)) +
+  geom_density_ridges(alpha = 0.7, scale = 1.2, rel_min_height = 0.01) +
+  scale_fill_brewer(palette = "Blues") +
+  scale_x_log10(labels = scales::dollar) +
+  labs(title = "Diamond Price Distribution by Cut",
+       x = "Price (log scale)", y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+------------------------------------------------------------------------
+
+# Part 8: Time Series — Simple Introduction
+
+## Creating a `ts` Object and STL Decomposition
+
+`ts()` creates a time series object from a numeric vector. The key arguments are `frequency` (observations per period: 12 for monthly, 4 for quarterly, 52 for weekly) and `start` (the first time point as a vector `c(year, period)`).
+
+```{r}
+# AirPassengers is a built-in monthly dataset: 1949-1960
+data(AirPassengers)
+class(AirPassengers)
+AirPassengers
+```
+
+```{r, fig.width=8, fig.height=3}
+autoplot(AirPassengers) +
+  labs(title = "Monthly Airline Passengers 1949–1960",
+       x = NULL, y = "Passengers (thousands)") +
+  theme_minimal()
+```
+
+### STL decomposition
+
+`stl()` (Seasonal and Trend decomposition using Loess) splits a time series into trend, seasonal, and remainder components. It handles changing seasonality better than classical decomposition.
+
+```{r, fig.width=8, fig.height=6}
+# Log-transform first to stabilize variance (multiplicative → additive)
+ap_log <- log(AirPassengers)
+
+stl_fit <- stl(ap_log, s.window = "periodic")
+
+autoplot(stl_fit) +
+  labs(title = "STL Decomposition — log(AirPassengers)") +
+  theme_minimal()
+```
+
+The four panels show: observed series, seasonal component, trend component, and remainder. A strong seasonal pattern shows up clearly; the trend panel reveals steady growth across the decade.
+
+```{r}
+# Seasonal strength and trend strength (0=none, 1=strong)
+var(remainder(stl_fit)) / var(seasadj(stl_fit))   # 1 - this = seasonal strength
+```
+
+------------------------------------------------------------------------
+
+## `forecast` Package — Simple Forecasting
+
+```{r, message=FALSE}
+library(forecast)
+```
+
+### `auto.arima()` — automatic model selection
+
+`auto.arima()` searches over ARIMA(p,d,q) model orders and selects the best by AIC. It handles differencing automatically.
+
+```{r}
+fit_arima <- auto.arima(AirPassengers, lambda = "auto")  # lambda="auto" for Box-Cox transform
+summary(fit_arima)
+```
+
+### Forecasting and plotting
+
+```{r, fig.width=9, fig.height=5}
+fc <- forecast(fit_arima, h = 24)   # forecast 24 months ahead
+
+autoplot(fc) +
+  labs(title = "24-Month Forecast — Airline Passengers",
+       subtitle = "ARIMA with automatic Box-Cox transform",
+       x = NULL, y = "Passengers") +
+  theme_minimal()
+```
+
+The dark shaded band is the 80% prediction interval; the light band is the 95% interval.
+
+### Where to go next
+
+For a modern tidyverse-native time series workflow, the `tsibble` / `fable` ecosystem (by the same authors as `tidyverse`) is the successor to `forecast`. Key packages:
+
+| Package      | Role                                         |
+|--------------|----------------------------------------------|
+| `tsibble`    | Tidy time series data structure              |
+| `feasts`     | Feature extraction and visualization         |
+| `fable`      | Modelling and forecasting (ARIMA, ETS, etc.) |
+| `fabletools` | Accuracy metrics, reconciliation             |
+
+## Part 9: Exporting Tables & Figures
+
+### Tables — `gtsummary`
+
+`gtsummary` objects can be exported to multiple formats depending on your output target.
+
+```{r, eval=FALSE}
+tbl <- mod_cox %>%
+  tbl_regression(exponentiate = TRUE)
+
+# To Word (.docx) via flextable
+tbl %>%
+  as_flex_table() %>%
+  flextable::save_as_docx(path = "cox_table.docx")
+
+# To HTML (renders in Quarto/RMarkdown output)
+tbl %>%
+  as_kable_extra(format = "html")
+
+# To LaTeX
+tbl %>%
+  as_kable_extra(format = "latex", booktabs = TRUE)
+```
+
+------------------------------------------------------------------------
+
+### Tables — `knitr::kable()` and `kableExtra`
+
+For plain tibbles and data frames, `kable()` from `knitr` is the simplest route to a formatted table. `kableExtra` adds styling on top.
+
+```{r, eval=FALSE}
+library(knitr)
+library(kableExtra)
+
+# Basic kable — format is inherited from the document output type
+# use format = "html" or "latex" to force one
+tidy(mod_cox, exponentiate = TRUE, conf.int = TRUE) %>%
+  kable(digits = 3, caption = "Cox model hazard ratios")
+
+# kableExtra styling — HTML output
+tidy(mod_cox, exponentiate = TRUE, conf.int = TRUE) %>%
+  kable(digits = 3, caption = "Cox model hazard ratios", format = "html") %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width        = FALSE,
+    position          = "left"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%      # bold header row
+  column_spec(1, bold = TRUE)       # bold first column
+
+# Save an HTML table directly to file
+tidy(mod_cox, exponentiate = TRUE, conf.int = TRUE) %>%
+  kable(format = "html", digits = 3) %>%
+  kable_styling() %>%
+  save_kable("cox_table.html")
+
+# Save as a self-contained image (.png) — requires webshot2
+tidy(mod_cox, exponentiate = TRUE, conf.int = TRUE) %>%
+  kable(format = "html", digits = 3) %>%
+  kable_styling() %>%
+  save_kable("cox_table.png")
+```
+
+Key `kable()` arguments:
+
+| Argument    | What it does                                         |
+|-------------|------------------------------------------------------|
+| `digits`    | Decimal places for numeric columns                   |
+| `caption`   | Table caption                                        |
+| `col.names` | Override column names with a character vector        |
+| `align`     | Column alignment: `"l"`, `"c"`, `"r"` or a vector    |
+| `format`    | `"html"`, `"latex"`, `"pipe"` (markdown), `"simple"` |
+| `escape`    | `FALSE` to allow raw HTML/LaTeX in cells             |
+
+------------------------------------------------------------------------
+
+### Figures — `ggsave()`
+
+`ggsave()` saves the most recently printed ggplot by default, or any plot object passed explicitly. Always pass the plot object explicitly to avoid saving the wrong plot.
+
+```{r, eval=FALSE}
+# Build and assign the plot first
+p <- ggplot(lung, aes(x = age, y = time, color = sex)) +
+  geom_point(alpha = 0.6) +
+  theme_minimal()
+
+# PNG — standard raster format for slides and web
+ggsave(
+  filename = "lung_scatter.png",
+  plot     = p,
+  width    = 8,
+  height   = 5,
+  units    = "in",
+  dpi      = 300        # 300 dpi is standard for publication
+)
+
+# PDF — vector format, scales without pixelation; good for journals
+ggsave("lung_scatter.pdf", plot = p, width = 8, height = 5)
+
+# SVG — vector format for web or further editing in Illustrator/Inkscape
+ggsave("lung_scatter.svg", plot = p, width = 8, height = 5)
+
+# Adjust base font size for publication sizing
+p_pub <- p + theme_minimal(base_size = 11)
+ggsave("lung_scatter_pub.png", plot = p_pub,
+       width = 6.5, height = 4, dpi = 300)
+```
+
+Key `ggsave()` arguments:
+
+| Argument | What it does |
+|-------------------------------|----------------------------------------|
+| `filename` | Output path; format inferred from file extension |
+| `plot` | The ggplot object to save; defaults to last printed |
+| `width`, `height` | Dimensions in `units` |
+| `units` | `"in"` (default), `"cm"`, `"mm"`, `"px"` |
+| `dpi` | Resolution; 300 for print, 150 for screen/web |
+| `device` | Override format: `"png"`, `"pdf"`, `"svg"`, `"tiff"`, `"eps"` |
+| `bg` | Background color; use `"white"` if theme has a transparent background |
+------------------------------------------------------------------------
+
+# Part 10: Quick Reference Card
+
+## Package Lookup
+
+| Package | Category | Key functions | Install note |
+|-----------------|-----------------|--------------------|-------------------|
+| `MASS` | GLM extensions | `polr()`, `glm.nb()`, `stepAIC()` | Base-adjacent; usually installed |
+| `nnet` | Multinomial | `multinom()` | Base-adjacent |
+| `VGAM` | Wide GLM family | `vglm()`, `vgam()` | Many family objects |
+| `geepack` | GEE | `geeglm()` | Marginal models |
+ Count data |
+| `ordinal` | Ordinal models | `clm()`, `clmm()` | Better than `polr` for testing |
+| `betareg` | Beta regression | `betareg()` | Proportions in (0,1) |
+| `lmtest` | Testing | `lrtest()`, `waldtest()`, `coeftest()` | Any model class |
+| `car` | Testing | `Anova()`, `vif()`, `leveneTest()` | Type II/III ANOVA |
+| `performance` | Fit metrics | `check_model()`, `compare_performance()`, `r2()` | Works across model types |
+| `DescTools` | Pseudo-R² | `PseudoR2()` | All variants |
+| `pROC` | ROC curves | `roc()`, `auc()`, `ggroc()`, `coords()` |  |
+| `survival` | Survival | `Surv()`, `survfit()`, `coxph()`, `cox.zph()` | Core survival package |
+| `ggsurvfit` | KM plots | `ggsurvfit()`, `add_risktable()` | ggplot2 native |
+| `survminer` | Survival plots | `ggsurvplot()`, `ggcoxzph()`, `ggforest()` | Alternative to ggsurvfit |
+| `finalfit` | Tables + plots | `finalfit()`, `or_plot()`, `hr_plot()`, `summary_factorlist()` | Clinical workflow |
+| `forestplot` | Forest plots | `forestplot()` | Full manual control |
+| `gtsummary` | Pub tables | `tbl_summary()`, `tbl_regression()`, `tbl_uvregression()` | Excellent export |
+| `MatchIt` | PS matching | `matchit()`, `match.data()` |  |
+| `WeightIt` | IPW | `weightit()` | ATE/ATT weights |
+| `cobalt` | PS balance | `love.plot()`, `bal.tab()` | Works with MatchIt + WeightIt |
+| `factoextra` | PCA vis | `fviz_pca_biplot()`, `fviz_eig()` | Wraps `prcomp()` |
+| `ggcorrplot` | Correlation | `ggcorrplot()` | ggplot2 native |
+| `pheatmap` | Heatmaps | `pheatmap()` | Annotated heatmaps |
+| `ggridges` | Distributions | `geom_density_ridges()` | Many groups |
+| `ggrepel` | Labels | `geom_text_repel()`, `geom_label_repel()` | Avoid overlaps |
+| `forecast` | Time series | `auto.arima()`, `forecast()`, `autoplot()` |  |
+| `tsibble` | Time series | `as_tsibble()` | Modern TS data structure |
+| `fable` | Time series | `ARIMA()`, `ETS()` | Tidy forecasting |
+
+------------------------------------------------------------------------
+
+## Formula Syntax Cheatsheet
+
+| Function | Package | Formula example | Notes |
+|----------------|----------------|-------------------------|----------------|
+| `lm()` | Base R | `y ~ x1 + x2` | Linear regression |
+| `glm()` | Base R | `y ~ x1 + x2, family=binomial` | GLM; add `family` |
+| `polr()` | `MASS` | `ordered_y ~ x1 + x2, Hess=TRUE` | Ordinal PO model |
+| `clm()` | `ordinal` | `ordered_y ~ x1 + x2` | Cumulative link |
+| `multinom()` | `nnet` | `factor_y ~ x1 + x2, trace=FALSE` | Multinomial |
+| `vglm()` | `VGAM` | `y ~ x1 + x2, family=multinomial` | VGAM engine |
+| `geeglm()` | `geepack` | `y ~ x1, id=id, corstr="exchangeable"` | GEE; needs `id` |
+| `lmer()` | `lme4` | `y ~ x + (1 | group)` | Random intercepts |
+| `glmer()` | `lme4` | `y ~ x + (1 | group), family=binomial` | GLMM |
+| `coxph()` | `survival` | `Surv(time, status) ~ x1 + x2` | Cox PH |
+| `survfit()` | `survival` | `Surv(time, status) ~ group` | KM estimator |
+| `matchit()` | `MatchIt` | `treat ~ x1 + x2, method="nearest"` | PS matching |
+| `weightit()` | `WeightIt` | `treat ~ x1 + x2, estimand="ATE"` | IPW |
+
+------------------------------------------------------------------------
+
+## Model Selection Quick Guide
+
+| Response type | Distribution | Start here | If problems → |
+|------------------|-----------------|-----------------|--------------------|
+| Continuous, normal errors | Gaussian | `lm()` | Transform response or use `Gamma` |
+| Binary (0/1) | Binomial | `glm(..., family=binomial)` | Rare events → `cloglog`; separation → penalized via `glmnet` |
+| Ordered categories | Multinomial/ordinal | `polr()` or `clm()` | PO violated → `vglm(parallel=FALSE)` |
+| Unordered categories | Multinomial | `multinom()` | Many categories → `vglm()` |
+| Counts, equidispersed | Poisson | `glm(..., family=poisson)` | Overdispersion → `glm.nb()` |
+| Counts, overdispersed | Negative binomial | `glm.nb()` 
+| Correlated binary | Binomial + clustering | `glmer(..., family=binomial)` or `geeglm()` | Many clusters → GEE; few → GLMM |
+| Time-to-event | Survival | `coxph()` | PH violated → stratify or `tt()` |
